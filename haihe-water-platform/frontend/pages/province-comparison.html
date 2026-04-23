@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海河六域 - 省际空间对比专项屏</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        'secondary-dark': '#16a34a',
+                        accent: '#06b6d4',
+                        'accent-dark': '#0891b2',
+                        water: '#3b82f6',
+                        'water-dark': '#2563eb',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b',
+                        'dark-lighter': '#334155',
+                        'level-1': '#00e400',
+                        'level-2': '#ffff00',
+                        'level-3': '#ff7e00',
+                        'level-4': '#ff0000',
+                        'level-5': '#99004c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0a0f1c 0%, #0d1321 50%, #0a0f1c 100%);
+            color: #fff;
+        }
+        
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.5), rgba(34, 197, 94, 0.5));
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.7), rgba(34, 197, 94, 0.7));
+        }
+        
+        /* 科技感背景网格 */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 发光装饰 */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glow-orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+        }
+        
+        .glow-orb-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%);
+        }
+        
+        /* 顶部导航 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+        
+        .nav-title {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #0ea5e9, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-back {
+            padding: 8px 20px;
+            background: rgba(14, 165, 233, 0.15);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            border-radius: 6px;
+            color: #0ea5e9;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .nav-back:hover {
+            background: rgba(14, 165, 233, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        /* 主容器 */
+        .main-container {
+            position: relative;
+            top: 64px;
+            left: 0;
+            right: 0;
+            min-height: calc(100vh - 64px);
+            padding: 20px;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+        
+        /* 核心结论栏 */
+        .conclusion-bar {
+            display: flex;
+            gap: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, 
+                rgba(14, 165, 233, 0.1) 0%, 
+                rgba(34, 197, 94, 0.05) 50%,
+                rgba(14, 165, 233, 0.1) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .conclusion-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #0ea5e9 20%, 
+                #22c55e 50%, 
+                #0ea5e9 80%, 
+                transparent 100%);
+        }
+        
+        .conclusion-tag {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+        
+        .conclusion-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .conclusion-tag.tag-1 {
+            border-color: rgba(0, 228, 0, 0.4);
+            background: linear-gradient(135deg, rgba(0, 228, 0, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .conclusion-tag.tag-2 {
+            border-color: rgba(14, 165, 233, 0.4);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .tag-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .tag-1 .tag-icon {
+            background: rgba(0, 228, 0, 0.2);
+            color: #00e400;
+        }
+        
+        .tag-2 .tag-icon {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+        
+        .tag-content {
+            flex: 1;
+        }
+        
+        .tag-title {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        
+        .tag-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+        
+        .tag-highlight {
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        .rank-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 8px;
+        }
+        
+        .rank-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .rank-1 { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
+        .rank-2 { background: linear-gradient(135deg, #c0c0c0, #a0a0a0); color: #000; }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #b87333); color: #fff; }
+        .rank-other { background: rgba(14, 165, 233, 0.3); color: #e2e8f0; }
+        
+        /* 主体内容区 */
+        .content-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            min-height: 600px;
+        }
+        
+        /* 图表卡片 */
+        .chart-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 科技感四角装饰 */
+        .chart-card::before,
+        .chart-card::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0ea5e9;
+        }
+        
+        .chart-card::before {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+        }
+        
+        .chart-card::after {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .corner-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0ea5e9;
+        }
+        
+        .corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; border-top-left-radius: 8px; }
+        .corner-tr { top: 0; right: 0; border-left: none; border-bottom: none; border-top-right-radius: 8px; }
+        .corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
+        .corner-br { bottom: 0; right: 0; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
+        
+        /* 卡片标题 */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: #0ea5e9;
+            font-size: 18px;
+        }
+        
+        .card-subtitle {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        /* 图表容器 */
+        .chart-container {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+        
+        /* 底部分析区 */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            min-height: 400px;
+        }
+        
+        /* 排名表样式 */
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        .ranking-table th,
+        .ranking-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+        }
+        
+        .ranking-table th {
+            background: rgba(14, 165, 233, 0.15);
+            color: #0ea5e9;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        
+        .ranking-table th:hover {
+            background: rgba(14, 165, 233, 0.25);
+        }
+        
+        .ranking-table th.sortable::after {
+            content: ' ⇅';
+            color: #64748b;
+            font-size: 10px;
+        }
+        
+        .ranking-table th.sort-asc::after {
+            content: ' ↑';
+            color: #22c55e;
+        }
+        
+        .ranking-table th.sort-desc::after {
+            content: ' ↓';
+            color: #22c55e;
+        }
+        
+        .ranking-table td {
+            color: #e2e8f0;
+        }
+        
+        .ranking-table tr:hover td {
+            background: rgba(14, 165, 233, 0.05);
+        }
+        
+        .ranking-table .province-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* 管控建议卡片 */
+        .suggestion-card {
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 10px;
+            border-left: 3px solid #0ea5e9;
+            margin-bottom: 12px;
+        }
+        
+        .suggestion-card:last-child {
+            margin-bottom: 0;
+        }
+        
+        .suggestion-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .suggestion-title i {
+            color: #0ea5e9;
+        }
+        
+        .suggestion-content {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        
+        .suggestion-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 8px;
+            margin-right: 5px;
+        }
+        
+        .tag-priority {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .tag-improve {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .tag-maintain {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+        
+        /* 导出按钮 */
+        .export-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(34, 197, 94, 0.2));
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            border-radius: 6px;
+            color: #0ea5e9;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.3), rgba(34, 197, 94, 0.3));
+            transform: translateY(-1px);
+        }
+        
+        /* 地图弹窗 */
+        .map-popup {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 320px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .map-popup.active {
+            display: block;
+        }
+        
+        .popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+        }
+        
+        .popup-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        
+        .popup-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .popup-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+        
+        .popup-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .indicator-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 8px;
+        }
+        
+        .indicator-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .indicator-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .indicator-icon.do { background: rgba(14, 165, 233, 0.2); color: #0ea5e9; }
+        .indicator-icon.nh { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .indicator-icon.tp { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        
+        .indicator-name-popup {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        
+        .indicator-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        
+        .indicator-level {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .level-1 { background: rgba(0, 228, 0, 0.2); color: #00e400; border: 1px solid rgba(0, 228, 0, 0.3); }
+        .level-2 { background: rgba(255, 255, 0, 0.2); color: #ffff00; border: 1px solid rgba(255, 255, 0, 0.3); }
+        .level-3 { background: rgba(255, 126, 0, 0.2); color: #ff7e00; border: 1px solid rgba(255, 126, 0, 0.3); }
+        
+        .rank-info {
+            display: flex;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+        
+        .rank-box {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .rank-label {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        
+        .rank-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #22c55e;
+        }
+        
+        .mini-chart {
+            height: 100px;
+            margin-top: 10px;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 8px;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 1400px) {
+            .content-area {
+                grid-template-columns: 1fr;
+            }
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* 水质等级图例 */
+        .level-legend {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="bg-grid"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    
+    <!-- 顶部导航 -->
+    <nav class="top-nav">
+        <div class="nav-title">
+            <i class="fa fa-map"></i>
+            省际空间对比专项屏
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="color: #94a3b8; font-size: 13px;">
+                <i class="fa fa-clock-o mr-2"></i>
+                <span id="currentTime">--</span>
+            </div>
+            <button class="nav-back" onclick="goBack()">
+                <i class="fa fa-arrow-left"></i>
+                返回大屏
+            </button>
+        </div>
+    </nav>
+    
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 顶部核心结论栏 -->
+        <div class="conclusion-bar animate-fade-in">
+            <div class="conclusion-tag tag-1">
+                <div class="tag-icon">
+                    <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">六省市达标概况</div>
+                    <div class="tag-value">
+                        六省市核心指标<span class="tag-highlight">全部达标</span>，溶解氧全域达<span class="tag-highlight">Ⅰ类</span>标准
+                    </div>
+                </div>
+            </div>
+            <div class="conclusion-tag tag-2">
+                <div class="tag-icon">
+                    <i class="fa fa-trophy"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">综合水质排名</div>
+                    <div class="tag-value" id="rankingTag">
+                        <span class="rank-item"><span class="rank-number rank-1">1</span>山东省</span>
+                        <span class="rank-item"><span class="rank-number rank-2">2</span>河北省</span>
+                        <span class="rank-item"><span class="rank-number rank-3">3</span>北京市</span>
+                        <span class="rank-item"><span class="rank-number rank-other">4</span>山西省</span>
+                        <span class="rank-item"><span class="rank-number rank-other">5</span>河南省</span>
+                        <span class="rank-item"><span class="rank-number rank-other">6</span>天津市</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主体内容区 -->
+        <div class="content-area">
+            <!-- 左侧：分组柱状图 -->
+            <div class="chart-card">
+                <div class="corner-decoration corner-tl"></div>
+                <div class="corner-decoration corner-tr"></div>
+                <div class="corner-decoration corner-bl"></div>
+                <div class="corner-decoration corner-br"></div>
+                
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fa fa-bar-chart"></i>
+                        六省市水质指标对比
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="level-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #00e400;"></div>
+                                <span style="color: #00e400;">Ⅰ类</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #ffff00;"></div>
+                                <span style="color: #ffff00;">Ⅱ类</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #ff7e00;"></div>
+                                <span style="color: #ff7e00;">Ⅲ类</span>
+                            </div>
+                        </div>
+                        <div class="card-subtitle">点击柱状图查看地图详情</div>
+                    </div>
+                </div>
+                <div class="chart-container" id="barChart"></div>
+            </div>
+            
+            <!-- 右侧：GIS地图 -->
+            <div class="chart-card" style="position: relative;">
+                <div class="corner-decoration corner-tl"></div>
+                <div class="corner-decoration corner-tr"></div>
+                <div class="corner-decoration corner-bl"></div>
+                <div class="corner-decoration corner-br"></div>
+                
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fa fa-globe"></i>
+                        津水流域监测站点分布
+                    </div>
+                    <div class="card-subtitle">点击省市高亮查看详情</div>
+                </div>
+                <div class="chart-container" id="mapChart"></div>
+                
+                <!-- 地图弹窗 -->
+                <div class="map-popup" id="mapPopup">
+                    <div class="popup-header">
+                        <div class="popup-title" id="popupTitle">--</div>
+                        <button class="popup-close" onclick="closePopup()">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="popup-content" id="popupContent">
+                        <!-- 动态内容 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部辅助分析区 -->
+        <div class="bottom-section">
+            <!-- 左侧：排名表 -->
+            <div class="chart-card">
+                <div class="corner-decoration corner-tl"></div>
+                <div class="corner-decoration corner-tr"></div>
+                <div class="corner-decoration corner-bl"></div>
+                <div class="corner-decoration corner-br"></div>
+                
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fa fa-list-ol"></i>
+                        省市指标排名表
+                    </div>
+                    <button class="export-btn" onclick="exportData()">
+                        <i class="fa fa-download"></i>
+                        导出数据
+                    </button>
+                </div>
+                <div class="chart-container" style="overflow: auto;">
+                    <table class="ranking-table" id="rankingTable">
+                        <thead>
+                            <tr>
+                                <th>综合排名</th>
+                                <th>省市</th>
+                                <th class="sortable" data-sort="do">溶解氧(mg/L)</th>
+                                <th class="sortable" data-sort="nh">氨氮(mg/L)</th>
+                                <th class="sortable" data-sort="tp">总磷(mg/L)</th>
+                                <th>综合得分</th>
+                                <th>水质等级</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rankingTableBody">
+                            <!-- 动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 右侧：管控建议 -->
+            <div class="chart-card">
+                <div class="corner-decoration corner-tl"></div>
+                <div class="corner-decoration corner-tr"></div>
+                <div class="corner-decoration corner-bl"></div>
+                <div class="corner-decoration corner-br"></div>
+                
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fa fa-lightbulb-o"></i>
+                        核心管控建议
+                    </div>
+                </div>
+                <div class="chart-container" id="suggestionsContainer">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL
+        const API_BASE = (() => {
+            const host = window.location.hostname;
+            const port = window.location.port;
+            if (window.location.protocol === 'file:') {
+                return 'http://127.0.0.1:5001/api';
+            }
+            if (port) {
+                return `${window.location.protocol}//${host}:5001/api`;
+            }
+            return `${window.location.protocol}//${host}/api`;
+        })();
+        
+        let charts = {};
+        let provinceData = [];
+        let mapData = [];
+        let sortField = 'score';
+        let sortAsc = false;
+        
+        // 水质等级标准
+        const waterQualityStandards = {
+            do: { level1: 7.5, level2: 6.0, level3: 5.0 },
+            nh: { level1: 0.15, level2: 0.5, level3: 1.0 },
+            tp: { level1: 0.02, level2: 0.1, level3: 0.2 }
+        };
+        
+        const provinceTrendCache = {};
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadRealData();
+            updateTime();
+            setInterval(updateTime, 1000);
+            initSortHandlers();
+            
+            window.addEventListener('resize', function() {
+                Object.values(charts).forEach(chart => chart && chart.resize());
+            });
+        });
+        
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeStr;
+        }
+        
+        // 返回大屏
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+        
+        // 初始化图表
+        function initCharts() {
+            charts.bar = echarts.init(document.getElementById('barChart'));
+            charts.map = echarts.init(document.getElementById('mapChart'));
+        }
+        
+        // 加载真实数据
+        async function loadRealData() {
+            try {
+                showLoading();
+                console.log('[DEBUG] Starting to load data from:', API_BASE);
+                
+                // 并行加载数据
+                const [provinceRes, mapRes, overviewRes] = await Promise.all([
+                    fetch(`${API_BASE}/dashboard/province-comparison`).then(r => {
+                        console.log('[DEBUG] Province comparison response:', r.status);
+                        return r.json();
+                    }).catch(e => {
+                        console.error('[DEBUG] Province comparison error:', e);
+                        return { success: false, error: e.message };
+                    }),
+                    fetch(`${API_BASE}/dashboard/map-data`).then(r => {
+                        console.log('[DEBUG] Map data response:', r.status);
+                        return r.json();
+                    }).catch(e => {
+                        console.error('[DEBUG] Map data error:', e);
+                        return { success: false, error: e.message };
+                    }),
+                    fetch(`${API_BASE}/dashboard/overview-stats`).then(r => {
+                        console.log('[DEBUG] Overview stats response:', r.status);
+                        return r.json();
+                    }).catch(e => {
+                        console.error('[DEBUG] Overview stats error:', e);
+                        return { success: false, error: e.message };
+                    })
+                ]);
+                
+                console.log('[DEBUG] Province response:', provinceRes);
+                console.log('[DEBUG] Map response:', mapRes);
+                
+                // 处理省份对比数据
+                if (provinceRes.success && provinceRes.data && provinceRes.data.provinces && provinceRes.data.provinces.length > 0) {
+                    console.log('[DEBUG] Processing province data:', provinceRes.data);
+                    processProvinceData(provinceRes.data);
+                    renderBarChart();
+                    updateRankingTable();
+                    updateSuggestions();
+                } else {
+                    const message = (provinceRes.data && provinceRes.data.message) || provinceRes.error || '暂无真实省份对比数据';
+                    provinceData = [];
+                    console.error('[DEBUG] Province comparison unavailable:', message);
+                    renderBarEmptyState(message);
+                    updateRankingTable();
+                    updateSuggestions();
+                    showToast(message);
+                }
+                
+                // 处理地图数据
+                if (mapRes.success && mapRes.data && mapRes.data.length > 0) {
+                    mapData = mapRes.data;
+                    renderMap();
+                } else {
+                    console.warn('[DEBUG] Map data unavailable');
+                    mapData = [];
+                    renderMapFallback((mapRes.data && mapRes.data.message) || mapRes.error || '暂无真实站点地图数据');
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('[DEBUG] Global error:', error);
+                provinceData = [];
+                mapData = [];
+                renderBarEmptyState('数据加载失败，未加载到真实省份对比数据');
+                renderMapFallback('数据加载失败，未加载到真实站点地图数据');
+                updateRankingTable();
+                updateSuggestions();
+                showToast('数据加载失败，未加载到真实省份对比数据');
+                hideLoading();
+            }
+        }
+
+        function renderChartEmpty(chart, title, message) {
+            if (!chart) return;
+            chart.clear();
+            chart.setOption({
+                backgroundColor: 'transparent',
+                title: {
+                    text: title,
+                    subtext: message,
+                    left: 'center',
+                    top: 'center',
+                    textStyle: { color: '#e2e8f0', fontSize: 16 },
+                    subtextStyle: { color: '#94a3b8', fontSize: 12 }
+                }
+            }, true);
+        }
+
+        function renderBarEmptyState(message) {
+            renderChartEmpty(charts.bar, '六省市水质对比', message);
+            closePopup();
+        }
+
+        function getProvinceSuggestion(province) {
+            const data = provinceData.find(item => item.province === province);
+            if (!data) {
+                return {
+                    advantage: '暂无真实评估结果',
+                    weakness: '暂无真实评估结果',
+                    priority: '待补充',
+                    tags: ['暂无真实数据']
+                };
+            }
+
+            const rank = provinceData.findIndex(item => item.province === province) + 1;
+            const strengths = [
+                {
+                    key: 'do',
+                    score: data.do / waterQualityStandards.do.level1,
+                    advantage: `溶解氧均值为 ${data.do} mg/L，是当前最突出的优势指标`,
+                    weakness: `溶解氧距离Ⅰ类目标仍差 ${(waterQualityStandards.do.level1 - data.do).toFixed(2)} mg/L`
+                },
+                {
+                    key: 'nh',
+                    score: waterQualityStandards.nh.level1 / Math.max(data.nh, 0.001),
+                    advantage: `氨氮均值为 ${data.nh} mg/L，污染控制表现较好`,
+                    weakness: `氨氮较Ⅰ类目标高出 ${(data.nh - waterQualityStandards.nh.level1).toFixed(3)} mg/L`
+                },
+                {
+                    key: 'tp',
+                    score: waterQualityStandards.tp.level1 / Math.max(data.tp, 0.001),
+                    advantage: `总磷均值为 ${data.tp} mg/L，营养盐控制相对稳定`,
+                    weakness: `总磷较Ⅰ类目标高出 ${(data.tp - waterQualityStandards.tp.level1).toFixed(3)} mg/L`
+                }
+            ];
+
+            const sortedByStrength = [...strengths].sort((a, b) => b.score - a.score);
+            const bestMetric = sortedByStrength[0];
+            const weakestMetric = sortedByStrength[sortedByStrength.length - 1];
+
+            let priority = '提升';
+            if (rank <= 2 && data.level === 'Ⅰ类') {
+                priority = '维持';
+            } else if (rank >= Math.max(4, provinceData.length - 1) || data.level === 'Ⅲ类') {
+                priority = '重点整治';
+            }
+
+            const tags = [];
+            if (bestMetric.key === 'do') tags.push('溶解氧优势');
+            if (bestMetric.key === 'nh') tags.push('氨氮稳控');
+            if (bestMetric.key === 'tp') tags.push('总磷稳控');
+            if (weakestMetric.key === 'do' && data.do < waterQualityStandards.do.level1) tags.push('补氧提升');
+            if (weakestMetric.key === 'nh' && data.nh > waterQualityStandards.nh.level1) tags.push('氨氮削减');
+            if (weakestMetric.key === 'tp' && data.tp > waterQualityStandards.tp.level1) tags.push('总磷治理');
+            tags.push(rank <= 3 ? '保持优势' : '持续优化');
+
+            return {
+                advantage: bestMetric.advantage,
+                weakness: weakestMetric.score >= 1 ? '各核心指标整体稳定，建议保持现有治理节奏' : weakestMetric.weakness,
+                priority,
+                tags
+            };
+        }
+        
+        // 处理省份数据
+        function processProvinceData(data) {
+            provinceData = data.provinces.map((province, index) => {
+                const do_value = Number(data.dissolved_oxygen[index] ?? 0);
+                const nh_value = Number(data.ammonia_nitrogen[index] ?? 0);
+                const tp_value = Number(data.total_phosphorus[index] ?? 0);
+                
+                // 计算综合得分（满分100）
+                // DO: 满分30分（>=7.5得30分）
+                // NH: 满分40分（<=0.15得40分）
+                // TP: 满分30分（<=0.02得30分）
+                const do_score = Math.min(30, (do_value / 7.5) * 30);
+                const nh_score = nh_value <= 0.15 ? 40 : Math.max(0, 40 - (nh_value - 0.15) * 20);
+                const tp_score = tp_value <= 0.02 ? 30 : Math.max(0, 30 - (tp_value - 0.02) * 100);
+                const total_score = do_score + nh_score + tp_score;
+                
+                // 判断水质等级
+                let level = 'Ⅲ类';
+                let levelClass = 'level-3';
+                if (do_value >= 7.5 && nh_value <= 0.15 && tp_value <= 0.02) {
+                    level = 'Ⅰ类';
+                    levelClass = 'level-1';
+                } else if (do_value >= 6.0 && nh_value <= 0.5 && tp_value <= 0.1) {
+                    level = 'Ⅱ类';
+                    levelClass = 'level-2';
+                }
+                
+                return {
+                    province,
+                    do: do_value,
+                    nh: nh_value,
+                    tp: tp_value,
+                    score: total_score,
+                    level,
+                    levelClass
+                };
+            });
+            
+            // 按综合得分排序
+            provinceData.sort((a, b) => b.score - a.score);
+        }
+        
+        // 渲染柱状图
+        function renderBarChart() {
+            const provinces = provinceData.map(d => d.province.replace('省', '').replace('市', ''));
+            const doData = provinceData.map(d => ({
+                value: d.do,
+                itemStyle: { color: d.do >= 7.5 ? '#00e400' : d.do >= 6.0 ? '#ffff00' : '#ff7e00' }
+            }));
+            const nhData = provinceData.map(d => ({
+                value: d.nh,
+                itemStyle: { color: d.nh <= 0.15 ? '#00e400' : d.nh <= 0.5 ? '#ffff00' : '#ff7e00' }
+            }));
+            const tpData = provinceData.map(d => ({
+                value: d.tp,
+                itemStyle: { color: d.tp <= 0.02 ? '#00e400' : d.tp <= 0.1 ? '#ffff00' : '#ff7e00' }
+            }));
+            
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' },
+                    formatter: function(params) {
+                        const index = params[0].dataIndex;
+                        const data = provinceData[index];
+                        let html = `<div style="font-weight:bold;margin-bottom:5px">${data.province}</div>`;
+                        params.forEach(p => {
+                            const indicator = p.seriesName;
+                            const value = p.value;
+                            let level = '';
+                            let diff = '';
+                            if (indicator === '溶解氧') {
+                                level = value >= 7.5 ? 'Ⅰ类' : value >= 6.0 ? 'Ⅱ类' : 'Ⅲ类';
+                                diff = value >= 7.5 ? '达标' : `距Ⅰ类差${(7.5 - value).toFixed(2)}`;
+                            } else if (indicator === '氨氮') {
+                                level = value <= 0.15 ? 'Ⅰ类' : value <= 0.5 ? 'Ⅱ类' : 'Ⅲ类';
+                                diff = value <= 0.15 ? '达标' : `距Ⅰ类差${(value - 0.15).toFixed(3)}`;
+                            } else {
+                                level = value <= 0.02 ? 'Ⅰ类' : value <= 0.1 ? 'Ⅱ类' : 'Ⅲ类';
+                                diff = value <= 0.02 ? '达标' : `距Ⅰ类差${(value - 0.02).toFixed(3)}`;
+                            }
+                            html += `<div style="display:flex;align-items:center;gap:8px;margin:3px 0">
+                                <span style="display:inline-block;width:10px;height:10px;background:${p.color};border-radius:2px"></span>
+                                <span>${indicator}: <b>${value}</b> (${level}, ${diff})
+                            </div>`;
+                        });
+                        return html;
+                    }
+                },
+                legend: {
+                    data: ['溶解氧', '氨氮', '总磷'],
+                    textStyle: { color: '#94a3b8', fontSize: 12 },
+                    top: 0
+                },
+                grid: {
+                    top: '15%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '10%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: provinces,
+                    axisLabel: {
+                        color: '#e2e8f0',
+                        fontSize: 13,
+                        fontWeight: 'bold'
+                    },
+                    axisLine: { lineStyle: { color: 'rgba(14, 165, 233, 0.3)' } }
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '溶解氧(mg/L)',
+                        position: 'left',
+                        axisLabel: { color: '#94a3b8', fontSize: 11 },
+                        splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } },
+                        nameTextStyle: { color: '#0ea5e9' }
+                    },
+                    {
+                        type: 'value',
+                        name: '氨氮/总磷(mg/L)',
+                        position: 'right',
+                        axisLabel: { color: '#94a3b8', fontSize: 11 },
+                        nameTextStyle: { color: '#f59e0b' }
+                    }
+                ],
+                series: [
+                    {
+                        name: '溶解氧',
+                        type: 'bar',
+                        data: doData,
+                        barWidth: '20%',
+                        label: {
+                            show: true,
+                            position: 'top',
+                            color: '#0ea5e9',
+                            fontSize: 10,
+                            formatter: '{c}'
+                        }
+                    },
+                    {
+                        name: '氨氮',
+                        type: 'bar',
+                        yAxisIndex: 1,
+                        data: nhData,
+                        barWidth: '20%',
+                        label: {
+                            show: true,
+                            position: 'top',
+                            color: '#f59e0b',
+                            fontSize: 10,
+                            formatter: '{c}'
+                        }
+                    },
+                    {
+                        name: '总磷',
+                        type: 'bar',
+                        yAxisIndex: 1,
+                        data: tpData,
+                        barWidth: '20%',
+                        label: {
+                            show: true,
+                            position: 'top',
+                            color: '#8b5cf6',
+                            fontSize: 10,
+                            formatter: '{c}'
+                        }
+                    }
+                ]
+            };
+            
+            charts.bar.setOption(option);
+            
+            // 点击事件
+            charts.bar.on('click', function(params) {
+                const index = params.dataIndex;
+                const province = provinceData[index].province;
+                focusMapOnProvince(province);
+                showProvincePopup(province);
+            });
+        }
+        
+        // 渲染地图
+        function renderMap() {
+            fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+                .then(res => res.json())
+                .then(geoJson => {
+                    echarts.registerMap('china', geoJson);
+                    
+                    // 高亮六省市
+                    const highlightProvinces = ['北京市', '天津市', '河北省', '山西省', '山东省', '河南省'];
+                    
+                    const option = {
+                        backgroundColor: 'transparent',
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: function(params) {
+                                if (params.dataType === 'geo') {
+                                    return highlightProvinces.includes(params.name) ? 
+                                        `<b>${params.name}</b><br/>点击查看详情` : params.name;
+                                }
+                                const d = params.data;
+                                return `<div style="font-weight:bold">${d.name}</div>
+                                        <div>溶解氧: ${d.dissolved_oxygen} mg/L</div>
+                                        <div>氨氮: ${d.ammonia_nitrogen} mg/L</div>
+                                        <div>等级: ${d.level}</div>`;
+                            }
+                        },
+                        geo: {
+                            map: 'china',
+                            roam: true,
+                            zoom: 5,
+                            center: [115, 37],
+                            label: {
+                                show: true,
+                                color: '#e2e8f0',
+                                fontSize: 11,
+                                fontWeight: 'bold'
+                            },
+                            itemStyle: {
+                                areaColor: 'rgba(30, 41, 59, 0.8)',
+                                borderColor: 'rgba(14, 165, 233, 0.3)',
+                                borderWidth: 1
+                            },
+                            emphasis: {
+                                label: { color: '#fff' },
+                                itemStyle: {
+                                    areaColor: 'rgba(14, 165, 233, 0.4)'
+                                }
+                            },
+                            select: {
+                                itemStyle: {
+                                    areaColor: 'rgba(34, 197, 94, 0.5)'
+                                }
+                            },
+                            regions: highlightProvinces.map(p => ({
+                                name: p,
+                                itemStyle: {
+                                    areaColor: 'rgba(14, 165, 233, 0.2)',
+                                    borderColor: '#0ea5e9',
+                                    borderWidth: 2
+                                },
+                                emphasis: {
+                                    itemStyle: {
+                                        areaColor: 'rgba(14, 165, 233, 0.5)'
+                                    }
+                                }
+                            }))
+                        },
+                        series: [{
+                            type: 'effectScatter',
+                            coordinateSystem: 'geo',
+                            data: mapData,
+                            symbolSize: function(val) {
+                                return Math.max(8, Math.min(20, val[2] || 8));
+                            },
+                            showEffectOn: 'render',
+                            rippleEffect: {
+                                brushType: 'stroke',
+                                scale: 3
+                            },
+                            itemStyle: {
+                                color: function(params) {
+                                    return params.data.color || '#0ea5e9';
+                                }
+                            }
+                        }]
+                    };
+                    
+                    charts.map.setOption(option);
+                    
+                    // 地图点击事件
+                    charts.map.on('click', function(params) {
+                        if (highlightProvinces.includes(params.name)) {
+                            showProvincePopup(params.name);
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.error('[DEBUG] Map load failed:', err);
+                    renderMapFallback('地图底图加载失败，暂无法展示真实站点分布');
+                });
+        }
+        
+        // 地图加载失败时的回退显示
+        function renderMapFallback(message = '暂无真实站点地图数据') {
+            console.log('[DEBUG] Rendering map empty state');
+            charts.map.clear();
+            charts.map.setOption({
+                backgroundColor: 'transparent',
+                title: {
+                    text: '六省市监测站点分布',
+                    subtext: message,
+                    left: 'center',
+                    top: 'center',
+                    textStyle: { color: '#e2e8f0', fontSize: 16 },
+                    subtextStyle: { color: '#64748b', fontSize: 12 }
+                }
+            }, true);
+        }
+        
+        // 聚焦地图到指定省份
+        function focusMapOnProvince(province) {
+            // 地图聚焦逻辑
+            const provinceCenters = {
+                '北京市': [116.4, 39.9],
+                '天津市': [117.2, 39.1],
+                '河北省': [114.5, 38.0],
+                '山西省': [112.5, 37.9],
+                '山东省': [117.0, 36.7],
+                '河南省': [113.6, 34.8]
+            };
+            
+            const center = provinceCenters[province];
+            if (center) {
+                charts.map.setOption({
+                    geo: {
+                        center: center,
+                        zoom: 7
+                    }
+                });
+            }
+        }
+        
+        // 显示省份弹窗
+        function showProvincePopup(province) {
+            const data = provinceData.find(d => d.province === province);
+            if (!data) return;
+            
+            const popup = document.getElementById('mapPopup');
+            const title = document.getElementById('popupTitle');
+            const content = document.getElementById('popupContent');
+            
+            title.textContent = province;
+            
+            const rank = provinceData.findIndex(d => d.province === province) + 1;
+            const suggestion = getProvinceSuggestion(province);
+            
+            content.innerHTML = `
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <div class="indicator-icon do"><i class="fa fa-tint"></i></div>
+                        <div class="indicator-name-popup">溶解氧</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div class="indicator-value" style="color:#0ea5e9">${data.do}</div>
+                        <div class="indicator-level ${data.do >= 7.5 ? 'level-1' : data.do >= 6.0 ? 'level-2' : 'level-3'}">
+                            ${data.do >= 7.5 ? 'Ⅰ类' : data.do >= 6.0 ? 'Ⅱ类' : 'Ⅲ类'}
+                        </div>
+                    </div>
+                </div>
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <div class="indicator-icon nh"><i class="fa fa-filter"></i></div>
+                        <div class="indicator-name-popup">氨氮</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div class="indicator-value" style="color:#f59e0b">${data.nh}</div>
+                        <div class="indicator-level ${data.nh <= 0.15 ? 'level-1' : data.nh <= 0.5 ? 'level-2' : 'level-3'}">
+                            ${data.nh <= 0.15 ? 'Ⅰ类' : data.nh <= 0.5 ? 'Ⅱ类' : 'Ⅲ类'}
+                        </div>
+                    </div>
+                </div>
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <div class="indicator-icon tp"><i class="fa fa-flask"></i></div>
+                        <div class="indicator-name-popup">总磷</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div class="indicator-value" style="color:#8b5cf6">${data.tp}</div>
+                        <div class="indicator-level ${data.tp <= 0.02 ? 'level-1' : data.tp <= 0.1 ? 'level-2' : 'level-3'}">
+                            ${data.tp <= 0.02 ? 'Ⅰ类' : data.tp <= 0.1 ? 'Ⅱ类' : 'Ⅲ类'}
+                        </div>
+                    </div>
+                </div>
+                <div class="rank-info">
+                    <div class="rank-box">
+                        <div class="rank-label">综合排名</div>
+                        <div class="rank-value">第${rank}名</div>
+                    </div>
+                    <div class="rank-box">
+                        <div class="rank-label">综合得分</div>
+                        <div class="rank-value">${data.score.toFixed(1)}</div>
+                    </div>
+                </div>
+                <div style="margin-top:10px;padding:10px;background:rgba(14,165,233,0.1);border-radius:8px">
+                    <div style="font-size:12px;color:#94a3b8;margin-bottom:5px"><i class="fa fa-star" style="color:#f59e0b;margin-right:5px"></i>核心优势</div>
+                    <div style="font-size:13px;color:#e2e8f0">${suggestion.advantage}</div>
+                </div>
+                <div style="padding:10px;background:rgba(239,68,68,0.1);border-radius:8px">
+                    <div style="font-size:12px;color:#94a3b8;margin-bottom:5px"><i class="fa fa-exclamation-circle" style="color:#ef4444;margin-right:5px"></i>提升短板</div>
+                    <div style="font-size:13px;color:#e2e8f0">${suggestion.weakness}</div>
+                </div>
+                <div class="mini-chart" id="miniChart_${province}"></div>
+            `;
+            
+            popup.classList.add('active');
+            popup.style.left = '50%';
+            popup.style.top = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
+            
+            // 渲染迷你趋势图
+            setTimeout(() => renderMiniChart(province), 100);
+        }
+        
+        // 关闭弹窗
+        function closePopup() {
+            document.getElementById('mapPopup').classList.remove('active');
+        }
+        
+        async function fetchProvinceTrendData(province) {
+            if (Object.prototype.hasOwnProperty.call(provinceTrendCache, province)) {
+                return provinceTrendCache[province];
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/data-by-province?province=${encodeURIComponent(province)}`);
+                const result = await response.json();
+                if (result.success && result.data && result.data.line && result.data.line.dates && result.data.line.dates.length > 0) {
+                    provinceTrendCache[province] = result.data.line;
+                    return provinceTrendCache[province];
+                }
+            } catch (error) {
+                console.error('[DEBUG] Province mini trend load failed:', error);
+            }
+
+            provinceTrendCache[province] = null;
+            return null;
+        }
+
+        // 渲染迷你趋势图
+        async function renderMiniChart(province) {
+            const chartDom = document.getElementById(`miniChart_${province}`);
+            if (!chartDom) return;
+            
+            const miniChart = echarts.init(chartDom);
+            const lineData = await fetchProvinceTrendData(province);
+            if (!lineData) {
+                miniChart.setOption({
+                    backgroundColor: 'transparent',
+                    graphic: {
+                        type: 'text',
+                        left: 'center',
+                        top: 'middle',
+                        style: {
+                            text: '暂无真实时序数据',
+                            fill: '#94a3b8',
+                            font: '12px "Microsoft YaHei"',
+                            textAlign: 'center'
+                        }
+                    }
+                }, true);
+                return;
+            }
+
+            let seriesName = '溶解氧';
+            let seriesData = lineData.dissolved_oxygen || [];
+            let lineColor = '#0ea5e9';
+            if (!seriesData.length && lineData.ammonia_nitrogen && lineData.ammonia_nitrogen.length) {
+                seriesName = '氨氮';
+                seriesData = lineData.ammonia_nitrogen;
+                lineColor = '#f59e0b';
+            } else if (!seriesData.length && lineData.ph && lineData.ph.length) {
+                seriesName = 'PH';
+                seriesData = lineData.ph;
+                lineColor = '#22c55e';
+            }
+
+            const axisLabels = (lineData.dates || []).map(date => String(date).slice(5, 10));
+            const option = {
+                backgroundColor: 'transparent',
+                grid: { top: 10, left: 10, right: 10, bottom: 20 },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: params => `${seriesName}: ${params[0].value}`
+                },
+                xAxis: {
+                    type: 'category',
+                    data: axisLabels,
+                    axisLine: { show: false },
+                    axisTick: { show: false },
+                    axisLabel: { color: '#64748b', fontSize: 9 }
+                },
+                yAxis: {
+                    type: 'value',
+                    splitLine: { lineStyle: { color: 'rgba(148,163,184,0.1)' } },
+                    axisLabel: { show: false }
+                },
+                series: [{
+                    type: 'line',
+                    smooth: true,
+                    data: seriesData,
+                    lineStyle: { color: lineColor, width: 2 },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0, y: 0, x2: 0, y2: 1,
+                            colorStops: [
+                                { offset: 0, color: `${lineColor}4D` },
+                                { offset: 1, color: `${lineColor}00` }
+                            ]
+                        }
+                    },
+                    symbol: 'none'
+                }]
+            };
+            miniChart.setOption(option);
+        }
+        
+        // 更新排名表
+        function updateRankingTable() {
+            const tbody = document.getElementById('rankingTableBody');
+            
+            // 排序数据
+            let sortedData = [...provinceData];
+            if (sortField === 'do') {
+                sortedData.sort((a, b) => sortAsc ? a.do - b.do : b.do - a.do);
+            } else if (sortField === 'nh') {
+                sortedData.sort((a, b) => sortAsc ? a.nh - b.nh : b.nh - a.nh);
+            } else if (sortField === 'tp') {
+                sortedData.sort((a, b) => sortAsc ? a.tp - b.tp : b.tp - a.tp);
+            } else {
+                sortedData.sort((a, b) => sortAsc ? a.score - b.score : b.score - a.score);
+            }
+
+            if (!sortedData.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center;color:#94a3b8;padding:24px 12px;">暂无真实省份对比数据</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = sortedData.map((data, index) => `
+                <tr>
+                    <td>
+                        <span class="rank-badge ${index < 3 ? `rank-${index + 1}` : 'rank-other'}">${index + 1}</span>
+                    </td>
+                    <td>
+                        <div class="province-name">
+                            <i class="fa fa-map-marker" style="color: #0ea5e9;"></i>
+                            ${data.province}
+                        </div>
+                    </td>
+                    <td style="color: ${data.do >= 7.5 ? '#22c55e' : '#f59e0b'}; font-weight: 600;">${data.do}</td>
+                    <td style="color: ${data.nh <= 0.15 ? '#22c55e' : '#f59e0b'}; font-weight: 600;">${data.nh}</td>
+                    <td style="color: ${data.tp <= 0.02 ? '#22c55e' : '#f59e0b'}; font-weight: 600;">${data.tp}</td>
+                    <td style="color: #0ea5e9; font-weight: bold;">${data.score.toFixed(1)}</td>
+                    <td>
+                        <span class="indicator-level ${data.levelClass}">${data.level}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // 初始化排序处理器
+        function initSortHandlers() {
+            document.querySelectorAll('.ranking-table th.sortable').forEach(th => {
+                th.addEventListener('click', function() {
+                    const field = this.dataset.sort;
+                    if (sortField === field) {
+                        sortAsc = !sortAsc;
+                    } else {
+                        sortField = field;
+                        sortAsc = true;
+                    }
+                    
+                    // 更新排序指示器
+                    document.querySelectorAll('.ranking-table th').forEach(h => {
+                        h.classList.remove('sort-asc', 'sort-desc');
+                    });
+                    this.classList.add(sortAsc ? 'sort-asc' : 'sort-desc');
+                    
+                    updateRankingTable();
+                });
+            });
+        }
+        
+        // 更新管控建议
+        function updateSuggestions() {
+            const container = document.getElementById('suggestionsContainer');
+            if (!provinceData.length) {
+                container.innerHTML = `
+                    <div class="suggestion-card">
+                        <div class="suggestion-title">
+                            <i class="fa fa-info-circle"></i>
+                            暂无真实建议
+                        </div>
+                        <div class="suggestion-content">当前数据库暂无足够的省份对比样本，无法生成治理建议。</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 根据排名显示建议
+            const top3 = provinceData.slice(0, 3);
+            const bottom3 = provinceData.slice(3);
+            
+            let html = '';
+            
+            // 表现优秀的省份
+            top3.forEach(data => {
+                const suggestion = getProvinceSuggestion(data.province);
+                if (suggestion) {
+                    html += `
+                        <div class="suggestion-card">
+                            <div class="suggestion-title">
+                                <i class="fa fa-check-circle"></i>
+                                ${data.province} - 优秀示范
+                            </div>
+                            <div class="suggestion-content">${suggestion.advantage}</div>
+                            <div>
+                                <span class="suggestion-tag tag-maintain">维持现状</span>
+                                ${suggestion.tags.map(t => `<span class="suggestion-tag tag-improve">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            // 需要改进的省份
+            bottom3.forEach(data => {
+                const suggestion = getProvinceSuggestion(data.province);
+                if (suggestion) {
+                    html += `
+                        <div class="suggestion-card" style="border-left-color: #ef4444;">
+                            <div class="suggestion-title" style="color: #ef4444;">
+                                <i class="fa fa-exclamation-triangle"></i>
+                                ${data.province} - 重点整改
+                            </div>
+                            <div class="suggestion-content">${suggestion.weakness}</div>
+                            <div>
+                                <span class="suggestion-tag tag-priority">${suggestion.priority}</span>
+                                ${suggestion.tags.map(t => `<span class="suggestion-tag tag-improve">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // 导出数据
+        function exportData() {
+            if (!provinceData.length) {
+                showToast('暂无真实数据可导出');
+                return;
+            }
+            const headers = ['排名', '省市', '溶解氧(mg/L)', '氨氮(mg/L)', '总磷(mg/L)', '综合得分', '水质等级'];
+            const rows = provinceData.map((data, index) => [
+                index + 1,
+                data.province,
+                data.do,
+                data.nh,
+                data.tp,
+                data.score.toFixed(1),
+                data.level
+            ]);
+            
+            let csv = '\uFEFF' + headers.join(',') + '\n';
+            rows.forEach(row => {
+                csv += row.join(',') + '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `津水流域六省市水质对比_${new Date().toISOString().slice(0, 10)}.csv`;
+            link.click();
+            
+            showToast('数据导出成功');
+        }
+        
+        // 显示加载状态
+        function showLoading() {
+            document.body.style.cursor = 'wait';
+        }
+        
+        // 隐藏加载状态
+        function hideLoading() {
+            document.body.style.cursor = 'default';
+        }
+        
+        // Toast提示
+        function showToast(message) {
+            const existing = document.querySelector('.toast-message');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 80px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: linear-gradient(135deg, rgba(14, 165, 233, 0.9), rgba(34, 197, 94, 0.9));
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    z-index: 10000;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                ">${message}</div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // 点击空白处关闭弹窗
+        document.addEventListener('click', function(e) {
+            const popup = document.getElementById('mapPopup');
+            const mapChart = document.getElementById('mapChart');
+            if (popup.classList.contains('active') && !popup.contains(e.target) && !mapChart.contains(e.target)) {
+                closePopup();
+            }
+        });
+    </script>
+</body>
+</html>

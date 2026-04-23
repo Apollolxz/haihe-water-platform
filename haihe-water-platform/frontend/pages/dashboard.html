@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海河六域・水质时空演变智能治理系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="../assets/styles/dashboard-screen.css?v=20260420d">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        'secondary-dark': '#16a34a',
+                        accent: '#06b6d4',
+                        'accent-dark': '#0891b2',
+                        water: '#3b82f6',
+                        'water-dark': '#2563eb',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'Microsoft YaHei', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 4s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(14, 165, 233, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.8), 0 0 40px rgba(14, 165, 233, 0.4)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <canvas id="particleCanvas"></canvas>
+    <!-- 背景装饰 -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/5 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- 顶部导航栏（首页同款） -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
+                        <i class="fa fa-tint text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">海河六域</h1>
+                        <p class="text-xs text-gray-400">流域水质时空演变与知识图谱智能治理系统</p>
+                    </div>
+                </div>
+                
+                <!-- 导航菜单 -->
+                <nav class="hidden md:flex space-x-1">
+                    <a href="index.html" class="nav-link">
+                        <i class="fa fa-home mr-2"></i>
+                        <span>首页</span>
+                    </a>
+                    <a href="dashboard.html" class="nav-link active">
+                        <i class="fa fa-dashboard mr-2"></i>
+                        <span>数据大屏</span>
+                    </a>
+                    <a href="sandbox.html" class="nav-core mx-2">
+                        <i class="fa fa-globe mr-2"></i><span>流域时空推演沙盘</span>
+                    </a>
+                    <a href="knowledge-graph.html" class="nav-link">
+                        <i class="fa fa-project-diagram mr-2"></i>
+                        <span>知识图谱</span>
+                    </a>
+                    <a href="chat.html" class="nav-link">
+                        <i class="fa fa-robot mr-2"></i>
+                        <span>智能问答</span>
+                    </a>
+                </nav>
+                
+                <!-- 右侧用户操作 -->
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                    <button class="text-gray-400 hover:text-white transition-colors relative">
+                        <i class="fa fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    </button>
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 focus:outline-none" id="userMenuBtn">
+                            <div class="w-8 h-8 rounded-full bg-gradient-water flex items-center justify-center">
+                                <i class="fa fa-user text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-300 hidden md:inline" id="userName">用户名</span>
+                            <i class="fa fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                        <!-- 用户菜单 -->
+                        <div class="absolute right-0 mt-2 w-48 bg-dark-light rounded-lg shadow-2xl py-2 z-50 hidden border border-white/10" id="userMenu">
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-user-o mr-2"></i>个人中心
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-cog mr-2"></i>设置
+                            </a>
+                            <div class="border-t border-white/10 my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors" onclick="logout()">
+                                <i class="fa fa-sign-out mr-2"></i>退出登录
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 移动端菜单按钮 -->
+                    <button class="md:hidden text-gray-400 hover:text-white" id="mobileMenuBtn">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div class="md:hidden bg-dark-light border-t border-white/10 hidden" id="mobileMenu">
+            <div class="container mx-auto px-4 py-2 space-y-1">
+                <a href="index.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-home mr-2"></i>首页
+                </a>
+                <a href="dashboard.html" class="block px-4 py-3 text-white bg-white/10 rounded-lg">
+                    <i class="fa fa-dashboard mr-2"></i>数据大屏
+                </a>
+                <a href="sandbox.html" class="block px-4 py-3 text-white bg-gradient-water rounded-lg transition-colors">
+                    <i class="fa fa-globe mr-2"></i>流域时空推演沙盘
+                </a>
+                <a href="knowledge-graph.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-project-diagram mr-2"></i>知识图谱
+                </a>
+                <a href="chat.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-robot mr-2"></i>智能问答
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 大屏主体 -->
+    <div class="dashboard-shell">
+        <!-- 顶部KPI栏 -->
+        <div class="dash-header">
+            <div class="dash-header-left">
+                <div class="scope-badge" id="currentScope">全流域宏观水质总览</div>
+                <div class="dash-meta-row">
+                    <span class="meta-pill"><i class="fa fa-map-marker mr-1"></i><strong id="metaRange">京津晋冀鲁豫 6 省市</strong></span>
+                    <span class="meta-pill"><i class="fa fa-flask mr-1"></i><strong id="metaIndicators">11 项核心水质指标</strong></span>
+                    <span class="meta-pill"><i class="fa fa-clock-o mr-1"></i><span id="metaCycle">历史监测 / 模型预测</span></span>
+                </div>
+            </div>
+            <div class="dash-header-right">
+                <div class="kpi-cards" id="kpiCards">
+                    <div class="kpi-card">
+                        <div class="kpi-label">综合水质指数</div>
+                        <div class="kpi-value" id="kpiScore">--</div>
+                        <div class="kpi-bar"><span id="kpiScoreBar"></span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">综合等级</div>
+                        <div class="kpi-value" id="kpiLevel">--</div>
+                        <div class="kpi-level-dot" id="kpiLevelDot"></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">监测站点</div>
+                        <div class="kpi-value" id="kpiStations">--</div>
+                        <div class="kpi-sublabel">个活跃站点</div>
+                    </div>
+                    <div class="kpi-card alert">
+                        <div class="kpi-label">30天异常记录</div>
+                        <div class="kpi-value" id="kpiAlerts">--</div>
+                        <div class="kpi-sublabel">项超标告警</div>
+                    </div>
+                </div>
+                <div class="dash-time" id="metaClock">--</div>
+            </div>
+        </div>
+
+        <!-- 主体网格 -->
+        <div class="dash-body">
+            <!-- 左侧边栏 -->
+            <aside class="dash-side left">
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-map-signs"></i>
+                        <span>省份切换</span>
+                    </div>
+                    <div class="province-pills" id="provinceButtons"></div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-trophy"></i>
+                        <span>省份水质排名</span>
+                    </div>
+                    <div class="chart-side" id="provinceRankChart"></div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <span>污染物超标排行</span>
+                    </div>
+                    <div class="chart-side" id="pollutantChart"></div>
+                </div>
+            </aside>
+
+            <!-- 中心地图 -->
+            <main class="dash-center">
+                <div class="map-panel">
+                    <div class="corner-deco tl"></div>
+                    <div class="corner-deco tr"></div>
+                    <div class="corner-deco bl"></div>
+                    <div class="corner-deco br"></div>
+                    <div class="map-head">
+                        <h2><i class="fa fa-globe"></i> 海河流域地理空间</h2>
+                        <span class="map-hint"><i class="fa fa-hand-o-up mr-1"></i>点击省份切换 &middot; 双击回到全流域</span>
+                    </div>
+                    <div class="chart-map" id="mapChart"></div>
+                </div>
+
+                <div class="trend-panel center-trend-panel">
+                    <div class="trend-head">
+                        <h3><i class="fa fa-area-chart"></i> 全域时间趋势轴</h3>
+                        <span class="trend-meta" id="trendMeta"></span>
+                    </div>
+                    <div class="chart-trend" id="trendChart"></div>
+                </div>
+            </main>
+
+            <!-- 右侧边栏 -->
+            <aside class="dash-side right">
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-dashboard"></i>
+                        <span>核心水质指标</span>
+                    </div>
+                    <div class="chart-side" id="indicatorRadarChart"></div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-cogs"></i>
+                        <span>模型精度</span>
+                    </div>
+                    <div class="model-mini">
+                        <div class="chart-mini" id="modelChart"></div>
+                        <div class="model-caption" id="modelMeta"></div>
+                    </div>
+                </div>
+
+                <!-- 快捷入口 -->
+                <div class="side-panel links-panel">
+                    <div class="side-head">
+                        <i class="fa fa-th-large"></i>
+                        <span>深度分析</span>
+                    </div>
+                    <div class="quick-links">
+                        <a href="trend-analysis.html" class="q-card" title="时序趋势专项分析">
+                            <div class="q-icon"><i class="fa fa-line-chart"></i></div>
+                            <div class="q-text">时序趋势</div>
+                            <div class="q-data" id="qTrend">--</div>
+                        </a>
+                        <a href="boxplot-analysis.html" class="q-card" title="指标分布与异常预警">
+                            <div class="q-icon"><i class="fa fa-bar-chart"></i></div>
+                            <div class="q-text">箱线分析</div>
+                            <div class="q-data" id="qBox">--</div>
+                        </a>
+                        <a href="correlation-analysis.html" class="q-card" title="指标相关性分析">
+                            <div class="q-icon"><i class="fa fa-fire"></i></div>
+                            <div class="q-text">相关性</div>
+                            <div class="q-data" id="qCorr">--</div>
+                        </a>
+                        <a href="province-comparison.html" class="q-card" title="省际空间对比">
+                            <div class="q-icon"><i class="fa fa-map"></i></div>
+                            <div class="q-text">省份对比</div>
+                            <div class="q-data" id="qCompare">--</div>
+                        </a>
+                        <a href="sandbox.html" class="q-card" title="流域时空推演沙盘">
+                            <div class="q-icon"><i class="fa fa-globe"></i></div>
+                            <div class="q-text">推演沙盘</div>
+                            <div class="q-data" id="qSandbox">--</div>
+                        </a>
+                        <a href="knowledge-graph.html" class="q-card" title="知识图谱">
+                            <div class="q-icon"><i class="fa fa-project-diagram"></i></div>
+                            <div class="q-text">知识图谱</div>
+                            <div class="q-data" id="qGraph">--</div>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-mask hidden" id="loadingMask">
+        <div class="spinner"></div>
+        <div class="loading-text">数据同步中...</div>
+    </div>
+
+    <!-- 兼容旧JS的隐藏元素 -->
+    <div style="display:none">
+        <div id="pageTitle"></div>
+        <div id="indicatorWindow"></div>
+        <div id="indicatorNotes"></div>
+        <div id="scopeScore">--</div>
+        <div id="scopeScoreFoot">--</div>
+        <div id="scopeLevel">--</div>
+        <div id="scopeLevelFoot">--</div>
+        <div id="scopeStations">--</div>
+        <div id="scopeStationsFoot">--</div>
+        <div id="scopeAlerts">--</div>
+        <div id="scopeAlertsFoot">--</div>
+        <div id="modelScope"></div>
+        <div id="provinceRanking"></div>
+        <div id="pollutantRanking"></div>
+        <div id="indicatorGrid"></div>
+    </div>
+
+    <script type="module" src="../assets/js/dashboard-screen.js?v=20260420d"></script>
+    <script>
+        // 导航栏交互（首页同款）
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { username: '访客', role: '未登录' };
+            document.getElementById('userName').textContent = currentUser.username;
+            
+            // 移动端菜单切换
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('mobileMenu').classList.toggle('hidden');
+            });
+            
+            // 用户菜单切换
+            document.getElementById('userMenuBtn').addEventListener('click', function() {
+                document.getElementById('userMenu').classList.toggle('hidden');
+            });
+            
+            // 点击其他地方关闭菜单
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#userMenuBtn') && !e.target.closest('#userMenu')) {
+                    document.getElementById('userMenu').classList.add('hidden');
+                }
+                if (!e.target.closest('#mobileMenuBtn') && !e.target.closest('#mobileMenu')) {
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
+        
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

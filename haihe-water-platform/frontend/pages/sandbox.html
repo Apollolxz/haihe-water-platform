@@ -1,0 +1,381 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流域时空推演沙盘｜模型预测与多维验证</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles/sandbox-validation.css?v=20260422i">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        'secondary-dark': '#16a34a',
+                        accent: '#06b6d4',
+                        'accent-dark': '#0891b2',
+                        water: '#3b82f6',
+                        'water-dark': '#2563eb',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'Microsoft YaHei', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 4s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(14, 165, 233, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.8), 0 0 40px rgba(14, 165, 233, 0.4)' }
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <header class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
+                        <i class="fa fa-tint text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">海河六域</h1>
+                        <p class="text-xs text-gray-400">流域水质时空演变与知识图谱智能治理系统</p>
+                    </div>
+                </div>
+
+                <!-- 瀵艰埅鑿滃崟 -->
+                <nav class="hidden md:flex space-x-1">
+                    <a href="index.html" class="nav-link">
+                        <i class="fa fa-home mr-2"></i>
+                        <span>首页</span>
+                    </a>
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fa fa-dashboard mr-2"></i>
+                        <span>数据大屏</span>
+                    </a>
+                    <a href="sandbox.html" class="nav-core mx-2">
+                        <i class="fa fa-globe mr-2"></i><span>流域时空推演沙盘</span>
+                    </a>
+                    <a href="knowledge-graph.html" class="nav-link">
+                        <i class="fa fa-project-diagram mr-2"></i>
+                        <span>知识图谱</span>
+                    </a>
+                    <a href="chat.html" class="nav-link">
+                        <i class="fa fa-robot mr-2"></i>
+                        <span>智能问答</span>
+                    </a>
+                </nav>
+
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                    <button class="text-gray-400 hover:text-white transition-colors relative">
+                        <i class="fa fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    </button>
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 focus:outline-none" id="userMenuBtn">
+                            <div class="w-8 h-8 rounded-full bg-gradient-water flex items-center justify-center">
+                                <i class="fa fa-user text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-300 hidden md:inline" id="userName">用户名</span>
+                            <i class="fa fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-dark-light rounded-lg shadow-2xl py-2 z-50 hidden border border-white/10" id="userMenu">
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-user-o mr-2"></i>个人中心
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-cog mr-2"></i>设置
+                            </a>
+                            <div class="border-t border-white/10 my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors" onclick="logout()">
+                                <i class="fa fa-sign-out mr-2"></i>退出登录
+                            </a>
+                        </div>
+                    </div>
+                    <button class="md:hidden text-gray-400 hover:text-white" id="mobileMenuBtn">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:hidden bg-dark-light border-t border-white/10 hidden" id="mobileMenu">
+            <div class="container mx-auto px-4 py-2 space-y-1">
+                <a href="index.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-home mr-2"></i>首页
+                </a>
+                <a href="dashboard.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-dashboard mr-2"></i>数据大屏
+                </a>
+                <a href="sandbox.html" class="block px-4 py-3 text-white bg-gradient-water rounded-lg transition-colors">
+                    <i class="fa fa-globe mr-2"></i>流域时空推演沙盘
+                </a>
+                <a href="knowledge-graph.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-project-diagram mr-2"></i>知识图谱
+                </a>
+                <a href="chat.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-robot mr-2"></i>智能问答
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-shell">
+        <header class="topbar">
+            <section class="filter-bar panel">
+                <div class="filter-bar-header">
+                    <div class="selection-summary" id="selectionSummary">--</div>
+                    <div class="filter-bar-side">
+                        <div class="toolbar-actions floating-actions">
+                            <button class="action-icon" id="refreshOverviewBtn" title="刷新"><i class="fa fa-refresh"></i></button>
+                            <button class="action-icon" id="exportGlobalBtn" title="导出"><i class="fa fa-download"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-layout compact-bar">
+                    <div class="filter-item filter-dropdown" id="provinceDropdown">
+                        <div class="filter-item-label">省市</div>
+                        <div class="filter-summary"><span id="provinceCurrent">全流域</span><button class="expand-btn micro" id="provinceExpandBtn"><i class="fa fa-chevron-down"></i></button></div>
+                        <div class="filter-popover" id="provincePopover">
+                            <div class="popover-section"><div class="popover-label">范围</div><div class="toggle-row" id="scopeToggleRow"></div></div>
+                            <div class="popover-section"><div class="popover-label">省市</div><div class="toggle-row wrap-row" id="provinceGrid"></div></div>
+                        </div>
+                    </div>
+                    <div class="filter-item filter-dropdown" id="indicatorDropdown">
+                        <div class="filter-item-label">指标</div>
+                        <div class="filter-summary"><span id="indicatorCurrent">--</span><button class="expand-btn micro" id="indicatorExpandBtn"><i class="fa fa-chevron-down"></i></button></div>
+                        <div class="filter-popover" id="indicatorPopover">
+                            <div class="toggle-row wrap-row" id="indicatorTagRow"></div>
+                            <select class="select-box control-hidden" id="indicatorSelect"></select>
+                        </div>
+                    </div>
+                    <div class="filter-item compact">
+                        <div class="filter-item-label">时间</div>
+                        <div class="toggle-row" id="timeModeGroup"></div>
+                    </div>
+                    <div class="filter-item compact">
+                        <div class="filter-item-label">模型</div>
+                        <div class="toggle-row" id="modelModeGroup"></div>
+                    </div>
+                </div>
+            </section>
+        </header>
+
+        <main class="board">
+            <section class="main-visuals">
+                <section class="panel conclusion-panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 class="panel-title">核心结论区</h2>
+                            <div class="panel-subtitle"></div>
+                        </div>
+                    </div>
+                    <div class="conclusion-top">
+                        <div class="summary-banner" id="summaryBanner">--</div>
+                        <div class="range-summary">
+                            <div class="range-box">
+                                <label>历史监测</label>
+                                <strong id="historyRange">--</strong>
+                            </div>
+                            <div class="range-box">
+                                <label>3个月预测</label>
+                                <strong id="predictionRange">--</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-grid metric-grid-dual" id="metricGrid"></div>
+                </section>
+                <section class="panel spatial-panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 class="panel-title" id="spatialTitle">省市对比热力图</h2>
+                            <div class="panel-subtitle" id="spatialSubtitle">--</div>
+                        </div>
+                        <div class="panel-meta" id="spatialMeta">--</div>
+                    </div>
+                    <div class="chart-surface">
+                        <div class="chart chart-fixed" id="spatialChart"></div>
+                    </div>
+                </section>
+
+                <section class="panel time-panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 class="panel-title" id="timeTitle">真实监测值 VS 模型预测值</h2>
+                            <div class="panel-subtitle" id="timeSubtitle">--</div>
+                        </div>
+                        <div class="time-partition">
+                            <span class="time-chip" id="historyChip">历史监测</span>
+                            <span class="time-chip" id="forecastChip">3个月预测</span>
+                        </div>
+                    </div>
+                    <div class="chart-surface time-surface">
+                        <div class="chart" id="timeChart"></div>
+                    </div>
+                </section>
+
+                <section class="panel radar-panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 class="panel-title" id="radarTitle">多指标雷达</h2>
+                            <div class="panel-subtitle" id="radarSubtitle">--</div>
+                        </div>
+                        <div class="panel-meta" id="radarMeta">--</div>
+                    </div>
+                    <div class="chart" id="radarChart"></div>
+                </section>
+
+                <section class="panel scatter-panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 class="panel-title" id="scatterTitle">误差散点</h2>
+                            <div class="panel-subtitle" id="scatterSubtitle">--</div>
+                        </div>
+                    </div>
+                    <div class="chart chart-fixed" id="scatterChart"></div>
+                </section>
+
+                <section class="panel feature-panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 class="panel-title" id="featureTitle">特征重要性</h2>
+                            <div class="panel-subtitle" id="featureSubtitle">--</div>
+                        </div>
+                    </div>
+                    <div class="chart-surface compact">
+                        <div class="chart chart-fixed" id="featureChart"></div>
+                    </div>
+                    <div class="mini-table" style="margin-top: 12px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>特征</th>
+                                    <th>核心权重</th>
+                                </tr>
+                            </thead>
+                            <tbody id="featureTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </section>
+
+            <section class="panel decision-panel" id="decisionPanel">
+                <div class="panel-head">
+                    <div>
+                        <h2 class="panel-title" id="decisionTitle">AI治理决策</h2>
+                        <div class="panel-subtitle" id="decisionSubtitle">选择单个省份后，可结合预测数据与溯源图谱生成分省治理方案。</div>
+                    </div>
+                    <div class="inline-actions decision-actions">
+                        <button class="btn primary" id="generateDecisionBtn">
+                            <i class="fa fa-magic"></i>
+                            <span>生成决策</span>
+                        </button>
+                        <button class="btn" id="refreshDecisionBtn">
+                            <i class="fa fa-refresh"></i>
+                            <span>重新生成</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="decision-layout">
+                    <div class="decision-status" id="decisionStatus">当前尚未生成治理方案。</div>
+                    <div class="decision-facts" id="decisionFacts"></div>
+                    <div class="decision-report empty" id="decisionReport">选择单个省份后点击“生成决策”，系统会结合 3 个月预测结果与 Neo4j 溯源图谱生成治理建议。</div>
+                </div>
+            </section>
+
+            <section class="panel detail-panel">
+                <div class="panel-head">
+                    <div>
+                        <h2 class="panel-title" id="exportTitle">数据明细表格</h2>
+                        <div class="panel-subtitle" id="exportSubtitle"></div>
+                    </div>
+                    <div class="panel-meta" id="exportMeta">--</div>
+                </div>
+                <div class="detail-toolbar">
+                    <label class="search-box">
+                        <i class="fa fa-search"></i>
+                        <input type="text" id="detailSearchInput" placeholder="搜索省市或最优模型">
+                    </label>
+                    <div class="tab-row" id="detailFilterTabs"></div>
+                </div>
+                <div class="preview-meta">
+                    <span id="detailSummary">--</span>
+                    <div class="inline-actions">
+                        <button class="btn" id="detailResetBtn">重置筛选</button>
+                    </div>
+                </div>
+                <div class="preview-table" id="detailTableWrap"></div>
+            </section>
+        </main>
+    </div>
+
+    <div class="loading" id="loadingMask">
+        <div class="spinner"></div>
+        <div>数据同步中...</div>
+    </div>
+
+    <script type="module" src="../assets/js/sandbox-validation.js?v=20260422j"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { username: '访客', role: '未登录' };
+            document.getElementById('userName').textContent = currentUser.username;
+
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('mobileMenu').classList.toggle('hidden');
+            });
+
+            document.getElementById('userMenuBtn').addEventListener('click', function() {
+                document.getElementById('userMenu').classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#userMenuBtn') && !e.target.closest('#userMenu')) {
+                    document.getElementById('userMenu').classList.add('hidden');
+                }
+                if (!e.target.closest('#mobileMenuBtn') && !e.target.closest('#mobileMenu')) {
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

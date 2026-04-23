@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海河六域 - 个人中心</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        accent: '#06b6d4',
+                        water: '#3b82f6',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b',
+                        'dark-lighter': '#334155'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'Microsoft YaHei', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-12px)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(14, 165, 233, 0.35)' },
+                            '100%': { boxShadow: '0 0 18px rgba(14, 165, 233, 0.5)' }
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .bg-gradient-water {
+                background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 45%, #22c55e 100%);
+            }
+            .card-glass {
+                background: rgba(255, 255, 255, 0.04);
+                backdrop-filter: blur(14px);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .card-shadow {
+                box-shadow: 0 20px 50px -16px rgba(15, 23, 42, 0.55);
+            }
+            .nav-link {
+                @apply relative px-4 py-2 text-gray-300 hover:text-white transition-all duration-300;
+            }
+            .nav-link::after {
+                content: '';
+                @apply absolute bottom-0 left-1/2 w-0 h-0.5 transition-all duration-300;
+                background: linear-gradient(135deg, #0ea5e9 0%, #22c55e 100%);
+                transform: translateX(-50%);
+            }
+            .nav-link:hover::after,
+            .nav-link.active::after {
+                @apply w-full;
+            }
+            .nav-link.active {
+                @apply text-white font-medium;
+            }
+            .nav-core {
+                @apply relative px-5 py-2 rounded-full text-white font-semibold text-sm shadow-lg transition-all duration-300 flex items-center;
+                background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #22c55e 100%);
+            }
+            .nav-core:hover {
+                box-shadow: 0 0 24px rgba(14, 165, 233, 0.35);
+            }
+            .input-focus {
+                @apply focus:ring-2 focus:ring-primary/60 focus:border-primary focus:outline-none;
+            }
+            .section-label {
+                @apply text-sm uppercase tracking-[0.24em] text-primary/80;
+            }
+            .stat-card {
+                @apply rounded-2xl p-4;
+                background: linear-gradient(145deg, rgba(14, 165, 233, 0.09) 0%, rgba(34, 197, 94, 0.08) 100%);
+                border: 1px solid rgba(148, 163, 184, 0.14);
+            }
+            .soft-divider {
+                border-color: rgba(255, 255, 255, 0.08);
+            }
+        }
+    </style>
+    <style>
+        body {
+            background-color: #0f172a;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body class="bg-dark text-white min-h-screen overflow-x-hidden">
+    <div class="fixed inset-0 pointer-events-none">
+        <div class="absolute top-0 left-1/4 h-96 w-96 rounded-full bg-primary/20 blur-3xl animate-pulse-slow"></div>
+        <div class="absolute right-1/4 top-1/3 h-80 w-80 rounded-full bg-secondary/15 blur-3xl animate-pulse-slow" style="animation-delay: 1.8s;"></div>
+        <div class="absolute bottom-10 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-accent/10 blur-3xl animate-pulse-slow" style="animation-delay: 3.2s;"></div>
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
+                        <i class="fa fa-tint text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">海河六域</h1>
+                        <p class="text-xs text-gray-400">流域水质时空演变与知识图谱智能治理系统</p>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex space-x-1">
+                    <a href="index.html" class="nav-link">
+                        <i class="fa fa-home mr-2"></i>
+                        <span>首页</span>
+                    </a>
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fa fa-dashboard mr-2"></i>
+                        <span>数据大屏</span>
+                    </a>
+                    <a href="sandbox.html" class="nav-core mx-2">
+                        <i class="fa fa-globe mr-2"></i>
+                        <span>流域时空推演沙盘</span>
+                    </a>
+                    <a href="knowledge-graph.html" class="nav-link">
+                        <i class="fa fa-project-diagram mr-2"></i>
+                        <span>知识图谱</span>
+                    </a>
+                    <a href="chat.html" class="nav-link">
+                        <i class="fa fa-robot mr-2"></i>
+                        <span>智能问答</span>
+                    </a>
+                    <a href="profile.html" class="nav-link active">
+                        <i class="fa fa-user-o mr-2"></i>
+                        <span>个人中心</span>
+                    </a>
+                </nav>
+
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                    <button class="text-gray-400 hover:text-white transition-colors relative">
+                        <i class="fa fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                    </button>
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 focus:outline-none" id="userMenuBtn">
+                            <div class="w-8 h-8 rounded-full bg-gradient-water flex items-center justify-center">
+                                <i class="fa fa-user text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-300 hidden md:inline" id="userName">访客</span>
+                            <i class="fa fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-dark-light rounded-lg shadow-2xl py-2 z-50 hidden border border-white/10" id="userMenu">
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-user-o mr-2"></i>个人中心
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-cog mr-2"></i>设置
+                            </a>
+                            <div class="border-t border-white/10 my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors" onclick="logout()">
+                                <i class="fa fa-sign-out mr-2"></i>退出登录
+                            </a>
+                        </div>
+                    </div>
+                    <button class="md:hidden text-gray-400 hover:text-white" id="mobileMenuBtn">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:hidden bg-dark-light border-t border-white/10 hidden" id="mobileMenu">
+            <div class="container mx-auto px-4 py-2 space-y-1">
+                <a href="index.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-home mr-2"></i>首页
+                </a>
+                <a href="dashboard.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-dashboard mr-2"></i>数据大屏
+                </a>
+                <a href="sandbox.html" class="block px-4 py-3 text-white bg-gradient-water rounded-lg transition-colors">
+                    <i class="fa fa-globe mr-2"></i>流域时空推演沙盘
+                </a>
+                <a href="knowledge-graph.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-project-diagram mr-2"></i>知识图谱
+                </a>
+                <a href="chat.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-robot mr-2"></i>智能问答
+                </a>
+                <a href="profile.html" class="block px-4 py-3 text-white bg-white/10 rounded-lg">
+                    <i class="fa fa-user-o mr-2"></i>个人中心
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 pt-24 pb-10 relative z-10">
+        <section class="mb-6">
+            <p class="section-label mb-2">Account Center</p>
+            <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-white">个人中心</h1>
+                    <p class="text-gray-400 mt-2">管理账号资料、使用偏好与近期常用模块。</p>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-gray-300">
+                    <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10">知识图谱</span>
+                    <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10">沙盘推演</span>
+                    <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10">智能问答</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card-glass card-shadow rounded-3xl p-6 md:p-8 mb-6">
+            <div class="flex flex-col gap-6 xl:flex-row xl:items-center">
+                <div class="flex items-center gap-5">
+                    <div class="relative">
+                        <div class="h-24 w-24 rounded-3xl bg-gradient-water flex items-center justify-center shadow-lg">
+                            <i class="fa fa-user text-white text-4xl"></i>
+                        </div>
+                        <button class="absolute -right-2 -bottom-2 h-9 w-9 rounded-full bg-dark-light border border-white/10 text-primary hover:text-white hover:bg-primary transition-colors">
+                            <i class="fa fa-camera"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white" id="profileUserName">访客</h2>
+                        <p class="text-primary mt-1" id="profileUserRole">流域分析账号</p>
+                        <p class="text-sm text-gray-400 mt-2 max-w-xl" id="profileTagline">关注流域水质变化、知识图谱溯源与辅助决策。</p>
+                        <div class="flex flex-wrap gap-2 mt-4" id="interestTags">
+                            <span class="px-3 py-1 rounded-full text-xs bg-primary/15 text-primary">知识图谱</span>
+                            <span class="px-3 py-1 rounded-full text-xs bg-secondary/15 text-secondary">污染溯源</span>
+                            <span class="px-3 py-1 rounded-full text-xs bg-accent/15 text-accent">治理研判</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid flex-1 grid-cols-2 xl:grid-cols-4 gap-3">
+                    <div class="stat-card">
+                        <p class="text-sm text-gray-400">常用模块</p>
+                        <p class="text-2xl font-bold mt-2" id="favoriteModuleCount">4</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="text-sm text-gray-400">关注省份</p>
+                        <p class="text-2xl font-bold mt-2" id="focusProvinceCount">3</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="text-sm text-gray-400">查询记录</p>
+                        <p class="text-2xl font-bold mt-2" id="queryCount">128</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="text-sm text-gray-400">方案草稿</p>
+                        <p class="text-2xl font-bold mt-2" id="planCount">12</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-6 overflow-x-auto">
+            <div class="flex min-w-max gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-2">
+                <span class="px-4 py-2 rounded-xl bg-primary/15 text-primary">个人资料</span>
+                <span class="px-4 py-2 rounded-xl text-gray-300">使用偏好</span>
+                <span class="px-4 py-2 rounded-xl text-gray-300">近期记录</span>
+                <span class="px-4 py-2 rounded-xl text-gray-300">账户安全</span>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div class="xl:col-span-2 space-y-6">
+                <div class="card-glass card-shadow rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <h3 class="text-xl font-semibold text-white">基础资料</h3>
+                            <p class="text-sm text-gray-400 mt-1">用于展示账号信息与页面身份标识。</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs bg-white/5 border border-white/10 text-gray-300">已同步到本地</span>
+                    </div>
+                    <form id="profileForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="realName" class="block text-sm font-medium text-gray-300 mb-2">姓名</label>
+                                <input type="text" id="realName" name="realName" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="请输入姓名">
+                            </div>
+                            <div>
+                                <label for="nickName" class="block text-sm font-medium text-gray-300 mb-2">显示名称</label>
+                                <input type="text" id="nickName" name="nickName" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="请输入显示名称">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-300 mb-2">邮箱</label>
+                                <input type="email" id="email" name="email" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="请输入邮箱">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-300 mb-2">手机号</label>
+                                <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="请输入手机号">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="organization" class="block text-sm font-medium text-gray-300 mb-2">所属单位</label>
+                                <input type="text" id="organization" name="organization" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="请输入所属单位">
+                            </div>
+                            <div>
+                                <label for="position" class="block text-sm font-medium text-gray-300 mb-2">岗位职责</label>
+                                <input type="text" id="position" name="position" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="请输入岗位职责">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="bio" class="block text-sm font-medium text-gray-300 mb-2">工作说明</label>
+                            <textarea id="bio" name="bio" rows="4" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus resize-none" placeholder="例如：负责流域监测研判、站点排查与治理方案梳理。"></textarea>
+                        </div>
+                        <div>
+                            <label for="interests" class="block text-sm font-medium text-gray-300 mb-2">关注方向</label>
+                            <input type="text" id="interests" name="interests" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="例如：知识图谱, 污染溯源, 风险预警">
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-5 py-3 rounded-xl bg-gradient-water text-white font-medium hover:opacity-95 transition-opacity">
+                                保存资料
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-glass card-shadow rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <h3 class="text-xl font-semibold text-white">使用偏好</h3>
+                            <p class="text-sm text-gray-400 mt-1">设置默认关注区域与常用入口。</p>
+                        </div>
+                    </div>
+                    <form id="preferenceForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="defaultProvince" class="block text-sm font-medium text-gray-300 mb-2">默认关注省份</label>
+                                <select id="defaultProvince" name="defaultProvince" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus">
+                                    <option value="河北省">河北省</option>
+                                    <option value="北京市">北京市</option>
+                                    <option value="天津市">天津市</option>
+                                    <option value="山东省">山东省</option>
+                                    <option value="山西省">山西省</option>
+                                    <option value="河南省">河南省</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="defaultModule" class="block text-sm font-medium text-gray-300 mb-2">默认进入模块</label>
+                                <select id="defaultModule" name="defaultModule" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus">
+                                    <option value="dashboard">数据大屏</option>
+                                    <option value="sandbox">时空推演沙盘</option>
+                                    <option value="knowledge-graph">知识图谱</option>
+                                    <option value="chat">智能问答</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="focusIndicator" class="block text-sm font-medium text-gray-300 mb-2">默认指标</label>
+                                <select id="focusIndicator" name="focusIndicator" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus">
+                                    <option value="高锰酸盐指数">高锰酸盐指数</option>
+                                    <option value="氨氮">氨氮</option>
+                                    <option value="总磷">总磷</option>
+                                    <option value="溶解氧">溶解氧</option>
+                                    <option value="总氮">总氮</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="workspaceMode" class="block text-sm font-medium text-gray-300 mb-2">默认视角</label>
+                                <select id="workspaceMode" name="workspaceMode" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus">
+                                    <option value="流域总览">流域总览</option>
+                                    <option value="省域分析">省域分析</option>
+                                    <option value="站点排查">站点排查</option>
+                                    <option value="溯源研判">溯源研判</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-5 py-3 rounded-xl bg-white/10 border border-white/10 text-white hover:bg-white/15 transition-colors">
+                                保存偏好
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="card-glass card-shadow rounded-3xl p-6">
+                    <h3 class="text-xl font-semibold text-white mb-4">近期使用</h3>
+                    <div class="space-y-3">
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-2xl bg-primary/15 text-primary flex items-center justify-center">
+                                        <i class="fa fa-project-diagram"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-white">知识图谱溯源</p>
+                                        <p class="text-xs text-gray-400">上游站点排查</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-gray-400">刚刚</span>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-2xl bg-secondary/15 text-secondary flex items-center justify-center">
+                                        <i class="fa fa-globe"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-white">流域推演沙盘</p>
+                                        <p class="text-xs text-gray-400">方案对比与模拟</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-gray-400">今天</span>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-2xl bg-accent/15 text-accent flex items-center justify-center">
+                                        <i class="fa fa-robot"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-white">智能问答</p>
+                                        <p class="text-xs text-gray-400">问答记录已同步</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-gray-400">昨天</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-glass card-shadow rounded-3xl p-6">
+                    <h3 class="text-xl font-semibold text-white mb-4">账户安全</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <p class="font-medium text-white">邮箱验证</p>
+                                <p class="text-sm text-gray-400" id="emailVerifyText">绑定后可用于找回账号。</p>
+                            </div>
+                            <button type="button" data-action="verify-email" class="px-3 py-2 rounded-lg border border-primary/40 text-primary hover:bg-primary hover:text-white transition-colors text-sm">
+                                立即验证
+                            </button>
+                        </div>
+                        <div class="soft-divider border-t"></div>
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <p class="font-medium text-white">手机验证</p>
+                                <p class="text-sm text-gray-400" id="phoneVerifyText">开启后可接收登录提醒。</p>
+                            </div>
+                            <button type="button" data-action="verify-phone" class="px-3 py-2 rounded-lg border border-primary/40 text-primary hover:bg-primary hover:text-white transition-colors text-sm">
+                                立即验证
+                            </button>
+                        </div>
+                        <div class="soft-divider border-t"></div>
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <p class="font-medium text-white">登录提醒</p>
+                                <p class="text-sm text-gray-400">异常登录时发送提示。</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="loginAlertToggle" class="sr-only peer">
+                                <div class="w-11 h-6 bg-dark-lighter peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-dark-lighter after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-glass card-shadow rounded-3xl p-6">
+                    <h3 class="text-xl font-semibold text-white mb-4">修改密码</h3>
+                    <form id="changePasswordForm" class="space-y-4">
+                        <div>
+                            <label for="currentPassword" class="block text-sm font-medium text-gray-300 mb-2">当前密码</label>
+                            <input type="password" id="currentPassword" name="currentPassword" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="请输入当前密码">
+                        </div>
+                        <div>
+                            <label for="newPassword" class="block text-sm font-medium text-gray-300 mb-2">新密码</label>
+                            <input type="password" id="newPassword" name="newPassword" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="请输入新密码">
+                        </div>
+                        <div>
+                            <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-2">确认新密码</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="w-full px-4 py-3 rounded-xl border border-white/10 bg-dark-light text-white input-focus" placeholder="请再次输入新密码">
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-5 py-3 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors">
+                                更新密码
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const DEFAULT_USER = {
+            username: '访客',
+            role: '流域分析账号',
+            realName: '',
+            nickName: '',
+            email: '',
+            phone: '',
+            organization: '海河流域项目组',
+            position: '数据分析员',
+            bio: '关注流域水质变化、知识图谱溯源与辅助决策。',
+            interests: '知识图谱,污染溯源,风险预警',
+            defaultProvince: '河北省',
+            defaultModule: 'knowledge-graph',
+            focusIndicator: '高锰酸盐指数',
+            workspaceMode: '流域总览',
+            stats: {
+                favoriteModuleCount: 4,
+                focusProvinceCount: 3,
+                queryCount: 128,
+                planCount: 12
+            },
+            security: {
+                emailVerified: false,
+                phoneVerified: false,
+                loginAlert: true
+            }
+        };
+
+        function cloneDefaultUser() {
+            return JSON.parse(JSON.stringify(DEFAULT_USER));
+        }
+
+        function safeReadCurrentUser() {
+            try {
+                const stored = JSON.parse(localStorage.getItem('currentUser')) || {};
+                return {
+                    ...cloneDefaultUser(),
+                    ...stored,
+                    stats: {
+                        ...DEFAULT_USER.stats,
+                        ...(stored.stats || {})
+                    },
+                    security: {
+                        ...DEFAULT_USER.security,
+                        ...(stored.security || {})
+                    }
+                };
+            } catch (error) {
+                return cloneDefaultUser();
+            }
+        }
+
+        function saveCurrentUser(user) {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+        }
+
+        function renderInterestTags(interestsValue) {
+            const container = document.getElementById('interestTags');
+            const tags = (interestsValue || '')
+                .split(/[，,、]/)
+                .map(function(item) { return item.trim(); })
+                .filter(Boolean)
+                .slice(0, 4);
+
+            const colors = [
+                'bg-primary/15 text-primary',
+                'bg-secondary/15 text-secondary',
+                'bg-accent/15 text-accent',
+                'bg-white/10 text-white'
+            ];
+
+            container.innerHTML = tags.map(function(tag, index) {
+                return '<span class="px-3 py-1 rounded-full text-xs ' + colors[index % colors.length] + '">' + tag + '</span>';
+            }).join('');
+        }
+
+        function updateSecurityUI(user) {
+            document.getElementById('emailVerifyText').textContent = user.security.emailVerified ? '邮箱已验证。' : '绑定后可用于找回账号。';
+            document.getElementById('phoneVerifyText').textContent = user.security.phoneVerified ? '手机已验证，可接收安全提醒。' : '开启后可接收登录提醒。';
+            document.getElementById('loginAlertToggle').checked = Boolean(user.security.loginAlert);
+        }
+
+        function renderProfile(user) {
+            const displayName = user.nickName || user.username || DEFAULT_USER.username;
+            document.getElementById('userName').textContent = displayName;
+            document.getElementById('profileUserName').textContent = displayName;
+            document.getElementById('profileUserRole').textContent = user.role || DEFAULT_USER.role;
+            document.getElementById('profileTagline').textContent = user.bio || DEFAULT_USER.bio;
+
+            document.getElementById('favoriteModuleCount').textContent = user.stats.favoriteModuleCount;
+            document.getElementById('focusProvinceCount').textContent = user.stats.focusProvinceCount;
+            document.getElementById('queryCount').textContent = user.stats.queryCount;
+            document.getElementById('planCount').textContent = user.stats.planCount;
+
+            document.getElementById('realName').value = user.realName || '';
+            document.getElementById('nickName').value = user.nickName || user.username || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('phone').value = user.phone || '';
+            document.getElementById('organization').value = user.organization || '';
+            document.getElementById('position').value = user.position || '';
+            document.getElementById('bio').value = user.bio || '';
+            document.getElementById('interests').value = user.interests || '';
+            document.getElementById('defaultProvince').value = user.defaultProvince || DEFAULT_USER.defaultProvince;
+            document.getElementById('defaultModule').value = user.defaultModule || DEFAULT_USER.defaultModule;
+            document.getElementById('focusIndicator').value = user.focusIndicator || DEFAULT_USER.focusIndicator;
+            document.getElementById('workspaceMode').value = user.workspaceMode || DEFAULT_USER.workspaceMode;
+
+            renderInterestTags(user.interests || DEFAULT_USER.interests);
+            updateSecurityUI(user);
+        }
+
+        function bindEvents() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userMenu = document.getElementById('userMenu');
+            if (userMenuBtn && userMenu) {
+                userMenuBtn.addEventListener('click', function() {
+                    userMenu.classList.toggle('hidden');
+                });
+                document.addEventListener('click', function(event) {
+                    if (!userMenu.contains(event.target) && !userMenuBtn.contains(event.target)) {
+                        userMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            document.getElementById('profileForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const currentUser = safeReadCurrentUser();
+                currentUser.realName = document.getElementById('realName').value.trim();
+                currentUser.nickName = document.getElementById('nickName').value.trim();
+                currentUser.username = currentUser.nickName || currentUser.username || DEFAULT_USER.username;
+                currentUser.email = document.getElementById('email').value.trim();
+                currentUser.phone = document.getElementById('phone').value.trim();
+                currentUser.organization = document.getElementById('organization').value.trim();
+                currentUser.position = document.getElementById('position').value.trim();
+                currentUser.bio = document.getElementById('bio').value.trim() || DEFAULT_USER.bio;
+                currentUser.interests = document.getElementById('interests').value.trim() || DEFAULT_USER.interests;
+
+                saveCurrentUser(currentUser);
+                renderProfile(currentUser);
+                alert('个人资料已保存');
+            });
+
+            document.getElementById('preferenceForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const currentUser = safeReadCurrentUser();
+                currentUser.defaultProvince = document.getElementById('defaultProvince').value;
+                currentUser.defaultModule = document.getElementById('defaultModule').value;
+                currentUser.focusIndicator = document.getElementById('focusIndicator').value;
+                currentUser.workspaceMode = document.getElementById('workspaceMode').value;
+
+                saveCurrentUser(currentUser);
+                renderProfile(currentUser);
+                alert('使用偏好已保存');
+            });
+
+            document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const currentPassword = document.getElementById('currentPassword').value.trim();
+                const newPassword = document.getElementById('newPassword').value.trim();
+                const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    alert('请完整填写密码信息');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    alert('两次输入的新密码不一致');
+                    return;
+                }
+
+                alert('密码已更新');
+                event.target.reset();
+            });
+
+            document.querySelectorAll('[data-action="verify-email"], [data-action="verify-phone"]').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const action = button.getAttribute('data-action');
+                    const currentUser = safeReadCurrentUser();
+                    if (action === 'verify-email') {
+                        currentUser.security.emailVerified = true;
+                    }
+                    if (action === 'verify-phone') {
+                        currentUser.security.phoneVerified = true;
+                    }
+                    saveCurrentUser(currentUser);
+                    updateSecurityUI(currentUser);
+                    alert('状态已更新');
+                });
+            });
+
+            document.getElementById('loginAlertToggle').addEventListener('change', function(event) {
+                const currentUser = safeReadCurrentUser();
+                currentUser.security.loginAlert = event.target.checked;
+                saveCurrentUser(currentUser);
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = safeReadCurrentUser();
+            renderProfile(currentUser);
+            bindEvents();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.log
+*.bak
+.DS_Store
+Thumbs.db
+
+haihe-water-platform/backend/.env
+haihe-water-platform/backend/.env.*
+!haihe-water-platform/backend/.env.example
+
+.idea/
+.vscode/

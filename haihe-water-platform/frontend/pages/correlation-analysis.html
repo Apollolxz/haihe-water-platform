@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海河六域 - 指标相关性分析专项屏</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        'secondary-dark': '#16a34a',
+                        accent: '#06b6d4',
+                        'accent-dark': '#0891b2',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b',
+                        'dark-lighter': '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0a0f1c 0%, #0d1321 50%, #0a0f1c 100%);
+            color: #fff;
+        }
+        
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.5), rgba(34, 197, 94, 0.5));
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.7), rgba(34, 197, 94, 0.7));
+        }
+        
+        /* 科技感背景网格 */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 发光装饰 */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glow-orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+        }
+        
+        .glow-orb-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%);
+        }
+        
+        /* 顶部导航 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+        
+        .nav-title {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #0ea5e9, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-back {
+            padding: 8px 20px;
+            background: rgba(14, 165, 233, 0.15);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            border-radius: 6px;
+            color: #0ea5e9;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .nav-back:hover {
+            background: rgba(14, 165, 233, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        /* 主容器 */
+        .main-container {
+            position: relative;
+            top: 64px;
+            left: 0;
+            right: 0;
+            min-height: calc(100vh - 64px);
+            padding: 20px;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+        
+        /* 核心结论栏 */
+        .conclusion-bar {
+            display: flex;
+            gap: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, 
+                rgba(14, 165, 233, 0.1) 0%, 
+                rgba(34, 197, 94, 0.05) 50%,
+                rgba(14, 165, 233, 0.1) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .conclusion-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #0ea5e9 20%, 
+                #22c55e 50%, 
+                #0ea5e9 80%, 
+                transparent 100%);
+        }
+        
+        .conclusion-tag {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+        
+        .conclusion-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .conclusion-tag.tag-1 {
+            border-color: rgba(239, 68, 68, 0.4);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .conclusion-tag.tag-2 {
+            border-color: rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .conclusion-tag.tag-3 {
+            border-color: rgba(14, 165, 233, 0.4);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .tag-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .tag-1 .tag-icon {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .tag-2 .tag-icon {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        .tag-3 .tag-icon {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+        
+        .tag-content {
+            flex: 1;
+        }
+        
+        .tag-title {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        
+        .tag-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+        
+        .tag-highlight {
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        .corr-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .corr-value.strong-negative {
+            color: #3b82f6;
+        }
+        
+        .corr-value.strong-positive {
+            color: #ef4444;
+        }
+        
+        .corr-value.medium {
+            color: #f59e0b;
+        }
+        
+        /* 主体内容区 */
+        .content-area {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+            min-height: 700px;
+        }
+        
+        /* 图表卡片 */
+        .chart-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 科技感四角装饰 */
+        .chart-card::before,
+        .chart-card::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0ea5e9;
+        }
+        
+        .chart-card::before {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+        }
+        
+        .chart-card::after {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .corner-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0ea5e9;
+        }
+        
+        .corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; border-top-left-radius: 8px; }
+        .corner-tr { top: 0; right: 0; border-left: none; border-bottom: none; border-top-right-radius: 8px; }
+        .corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
+        .corner-br { bottom: 0; right: 0; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
+        
+        /* 卡片标题 */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: #0ea5e9;
+            font-size: 18px;
+        }
+        
+        .card-subtitle {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        /* 图表容器 */
+        .chart-container {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+        
+        /* 详情面板 */
+        .detail-panel {
+            margin-top: 15px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .detail-panel.active {
+            display: block;
+        }
+        
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .detail-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        
+        .detail-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .detail-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+        
+        .detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .scatter-container {
+            height: 280px;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 8px;
+        }
+        
+        .interpretation {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .interp-item {
+            padding: 12px;
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #0ea5e9;
+        }
+        
+        .interp-title {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        
+        .interp-text {
+            font-size: 13px;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        /* 右侧辅助分析区 */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: fit-content;
+        }
+        
+        .right-panel .chart-card {
+            min-height: 200px;
+        }
+        
+        /* 分类标签 */
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 0;
+        }
+        
+        .category-tag {
+            padding: 6px 14px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 20px;
+            color: #94a3b8;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .category-tag:hover {
+            background: rgba(14, 165, 233, 0.25);
+            color: #e2e8f0;
+        }
+        
+        .category-tag.active {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.4), rgba(34, 197, 94, 0.3));
+            color: #fff;
+            border-color: #0ea5e9;
+        }
+        
+        /* 特征推荐列表 */
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .feature-item {
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            border-left: 3px solid;
+        }
+        
+        .feature-item.core {
+            border-left-color: #22c55e;
+        }
+        
+        .feature-item.pollution {
+            border-left-color: #f59e0b;
+        }
+        
+        .feature-item.auxiliary {
+            border-left-color: #0ea5e9;
+        }
+        
+        .feature-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .feature-title i {
+            font-size: 11px;
+        }
+        
+        .feature-desc {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .feature-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        
+        .tag-core {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .tag-pollution {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        .tag-auxiliary {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+        
+        /* 冗余特征提示 */
+        .redundant-alert {
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .redundant-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ef4444;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .redundant-item {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .redundant-item::before {
+            content: '•';
+            position: absolute;
+            left: 6px;
+            color: #ef4444;
+        }
+        
+        /* 污染管控清单 */
+        .control-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .control-item {
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+        
+        .control-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .control-type {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        .control-corr {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+        
+        .control-indicators {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        
+        .control-suggestion {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.5;
+            padding: 8px;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 6px;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 1400px) {
+            .content-area {
+                grid-template-columns: 1fr;
+            }
+            .right-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .right-panel .chart-card {
+                flex: 1;
+                min-width: 300px;
+            }
+            .detail-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* 相关系数提示 */
+        .corr-legend {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="bg-grid"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    
+    <!-- 顶部导航 -->
+    <nav class="top-nav">
+        <div class="nav-title">
+            <i class="fa fa-th"></i>
+            指标相关性分析专项屏
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="color: #94a3b8; font-size: 13px;">
+                <i class="fa fa-clock-o mr-2"></i>
+                <span id="currentTime">--</span>
+            </div>
+            <button class="nav-back" onclick="goBack()">
+                <i class="fa fa-arrow-left"></i>
+                返回大屏
+            </button>
+        </div>
+    </nav>
+    
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 顶部核心结论栏 -->
+        <div class="conclusion-bar animate-fade-in">
+            <div class="conclusion-tag tag-1">
+                <div class="tag-icon">
+                    <i class="fa fa-thermometer-half"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">水温 - 溶解氧</div>
+                    <div class="tag-value">
+                        <span class="corr-value strong-negative">-0.58</span> 强负相关<br/>
+                        <span class="tag-highlight">完全符合水文规律</span>，数据质量可靠
+                    </div>
+                </div>
+            </div>
+            <div class="conclusion-tag tag-2">
+                <div class="tag-icon">
+                    <i class="fa fa-bolt"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">电导率 - 高锰酸盐指数</div>
+                    <div class="tag-value">
+                        <span class="corr-value strong-positive">0.56</span> 强正相关<br/>
+                        有机污染与离子污染<span class="tag-highlight">高度同源</span>
+                    </div>
+                </div>
+            </div>
+            <div class="conclusion-tag tag-3">
+                <div class="tag-icon">
+                    <i class="fa fa-flask"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">氨氮 - 总磷</div>
+                    <div class="tag-value">
+                        <span class="corr-value medium">0.39</span> 中等正相关<br/>
+                        氮磷污染需<span class="tag-highlight">协同管控</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主体内容区 -->
+        <div class="content-area">
+            <!-- 左侧：相关性热力图 -->
+            <div class="chart-card">
+                <div class="corner-decoration corner-tl"></div>
+                <div class="corner-decoration corner-tr"></div>
+                <div class="corner-decoration corner-bl"></div>
+                <div class="corner-decoration corner-br"></div>
+                
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fa fa-th"></i>
+                        全指标相关性热力图
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="corr-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: linear-gradient(90deg, #3b82f6, #fff);"></div>
+                                <span style="color: #3b82f6;">负相关</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: linear-gradient(90deg, #fff, #ef4444);"></div>
+                                <span style="color: #ef4444;">正相关</span>
+                            </div>
+                            <div class="legend-item">
+                                <i class="fa fa-square-o" style="color: #f59e0b;"></i>
+                                <span style="color: #f59e0b;">强相关(|r|&gt;0.5)</span>
+                            </div>
+                        </div>
+                        <div class="card-subtitle">点击单元格查看详情</div>
+                    </div>
+                </div>
+                <div class="chart-container" id="heatmapChart"></div>
+                
+                <!-- 详情面板 -->
+                <div class="detail-panel" id="detailPanel">
+                    <div class="detail-header">
+                        <div class="detail-title" id="detailTitle">指标相关性详情</div>
+                        <button class="detail-close" onclick="closeDetail()">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="detail-content">
+                        <div class="scatter-container" id="scatterChart"></div>
+                        <div class="interpretation">
+                            <div class="interp-item">
+                                <div class="interp-title"><i class="fa fa-line-chart" style="color: #0ea5e9; margin-right: 5px;"></i>相关性分析</div>
+                                <div class="interp-text" id="corrAnalysis">--</div>
+                            </div>
+                            <div class="interp-item">
+                                <div class="interp-title"><i class="fa fa-water" style="color: #22c55e; margin-right: 5px;"></i>水文/环境解读</div>
+                                <div class="interp-text" id="envInterpretation">--</div>
+                            </div>
+                            <div class="interp-item">
+                                <div class="interp-title"><i class="fa fa-lightbulb-o" style="color: #f59e0b; margin-right: 5px;"></i>应用建议</div>
+                                <div class="interp-text" id="applicationAdvice">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧：辅助分析区 -->
+            <div class="right-panel">
+                <!-- 指标分类筛选 -->
+                <div class="chart-card">
+                    <div class="corner-decoration corner-tl"></div>
+                    <div class="corner-decoration corner-tr"></div>
+                    <div class="corner-decoration corner-bl"></div>
+                    <div class="corner-decoration corner-br"></div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-tags"></i>
+                            指标分类筛选
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="category-tags">
+                            <button class="category-tag active" data-category="all" onclick="filterCategory('all')">
+                                <i class="fa fa-th-large"></i> 全部
+                            </button>
+                            <button class="category-tag" data-category="physical" onclick="filterCategory('physical')">
+                                <i class="fa fa-thermometer"></i> 物理生态类
+                            </button>
+                            <button class="category-tag" data-category="nutrient" onclick="filterCategory('nutrient')">
+                                <i class="fa fa-flask"></i> 营养盐类
+                            </button>
+                            <button class="category-tag" data-category="pollution" onclick="filterCategory('pollution')">
+                                <i class="fa fa-warning"></i> 污染类
+                            </button>
+                        </div>
+                        <div style="margin-top: 10px; padding: 10px; background: rgba(14, 165, 233, 0.05); border-radius: 8px; font-size: 11px; color: #64748b; line-height: 1.6;" id="categoryDesc">
+                            显示全部9项指标的相关性分析
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 模型特征筛选建议 -->
+                <div class="chart-card">
+                    <div class="corner-decoration corner-tl"></div>
+                    <div class="corner-decoration corner-tr"></div>
+                    <div class="corner-decoration corner-bl"></div>
+                    <div class="corner-decoration corner-br"></div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-magic"></i>
+                            LSTM模型特征建议
+                        </div>
+                    </div>
+                    <div class="chart-container" id="featureContainer">
+                        <div class="feature-list">
+                            <div class="feature-item core">
+                                <div class="feature-title">
+                                    <i class="fa fa-star" style="color: #22c55e;"></i>
+                                    核心特征
+                                </div>
+                                <div class="feature-desc">与多指标相关，信息量大，必须保留</div>
+                                <div class="feature-tags">
+                                    <span class="feature-tag tag-core">水温</span>
+                                    <span class="feature-tag tag-core">溶解氧</span>
+                                    <span class="feature-tag tag-core">电导率</span>
+                                </div>
+                            </div>
+                            <div class="feature-item pollution">
+                                <div class="feature-title">
+                                    <i class="fa fa-warning" style="color: #f59e0b;"></i>
+                                    污染特征
+                                </div>
+                                <div class="feature-desc">污染指标，反映水质状况</div>
+                                <div class="feature-tags">
+                                    <span class="feature-tag tag-pollution">氨氮</span>
+                                    <span class="feature-tag tag-pollution">总磷</span>
+                                    <span class="feature-tag tag-pollution">高锰酸盐指数</span>
+                                </div>
+                            </div>
+                            <div class="feature-item auxiliary">
+                                <div class="feature-title">
+                                    <i class="fa fa-plus-circle" style="color: #0ea5e9;"></i>
+                                    辅助特征
+                                </div>
+                                <div class="feature-desc">辅助判断，可适当精简</div>
+                                <div class="feature-tags">
+                                    <span class="feature-tag tag-auxiliary">PH</span>
+                                    <span class="feature-tag tag-auxiliary">浊度</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="redundant-alert" id="redundantAlert">
+                            <div class="redundant-title">
+                                <i class="fa fa-exclamation-triangle"></i>
+                                冗余特征建议剔除
+                            </div>
+                            <div id="redundantList">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 同源污染管控清单 -->
+                <div class="chart-card">
+                    <div class="corner-decoration corner-tl"></div>
+                    <div class="corner-decoration corner-tr"></div>
+                    <div class="corner-decoration corner-bl"></div>
+                    <div class="corner-decoration corner-br"></div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-list-check"></i>
+                            同源污染管控清单
+                        </div>
+                    </div>
+                    <div class="chart-container" id="controlContainer">
+                        <div class="control-list">
+                            <div class="control-item">
+                                <div class="control-header">
+                                    <div class="control-type">有机污染同源</div>
+                                    <div class="control-corr">r=0.56</div>
+                                </div>
+                                <div class="control-indicators">电导率 × 高锰酸盐指数</div>
+                                <div class="control-suggestion">
+                                    有机污染与离子污染同源，建议协同监测，重点关注工业废水排放
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <div class="control-header">
+                                    <div class="control-type">营养盐污染同源</div>
+                                    <div class="control-corr">r=0.55</div>
+                                </div>
+                                <div class="control-indicators">氨氮 × 总磷 × 总氮</div>
+                                <div class="control-suggestion">
+                                    氮磷污染高度相关，需协同管控，重点控制农业面源污染
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <div class="control-header">
+                                    <div class="control-type">物理生态关联</div>
+                                    <div class="control-corr">r=-0.58</div>
+                                </div>
+                                <div class="control-indicators">水温 × 溶解氧</div>
+                                <div class="control-suggestion">
+                                    水温-溶解氧负相关符合自然规律，重点关注夏季低氧时段
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL
+        const API_BASE = (() => {
+            const host = window.location.hostname;
+            const port = window.location.port;
+            if (window.location.protocol === 'file:') {
+                return 'http://127.0.0.1:5001/api';
+            }
+            if (port) {
+                return `${window.location.protocol}//${host}:5001/api`;
+            }
+            return `${window.location.protocol}//${host}/api`;
+        })();
+        
+        let charts = {};
+        let correlationData = null;
+        let rawData = [];
+        
+        // 指标分类
+        const categoryMap = {
+            'physical': ['水温', '溶解氧', 'PH'],
+            'nutrient': ['氨氮', '总磷', '总氮'],
+            'pollution': ['电导率', '浊度', '高锰酸盐指数']
+        };
+        
+        // 指标英文名映射（用于显示）
+        const indicatorNames = ['水温', 'PH', '溶解氧', '电导率', '浊度', '高锰酸盐指数', '氨氮', '总磷', '总氮'];
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadRealData();
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            window.addEventListener('resize', function() {
+                Object.values(charts).forEach(chart => chart && chart.resize());
+            });
+        });
+        
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeStr;
+        }
+        
+        // 返回大屏
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+        
+        // 初始化图表
+        function initCharts() {
+            charts.heatmap = echarts.init(document.getElementById('heatmapChart'));
+        }
+        
+        // 加载真实数据
+        async function loadRealData() {
+            try {
+                showLoading();
+                console.log('[DEBUG] Loading correlation data from:', API_BASE);
+                
+                const response = await fetch(`${API_BASE}/dashboard/correlation-heatmap`);
+                const result = await response.json();
+                
+                console.log('[DEBUG] Correlation response:', result);
+                
+                if (result.success && result.data && result.data.values && result.data.values.length > 0) {
+                    correlationData = result.data;
+                    rawData = result.data.values;
+                    
+                    renderHeatmap();
+                    updateFeatureRecommendations();
+                    updateControlList();
+                    
+                    if (result.data.message) {
+                        showToast(result.data.message);
+                    }
+                } else {
+                    const message = (result.data && result.data.message) || result.error || '暂无真实相关性数据';
+                    console.warn('[DEBUG] No valid correlation data:', message);
+                    renderNoDataState(message);
+                    showToast(message);
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('[DEBUG] Error loading data:', error);
+                renderNoDataState('数据加载失败，未加载到真实相关性数据');
+                showToast('数据加载失败，未加载到真实相关性数据');
+                hideLoading();
+            }
+        }
+
+        function makePairKey(indicator1, indicator2) {
+            return [indicator1, indicator2].sort().join(' | ');
+        }
+
+        function getPairSampleCount(indicator1, indicator2) {
+            if (!correlationData || !correlationData.pair_sample_counts) return 0;
+            return correlationData.pair_sample_counts[makePairKey(indicator1, indicator2)] || 0;
+        }
+
+        function getPairScatterSamples(indicator1, indicator2) {
+            if (!correlationData || !correlationData.scatter_samples) return [];
+            return correlationData.scatter_samples[makePairKey(indicator1, indicator2)] || [];
+        }
+
+        function renderHeatmapEmpty(message) {
+            charts.heatmap.clear();
+            charts.heatmap.setOption({
+                backgroundColor: 'transparent',
+                graphic: {
+                    type: 'text',
+                    left: 'center',
+                    top: 'middle',
+                    style: {
+                        text: message,
+                        fill: '#94a3b8',
+                        font: '14px "Microsoft YaHei"',
+                        textAlign: 'center'
+                    }
+                }
+            }, true);
+        }
+
+        function renderFeatureTags(selector, features, className, emptyLabel) {
+            const container = document.querySelector(selector);
+            if (!container) return;
+            if (features && features.length > 0) {
+                container.innerHTML = features.map(item => `<span class="feature-tag ${className}">${item}</span>`).join('');
+            } else {
+                container.innerHTML = `<span class="feature-tag ${className}">${emptyLabel}</span>`;
+            }
+        }
+
+        function generateCorrelationInterpretation(indicator1, indicator2, correlation, sampleCount) {
+            const absCorr = Math.abs(correlation);
+            const strength = absCorr >= 0.7 ? '强' : absCorr >= 0.4 ? '中等' : '弱';
+            const direction = correlation > 0 ? '正相关' : '负相关';
+            return {
+                analysis: `${indicator1} 与 ${indicator2} 基于 ${sampleCount} 组真实配对样本呈${strength}${direction}（r=${correlation}）`,
+                environment: correlation > 0
+                    ? '两项指标通常同步变化，建议结合排放过程、季节因素和上下游扰动共同分析'
+                    : '两项指标在真实样本中存在反向联动，建议重点排查温度、水动力或治理措施带来的耦合影响',
+                application: absCorr >= 0.5
+                    ? '建议将这两项指标纳入联动监测清单，作为同源波动或治理成效复核的重要参考'
+                    : '建议持续积累样本并结合站点、时段和污染类型做分组复核，避免单次相关性被偶然波动放大'
+            };
+        }
+
+        function renderNoDataState(message) {
+            correlationData = {
+                indicators: indicatorNames,
+                values: [],
+                feature_recommendations: {
+                    core_features: [],
+                    pollution_features: [],
+                    auxiliary_features: [],
+                    redundant_pairs: []
+                },
+                pollution_control: {},
+                pair_sample_counts: {},
+                scatter_samples: {}
+            };
+            rawData = [];
+            renderHeatmapEmpty(message);
+            updateFeatureRecommendations();
+            updateControlList();
+            closeDetail();
+        }
+        
+        // 渲染热力图
+        function renderHeatmap(categoryFilter = 'all') {
+            if (!correlationData) return;
+            
+            let indicators = correlationData.indicators;
+            let values = correlationData.values;
+            
+            // 如果有过滤，重新组织数据
+            if (categoryFilter !== 'all' && categoryMap[categoryFilter]) {
+                const filteredIndicators = categoryMap[categoryFilter];
+                const indices = filteredIndicators.map(name => indicators.indexOf(name)).filter(i => i >= 0);
+                
+                indicators = filteredIndicators;
+                values = [];
+                for (let i of indices) {
+                    for (let j of indices) {
+                        const origValue = rawData.find(v => v[0] === i && v[1] === j);
+                        if (origValue) {
+                            values.push([indices.indexOf(i), indices.indexOf(j), origValue[2]]);
+                        }
+                    }
+                }
+            }
+            
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    position: 'top',
+                    formatter: function(params) {
+                        const val = params.data[2];
+                        const currentIndicator1 = indicators[params.data[0]];
+                        const currentIndicator2 = indicators[params.data[1]];
+                        const sampleCount = getPairSampleCount(currentIndicator1, currentIndicator2);
+                        const strength = Math.abs(val) > 0.5 ? '强' : Math.abs(val) > 0.3 ? '中等' : '弱';
+                        const direction = val > 0 ? '正' : '负';
+                        return `<div style="font-weight:bold">${currentIndicator1} × ${currentIndicator2}</div>
+                                <div>相关系数: <b style="color:${val > 0 ? '#ef4444' : '#3b82f6'}">${val}</b></div>
+                                <div>相关强度: ${strength}${direction}相关</div>
+                                <div>配对样本: ${sampleCount}</div>
+                                <div style="color:#64748b;font-size:12px;margin-top:5px">点击查看详情</div>`;
+                    }
+                },
+                grid: {
+                    top: '10%',
+                    left: '15%',
+                    right: '10%',
+                    bottom: '15%'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: indicators,
+                    splitArea: { show: true },
+                    axisLabel: {
+                        color: '#e2e8f0',
+                        fontSize: 11,
+                        rotate: 45
+                    },
+                    axisLine: { show: false }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: indicators,
+                    splitArea: { show: true },
+                    axisLabel: {
+                        color: '#e2e8f0',
+                        fontSize: 11
+                    },
+                    axisLine: { show: false }
+                },
+                visualMap: {
+                    min: -1,
+                    max: 1,
+                    calculable: true,
+                    orient: 'horizontal',
+                    left: 'center',
+                    bottom: '0%',
+                    itemWidth: 15,
+                    itemHeight: 100,
+                    inRange: {
+                        color: ['#3b82f6', '#ffffff', '#ef4444']
+                    },
+                    textStyle: { color: '#94a3b8', fontSize: 10 }
+                },
+                series: [{
+                    name: '相关性',
+                    type: 'heatmap',
+                    data: values,
+                    label: {
+                        show: true,
+                        color: function(params) {
+                            const val = params.data[2];
+                            return Math.abs(val) > 0.5 ? '#fff' : '#1e293b';
+                        },
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                        formatter: function(params) {
+                            return params.data[2].toFixed(2);
+                        }
+                    },
+                    itemStyle: {
+                        borderColor: function(params) {
+                            const val = params.data[2];
+                            // 强相关单元格高亮边框
+                            return Math.abs(val) > 0.5 ? '#f59e0b' : 'transparent';
+                        },
+                        borderWidth: function(params) {
+                            const val = params.data[2];
+                            return Math.abs(val) > 0.5 ? 2 : 0;
+                        }
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+            };
+            
+            charts.heatmap.setOption(option, true);
+            
+            // 点击事件
+            charts.heatmap.off('click');
+            charts.heatmap.on('click', function(params) {
+                const i = params.data[0];
+                const j = params.data[1];
+                const val = params.data[2];
+                
+                showDetail(indicators[i], indicators[j], val);
+            });
+        }
+        
+        // 显示详情
+        function showDetail(indicator1, indicator2, correlation) {
+            if (indicator1 === indicator2) return;
+            
+            const panel = document.getElementById('detailPanel');
+            const title = document.getElementById('detailTitle');
+            const sampleCount = getPairSampleCount(indicator1, indicator2);
+            
+            title.innerHTML = `${indicator1} × ${indicator2} <span style="color:${correlation > 0 ? '#ef4444' : '#3b82f6'};margin-left:10px">r=${correlation}</span><span style="color:#94a3b8;margin-left:10px">n=${sampleCount}</span>`;
+            
+            const interp = generateCorrelationInterpretation(indicator1, indicator2, correlation, sampleCount);
+            
+            document.getElementById('corrAnalysis').textContent = interp.analysis;
+            document.getElementById('envInterpretation').textContent = interp.environment;
+            document.getElementById('applicationAdvice').textContent = interp.application;
+            
+            panel.classList.add('active');
+            
+            // 渲染散点图
+            setTimeout(() => renderScatterChart(indicator1, indicator2, correlation), 100);
+            
+            // 滚动到详情面板
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // 关闭详情
+        function closeDetail() {
+            document.getElementById('detailPanel').classList.remove('active');
+        }
+        
+        // 渲染散点图
+        function renderScatterChart(indicator1, indicator2, correlation) {
+            const chartDom = document.getElementById('scatterChart');
+            if (!chartDom) return;
+            
+            if (charts.scatter) {
+                charts.scatter.dispose();
+            }
+            charts.scatter = echarts.init(chartDom);
+            
+            const scatterData = getPairScatterSamples(indicator1, indicator2);
+            if (!scatterData.length) {
+                charts.scatter.setOption({
+                    backgroundColor: 'transparent',
+                    graphic: {
+                        type: 'text',
+                        left: 'center',
+                        top: 'middle',
+                        style: {
+                            text: '暂无真实配对散点样本',
+                            fill: '#94a3b8',
+                            font: '14px "Microsoft YaHei"',
+                            textAlign: 'center'
+                        }
+                    }
+                }, true);
+                return;
+            }
+
+            const xValues = scatterData.map(item => item[0]);
+            const yValues = scatterData.map(item => item[1]);
+            const meanX = xValues.reduce((sum, value) => sum + value, 0) / xValues.length;
+            const meanY = yValues.reduce((sum, value) => sum + value, 0) / yValues.length;
+            let numerator = 0;
+            let denominator = 0;
+            xValues.forEach((value, index) => {
+                numerator += (value - meanX) * (yValues[index] - meanY);
+                denominator += (value - meanX) * (value - meanX);
+            });
+
+            let trendLine = [];
+            if (denominator > 0) {
+                const slope = numerator / denominator;
+                const intercept = meanY - slope * meanX;
+                const minX = Math.min(...xValues);
+                const maxX = Math.max(...xValues);
+                trendLine = [
+                    [minX, slope * minX + intercept],
+                    [maxX, slope * maxX + intercept]
+                ];
+            }
+            
+            const option = {
+                backgroundColor: 'transparent',
+                grid: { top: 30, left: 50, right: 20, bottom: 40 },
+                xAxis: {
+                    type: 'value',
+                    name: indicator1,
+                    nameLocation: 'middle',
+                    nameGap: 25,
+                    nameTextStyle: { color: '#94a3b8', fontSize: 11 },
+                    axisLabel: { color: '#64748b', fontSize: 9 },
+                    splitLine: { lineStyle: { color: 'rgba(148,163,184,0.1)' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: indicator2,
+                    nameLocation: 'middle',
+                    nameGap: 35,
+                    nameTextStyle: { color: '#94a3b8', fontSize: 11 },
+                    axisLabel: { color: '#64748b', fontSize: 9 },
+                    splitLine: { lineStyle: { color: 'rgba(148,163,184,0.1)' } }
+                },
+                series: [{
+                    type: 'scatter',
+                    data: scatterData,
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: correlation > 0 ? 'rgba(239,68,68,0.6)' : 'rgba(59,130,246,0.6)',
+                        borderColor: correlation > 0 ? '#ef4444' : '#3b82f6',
+                        borderWidth: 1
+                    }
+                }, {
+                    type: 'line',
+                    data: trendLine,
+                    smooth: false,
+                    symbol: 'none',
+                    lineStyle: {
+                        color: correlation > 0 ? '#ef4444' : '#3b82f6',
+                        width: 2,
+                        type: 'dashed'
+                    }
+                }]
+            };
+            
+            charts.scatter.setOption(option);
+        }
+        
+        // 筛选分类
+        function filterCategory(category) {
+            // 更新按钮状态
+            document.querySelectorAll('.category-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            // 更新描述
+            const descMap = {
+                'all': '显示全部9项指标的相关性分析',
+                'physical': '物理生态类指标：水温、溶解氧、PH',
+                'nutrient': '营养盐类指标：氨氮、总磷、总氮',
+                'pollution': '污染类指标：电导率、浊度、高锰酸盐指数'
+            };
+            document.getElementById('categoryDesc').textContent = descMap[category];
+            
+            // 重新渲染热力图
+            renderHeatmap(category);
+            
+            // 关闭详情面板
+            closeDetail();
+        }
+        
+        // 更新特征推荐
+        function updateFeatureRecommendations() {
+            if (!correlationData || !correlationData.feature_recommendations) return;
+            
+            const rec = correlationData.feature_recommendations;
+            const redundantList = document.getElementById('redundantList');
+            renderFeatureTags('.feature-item.core .feature-tags', rec.core_features, 'tag-core', '暂无真实推荐');
+            renderFeatureTags('.feature-item.pollution .feature-tags', rec.pollution_features, 'tag-pollution', '暂无真实推荐');
+            renderFeatureTags('.feature-item.auxiliary .feature-tags', rec.auxiliary_features, 'tag-auxiliary', '暂无真实推荐');
+            
+            if (rec.redundant_pairs && rec.redundant_pairs.length > 0) {
+                redundantList.innerHTML = rec.redundant_pairs.map(pair => `
+                    <div class="redundant-item">
+                        <b>保留 ${pair.keep}</b>，剔除 ${pair.remove}<br/>
+                        <span style="color:#64748b">原因：${pair.reason}</span>
+                    </div>
+                `).join('');
+            } else {
+                redundantList.innerHTML = '<div class="redundant-item">暂无冗余特征建议</div>';
+            }
+        }
+        
+        // 更新管控清单
+        function updateControlList() {
+            const pc = correlationData.pollution_control;
+            const container = document.getElementById('controlContainer');
+            if (!pc || Object.keys(pc).length === 0) {
+                container.innerHTML = `
+                    <div class="control-list">
+                        <div class="control-item">
+                            <div class="control-header">
+                                <div class="control-type">暂无真实联动关系</div>
+                            </div>
+                            <div class="control-suggestion">当前数据库样本不足以生成联动管控建议</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div class="control-list">';
+            
+            Object.entries(pc).forEach(([key, item]) => {
+                html += `
+                    <div class="control-item">
+                        <div class="control-header">
+                            <div class="control-type">${item.title || (key === 'organic_pollution' ? '有机污染同源' : key === 'nutrient_pollution' ? '营养盐污染同源' : '物理生态关联')}</div>
+                            <div class="control-corr">r=${item.correlation}</div>
+                        </div>
+                        <div class="control-indicators">${item.indicators.join(' × ')}</div>
+                        <div class="control-suggestion" style="margin-bottom:6px;color:#64748b">配对样本: ${item.sample_count || 0}</div>
+                        <div class="control-suggestion">${item.suggestion}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // 显示加载状态
+        function showLoading() {
+            document.body.style.cursor = 'wait';
+        }
+        
+        // 隐藏加载状态
+        function hideLoading() {
+            document.body.style.cursor = 'default';
+        }
+        
+        // Toast提示
+        function showToast(message) {
+            const existing = document.querySelector('.toast-message');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 80px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: linear-gradient(135deg, rgba(14, 165, 233, 0.9), rgba(34, 197, 94, 0.9));
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    z-index: 10000;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                ">${message}</div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
