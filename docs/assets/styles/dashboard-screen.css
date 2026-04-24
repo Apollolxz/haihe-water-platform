@@ -618,6 +618,48 @@ body::after {
     min-height: 440px;
     border-radius: var(--radius);
     overflow: visible;
+    position: relative;
+    isolation: isolate;
+    background:
+        radial-gradient(circle at 52% 46%, rgba(34, 211, 238, 0.12), transparent 34%),
+        radial-gradient(circle at 24% 30%, rgba(45, 212, 191, 0.08), transparent 24%),
+        linear-gradient(180deg, rgba(7, 16, 28, 0.86), rgba(8, 21, 35, 0.64));
+    border: 1px solid rgba(56, 189, 248, 0.1);
+    box-shadow:
+        inset 0 0 0 1px rgba(125, 211, 252, 0.04),
+        inset 0 0 60px rgba(34, 211, 238, 0.05);
+}
+
+.chart-map::before,
+.chart-map::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: calc(var(--radius) - 4px);
+    pointer-events: none;
+}
+
+.chart-map::before {
+    background:
+        linear-gradient(rgba(125, 211, 252, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(125, 211, 252, 0.04) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.9), transparent 84%);
+    opacity: 0.5;
+    z-index: 0;
+}
+
+.chart-map::after {
+    inset: auto 18px 18px 18px;
+    height: 72px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, transparent, rgba(8, 21, 35, 0.78));
+    z-index: 0;
+}
+
+.chart-map > div {
+    position: relative;
+    z-index: 1;
 }
 
 /* ---------- 核心指标迷你网格 ---------- */

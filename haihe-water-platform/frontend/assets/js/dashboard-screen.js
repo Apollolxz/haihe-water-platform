@@ -10,6 +10,20 @@ const MAP_FOCUS = {
     center: [116.55, 37.8],
     zoom: 3.35,
 };
+const MAP_GEOJSON_SOURCES = [
+    '../assets/data/china-dashboard.json',
+    './assets/data/china-dashboard.json',
+    'https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json',
+];
+const HAIHE_PROVINCE_CENTERS = {
+    '北京市': [116.4074, 39.9042],
+    '天津市': [117.2008, 39.0842],
+    '河北省': [114.5149, 38.0428],
+    '山西省': [112.5492, 37.857],
+    '山东省': [117.1201, 36.6512],
+    '河南省': [113.6254, 34.7466],
+};
+const HAIHE_BASIN_CORE = [116.35, 37.9];
 
 const state = {
     province: 'all',
@@ -349,13 +363,16 @@ async function renderMapChart() {
         const scopeProvince = state.payload.scope?.province || 'all';
         const mapFocus = resolveMapFocus(mapData, scopeProvince);
         const focusProvinceOutlines = getFocusProvinceOutlines(scopeProvince);
+        const geoRegions = buildGeoRegions(scopeProvince, mapData.provinces);
+        const provinceAnchors = buildProvinceAnchors(mapData.provinces);
+        const basinFlows = buildBasinFlowLines(provinceAnchors, scopeProvince);
         const option = {
             backgroundColor: 'transparent',
             tooltip: {
                 appendToBody: true,
                 formatter: (params) => {
                     const data = params.data || {};
-                    if (params.seriesType === 'effectScatter') {
+                    if (data.tooltipType === 'station') {
                         return [
                             `<strong style="color:#38bdf8">${data.name}</strong>`,
                             `省份：${data.province}`,
@@ -365,7 +382,7 @@ async function renderMapChart() {
                             `氨氮：${displayMetric(data.ammonia_nitrogen)}`,
                         ].join('<br>');
                     }
-                    if (data.province) {
+                    if (data.tooltipType === 'province-anchor' || data.province) {
                         return [
                             `<strong style="color:#38bdf8">${data.province}</strong>`,
                             `综合指数：${displayMetric(data.composite_score)}`,
@@ -386,39 +403,42 @@ async function renderMapChart() {
                     min: 1.1,
                     max: 6,
                 },
+                layoutCenter: ['50%', '53%'],
+                layoutSize: '118%',
                 itemStyle: {
-                    areaColor: '#111d2e',
-                    borderColor: 'rgba(14, 165, 233, 0.35)',
+                    areaColor: '#081523',
+                    borderColor: 'rgba(56, 189, 248, 0.26)',
                     borderWidth: 1.2,
                     shadowColor: 'rgba(0,0,0,0.4)',
                     shadowBlur: 8,
                 },
                 emphasis: {
                     itemStyle: {
-                        areaColor: 'rgba(14, 165, 233, 0.35)',
-                        borderColor: 'rgba(56, 189, 248, 0.8)',
-                        borderWidth: 1.5,
-                        shadowColor: 'rgba(14, 165, 233, 0.5)',
-                        shadowBlur: 15,
+                        areaColor: 'rgba(20, 184, 166, 0.28)',
+                        borderColor: 'rgba(103, 232, 249, 0.9)',
+                        borderWidth: 1.8,
+                        shadowColor: 'rgba(34, 211, 238, 0.6)',
+                        shadowBlur: 18,
                     },
                     label: { color: '#fff', fontWeight: 'bold' },
                 },
                 select: {
                     itemStyle: {
-                        areaColor: 'rgba(14, 165, 233, 0.45)',
-                        borderColor: '#38bdf8',
-                        borderWidth: 2,
-                        shadowColor: 'rgba(14, 165, 233, 0.6)',
-                        shadowBlur: 20,
+                        areaColor: 'rgba(16, 185, 129, 0.22)',
+                        borderColor: '#7dd3fc',
+                        borderWidth: 2.2,
+                        shadowColor: 'rgba(34, 211, 238, 0.6)',
+                        shadowBlur: 24,
                     },
                     label: { color: '#fff', fontWeight: 'bold' },
                 },
                 label: {
                     show: true,
                     fontSize: 11,
-                    color: '#b7c9da',
+                    color: 'rgba(199, 230, 255, 0.72)',
                     formatter: ({ name }) => PROVINCES.includes(name) ? name.replace(/(省|市)$/u, '') : '',
                 },
+                regions: geoRegions,
             },
             series: [
                 {
@@ -437,14 +457,57 @@ async function renderMapChart() {
                         selected: state.payload.scope.province === item.province,
                         itemStyle: {
                             areaColor: state.payload.scope.province === item.province
-                                ? 'rgba(14, 165, 233, 0.4)'
+                                ? 'rgba(34, 211, 238, 0.24)'
                                 : (item.level_index <= 2
-                                    ? 'rgba(14, 165, 233, 0.15)'
+                                    ? 'rgba(16, 185, 129, 0.12)'
                                     : item.level_index === 3
-                                        ? 'rgba(14, 165, 233, 0.08)'
-                                        : 'rgba(244, 63, 94, 0.12)'),
+                                        ? 'rgba(56, 189, 248, 0.11)'
+                                        : 'rgba(251, 191, 36, 0.12)'),
                         }
                     })),
+                },
+                {
+                    name: '海河流域光圈',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    silent: true,
+                    zlevel: 1,
+                    rippleEffect: {
+                        scale: 5.2,
+                        brushType: 'stroke',
+                        period: 5.6,
+                    },
+                    symbolSize: (val) => Math.max(24, Math.min(42, 18 + (Number(val?.[2]) || 0) / 6)),
+                    itemStyle: {
+                        color: 'rgba(34, 211, 238, 0.22)',
+                        shadowBlur: 26,
+                        shadowColor: 'rgba(34, 211, 238, 0.32)',
+                    },
+                    data: provinceAnchors,
+                },
+                {
+                    name: '流域联通廊道',
+                    type: 'lines',
+                    coordinateSystem: 'geo',
+                    silent: true,
+                    zlevel: 3,
+                    effect: {
+                        show: true,
+                        constantSpeed: 16,
+                        trailLength: 0.12,
+                        symbol: 'arrow',
+                        symbolSize: 7,
+                        color: '#7dd3fc',
+                    },
+                    lineStyle: {
+                        color: 'rgba(45, 212, 191, 0.42)',
+                        width: 2.5,
+                        opacity: 0.78,
+                        curveness: 0.18,
+                        shadowBlur: 12,
+                        shadowColor: 'rgba(34, 211, 238, 0.25)',
+                    },
+                    data: basinFlows,
                 },
                 {
                     name: '重点省域光晕',
@@ -468,7 +531,7 @@ async function renderMapChart() {
                     coordinateSystem: 'geo',
                     polyline: true,
                     silent: true,
-                    zlevel: 3,
+                    zlevel: 4,
                     effect: {
                         show: true,
                         constantSpeed: 18,
@@ -487,10 +550,51 @@ async function renderMapChart() {
                     data: focusProvinceOutlines,
                 },
                 {
+                    name: '省域锚点',
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    zlevel: 5,
+                    symbolSize: (val) => Math.max(12, Math.min(18, 10 + (Number(val?.[2]) || 0) / 20)),
+                    label: {
+                        show: true,
+                        position: 'right',
+                        distance: 8,
+                        formatter: (params) => {
+                            const score = displayMetric(params.data.composite_score);
+                            return `${params.data.province}\n${score}`;
+                        },
+                        color: '#dff9ff',
+                        fontSize: 11,
+                        lineHeight: 16,
+                        fontWeight: 700,
+                        textBorderColor: 'rgba(8, 21, 35, 0.88)',
+                        textBorderWidth: 3,
+                    },
+                    itemStyle: {
+                        color: '#34d399',
+                        borderColor: 'rgba(240, 253, 250, 0.92)',
+                        borderWidth: 1.4,
+                        shadowBlur: 16,
+                        shadowColor: 'rgba(52, 211, 153, 0.55)',
+                    },
+                    emphasis: {
+                        label: {
+                            color: '#ffffff',
+                        },
+                        itemStyle: {
+                            color: '#67e8f9',
+                        },
+                    },
+                    data: provinceAnchors.map((item) => ({
+                        ...item,
+                        tooltipType: 'province-anchor',
+                    })),
+                },
+                {
                     name: '监测站点',
                     type: 'effectScatter',
                     coordinateSystem: 'geo',
-                    zlevel: 4,
+                    zlevel: 6,
                     showEffectOn: 'emphasis',
                     rippleEffect: {
                         scale: 2.4,
@@ -529,6 +633,7 @@ async function renderMapChart() {
                     },
                     data: mapData.stations.map(s => ({
                         ...s,
+                        tooltipType: 'station',
                         itemStyle: { color: s.color || '#0ea5e9' }
                     })),
                 },
@@ -550,11 +655,93 @@ async function renderMapChart() {
 
 async function ensureGeoJson() {
     if (state.geoReady) return;
-    const resp = await fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json');
-    const geoJson = await resp.json();
-    echarts.registerMap('china-dashboard', geoJson);
-    state.geoJson = geoJson;
-    state.geoReady = true;
+    const errors = [];
+    for (const source of MAP_GEOJSON_SOURCES) {
+        try {
+            const resp = await fetch(source, { cache: 'force-cache' });
+            if (!resp.ok) {
+                throw new Error(`HTTP ${resp.status}`);
+            }
+            const geoJson = await resp.json();
+            echarts.registerMap('china-dashboard', geoJson);
+            state.geoJson = geoJson;
+            state.geoReady = true;
+            return;
+        } catch (error) {
+            errors.push(`${source}: ${error.message}`);
+        }
+    }
+    throw new Error(errors.join(' | '));
+}
+
+function buildGeoRegions(scopeProvince = 'all', provinceData = []) {
+    const selectedProvinces = new Set(scopeProvince === 'all' ? PROVINCES : [scopeProvince]);
+    const provinceMap = new Map(provinceData.map((item) => [item.province, item]));
+    return (state.geoJson?.features || []).map((feature) => {
+        const name = feature?.properties?.name;
+        const province = provinceMap.get(name);
+        const isHaiheProvince = PROVINCES.includes(name);
+        const isSelected = selectedProvinces.has(name);
+        const levelIndex = Number(province?.level_index || 0);
+        let areaColor = 'rgba(8, 21, 35, 0.86)';
+        if (isHaiheProvince) {
+            areaColor = levelIndex <= 2
+                ? 'rgba(16, 185, 129, 0.20)'
+                : levelIndex === 3
+                    ? 'rgba(56, 189, 248, 0.18)'
+                    : 'rgba(251, 191, 36, 0.18)';
+        }
+        if (isSelected) {
+            areaColor = 'rgba(34, 211, 238, 0.28)';
+        }
+        return {
+            name,
+            itemStyle: {
+                areaColor,
+                borderColor: isHaiheProvince ? 'rgba(103, 232, 249, 0.42)' : 'rgba(71, 85, 105, 0.18)',
+                borderWidth: isHaiheProvince ? 1.5 : 0.8,
+            },
+            emphasis: {
+                itemStyle: {
+                    areaColor: isHaiheProvince ? 'rgba(45, 212, 191, 0.26)' : 'rgba(30, 41, 59, 0.92)',
+                },
+            },
+            label: {
+                color: isHaiheProvince ? '#d6f3ff' : 'rgba(125, 152, 173, 0.24)',
+            },
+        };
+    });
+}
+
+function buildProvinceAnchors(provinceData = []) {
+    return provinceData
+        .map((item) => {
+            const center = HAIHE_PROVINCE_CENTERS[item.province];
+            if (!center) return null;
+            return {
+                ...item,
+                name: item.province,
+                province: item.province,
+                value: [center[0], center[1], Number(item.composite_score || 0)],
+            };
+        })
+        .filter(Boolean);
+}
+
+function buildBasinFlowLines(provinceAnchors = [], scopeProvince = 'all') {
+    const selectedProvinces = new Set(scopeProvince === 'all' ? PROVINCES : [scopeProvince]);
+    return provinceAnchors
+        .filter((item) => selectedProvinces.has(item.province))
+        .map((item) => ({
+            fromName: item.province,
+            toName: '海河流域核心区',
+            coords: [
+                [item.value[0], item.value[1]],
+                HAIHE_BASIN_CORE,
+            ],
+            province: item.province,
+            composite_score: item.composite_score,
+        }));
 }
 
 function resolveMapFocus(mapData, scopeProvince = 'all') {
