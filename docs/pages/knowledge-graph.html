@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>娴锋渤鍏煙锝滅煡璇嗗浘璋?/title>
+<title>海河六域｜知识图谱</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -60,8 +60,8 @@ strong,.font-semibold{font-weight:600;}
 .graph-hint i{color:#38bdf8;font-size:13px;}
 .vis-network{outline:none;}
 </style>
-    <script src="../config/site.config.js"></script>
-    <script src="../config/runtime-config.js"></script>
+<script src="../config/site.config.js"></script>
+<script src="../config/runtime-config.js"></script>
 </head>
 <body>
 <header class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
@@ -69,14 +69,14 @@ strong,.font-semibold{font-weight:600;}
 <div class="flex items-center justify-between h-16">
 <div class="flex items-center space-x-3 group">
 <div class="w-10 h-10 rounded-full bg-gradient-water flex items-center justify-center"><i class="fa fa-tint text-white text-xl"></i></div>
-<div><h1 class="text-xl font-bold text-white">娴锋渤鍏煙</h1><p class="text-xs text-gray-500">娴佸煙姘磋川鏃剁┖婕斿彉涓庣煡璇嗗浘璋辨櫤鑳芥不鐞嗙郴缁?/p></div>
+<div><h1 class="text-xl font-bold text-white">海河六域</h1><p class="text-xs text-gray-500">流域水质时空演变与知识图谱智能治理系统</p></div>
 </div>
 <nav class="hidden md:flex space-x-1">
-<a href="index.html" class="nav-link"><i class="fa fa-home mr-2"></i><span>棣栭〉</span></a>
-<a href="dashboard.html" class="nav-link"><i class="fa fa-dashboard mr-2"></i><span>鏁版嵁澶у睆</span></a>
-<a href="sandbox.html" class="nav-core mx-2"><i class="fa fa-globe mr-2"></i><span>娴佸煙鏃剁┖鎺ㄦ紨娌欑洏</span></a>
-<a href="knowledge-graph.html" class="nav-link active"><i class="fa fa-project-diagram mr-2"></i><span>鐭ヨ瘑鍥捐氨</span></a>
-<a href="chat.html" class="nav-link"><i class="fa fa-robot mr-2"></i><span>鏅鸿兘闂瓟</span></a>
+<a href="index.html" class="nav-link"><i class="fa fa-home mr-2"></i><span>首页</span></a>
+<a href="dashboard.html" class="nav-link"><i class="fa fa-dashboard mr-2"></i><span>数据大屏</span></a>
+<a href="sandbox.html" class="nav-core mx-2"><i class="fa fa-globe mr-2"></i><span>流域时空推演沙盘</span></a>
+<a href="knowledge-graph.html" class="nav-link active"><i class="fa fa-project-diagram mr-2"></i><span>知识图谱</span></a>
+<a href="chat.html" class="nav-link"><i class="fa fa-robot mr-2"></i><span>智能问答</span></a>
 </nav>
 <div class="flex items-center space-x-4">
 <button class="text-gray-500 hover:text-white transition-colors"><i class="fa fa-search text-lg"></i></button>
@@ -84,14 +84,14 @@ strong,.font-semibold{font-weight:600;}
 <div class="relative">
 <button class="flex items-center space-x-2 focus:outline-none" id="userMenuBtn">
 <div class="w-8 h-8 rounded-full bg-gradient-water flex items-center justify-center"><i class="fa fa-user text-white"></i></div>
-<span class="text-sm font-medium text-gray-400 hidden md:inline" id="userName">璁垮</span>
+<span class="text-sm font-medium text-gray-400 hidden md:inline" id="userName">访客</span>
 <i class="fa fa-chevron-down text-xs text-gray-500"></i>
 </button>
 <div class="absolute right-0 mt-2 w-48 bg-panel rounded-lg shadow-2xl py-2 z-50 hidden border border-white/10" id="userMenu">
-<a href="profile.html" class="block px-4 py-2 text-sm text-gray-400 hover:bg-white/5 hover:text-white transition-colors"><i class="fa fa-user-o mr-2"></i>涓汉涓績</a>
-<a href="#" class="block px-4 py-2 text-sm text-gray-400 hover:bg-white/5 hover:text-white transition-colors"><i class="fa fa-cog mr-2"></i>璁剧疆</a>
+<a href="profile.html" class="block px-4 py-2 text-sm text-gray-400 hover:bg-white/5 hover:text-white transition-colors"><i class="fa fa-user-o mr-2"></i>个人中心</a>
+<a href="#" class="block px-4 py-2 text-sm text-gray-400 hover:bg-white/5 hover:text-white transition-colors"><i class="fa fa-cog mr-2"></i>设置</a>
 <div class="border-t border-white/10 my-1"></div>
-<a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors" onclick="logout()"><i class="fa fa-sign-out mr-2"></i>閫€鍑虹櫥褰?/a>
+<a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors" onclick="logout()"><i class="fa fa-sign-out mr-2"></i>退出登录</a>
 </div>
 </div>
 <button class="md:hidden text-gray-400 hover:text-white" id="mobileMenuBtn"><i class="fa fa-bars text-xl"></i></button>
@@ -100,11 +100,11 @@ strong,.font-semibold{font-weight:600;}
 </div>
 <div class="md:hidden bg-panel border-t border-white/10 hidden" id="mobileMenu">
 <div class="container mx-auto px-4 py-2 space-y-1">
-<a href="index.html" class="block px-4 py-3 text-gray-400 hover:bg-white/5 rounded-lg transition-colors"><i class="fa fa-home mr-2"></i>棣栭〉</a>
-<a href="dashboard.html" class="block px-4 py-3 text-gray-400 hover:bg-white/5 rounded-lg transition-colors"><i class="fa fa-dashboard mr-2"></i>鏁版嵁澶у睆</a>
-<a href="sandbox.html" class="block px-4 py-3 text-white bg-gradient-water rounded-lg transition-colors"><i class="fa fa-globe mr-2"></i>娴佸煙鏃剁┖鎺ㄦ紨娌欑洏</a>
-<a href="knowledge-graph.html" class="block px-4 py-3 text-white bg-white/10 rounded-lg"><i class="fa fa-project-diagram mr-2"></i>鐭ヨ瘑鍥捐氨</a>
-<a href="chat.html" class="block px-4 py-3 text-gray-400 hover:bg-white/5 rounded-lg transition-colors"><i class="fa fa-robot mr-2"></i>鏅鸿兘闂瓟</a>
+<a href="index.html" class="block px-4 py-3 text-gray-400 hover:bg-white/5 rounded-lg transition-colors"><i class="fa fa-home mr-2"></i>首页</a>
+<a href="dashboard.html" class="block px-4 py-3 text-gray-400 hover:bg-white/5 rounded-lg transition-colors"><i class="fa fa-dashboard mr-2"></i>数据大屏</a>
+<a href="sandbox.html" class="block px-4 py-3 text-white bg-gradient-water rounded-lg transition-colors"><i class="fa fa-globe mr-2"></i>流域时空推演沙盘</a>
+<a href="knowledge-graph.html" class="block px-4 py-3 text-white bg-white/10 rounded-lg"><i class="fa fa-project-diagram mr-2"></i>知识图谱</a>
+<a href="chat.html" class="block px-4 py-3 text-gray-400 hover:bg-white/5 rounded-lg transition-colors"><i class="fa fa-robot mr-2"></i>智能问答</a>
 </div>
 </div>
 </header>
@@ -113,26 +113,26 @@ strong,.font-semibold{font-weight:600;}
 <section class="main-grid">
 <aside class="left-col" id="leftRail">
 <section class="panel p-5" style="flex:0 0 auto">
-<div class="mb-4"><h3 class="text-lg font-bold">鍥句緥璇存槑</h3></div>
+<div class="mb-4"><h3 class="text-lg font-bold">图例说明</h3></div>
 <div id="legendList" class="grid gap-2"></div>
 </section>
 <section class="panel p-5" style="flex:0 0 auto">
-<div class="mb-4"><h3 class="text-lg font-bold">妫€绱笌绛涢€?/h3></div>
+<div class="mb-4"><h3 class="text-lg font-bold">检索与筛选</h3></div>
 <div class="grid gap-4">
-<div class="field-box flex items-center gap-3 px-4 py-3"><i class="fa fa-search text-gray-500"></i><input id="searchInput" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)" type="text" placeholder="杈撳叆绔欑偣銆佹渤娴併€佹薄鏌撶墿鎴栫渷浠藉悕绉?></div>
+<div class="field-box flex items-center gap-3 px-4 py-3"><i class="fa fa-search text-gray-500"></i><input id="searchInput" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)" type="text" placeholder="输入站点、河流、污染物或省份名称"></div>
 <div class="grid sm:grid-cols-2 gap-3">
-<button class="btn-lite primary" id="searchBtn"><i class="fa fa-crosshairs"></i>瀹氫綅缁撴灉</button>
-<button class="btn-lite" id="resetBtn"><i class="fa fa-undo"></i>閲嶇疆瑙嗗浘</button>
+<button class="btn-lite primary" id="searchBtn"><i class="fa fa-crosshairs"></i>定位结果</button>
+<button class="btn-lite" id="resetBtn"><i class="fa fa-undo"></i>重置视图</button>
 </div>
-<div class="status-card p-4 text-sm leading-7" id="searchStatus">杈撳叆鍚嶇О瀹氫綅鑺傜偣銆?/div>
+<div class="status-card p-4 text-sm leading-7" id="searchStatus">输入名称定位节点。</div>
 </div>
 </section>
 <section class="panel p-5" style="flex:1;min-height:0;overflow:auto">
-<div class="flex items-start justify-between gap-3 mb-3"><h3 class="text-lg font-bold">瀹炰綋鍒嗙被</h3><div class="chip px-3 py-2 text-xs" id="categoryPanelMeta">--</div></div>
+<div class="flex items-start justify-between gap-3 mb-3"><h3 class="text-lg font-bold">实体分类</h3><div class="chip px-3 py-2 text-xs" id="categoryPanelMeta">--</div></div>
 <div id="categoryList" class="grid gap-2"></div>
 </section>
 <section class="panel p-5" style="flex:0 0 auto">
-<div class="mb-3"><h3 class="text-lg font-bold">鍏崇郴鍒嗗竷</h3></div>
+<div class="mb-3"><h3 class="text-lg font-bold">关系分布</h3></div>
 <div id="relationList" class="grid gap-2"></div>
 </section>
 </aside>
@@ -140,38 +140,38 @@ strong,.font-semibold{font-weight:600;}
 <div class="center-col">
 <section class="panel p-5" style="flex:1;min-height:0;display:flex;flex-direction:column">
 <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
-<div class="flex items-center gap-3"><h3 class="text-lg font-bold">鐭ヨ瘑鍥捐氨鍙鍖?/h3></div>
+<div class="flex items-center gap-3"><h3 class="text-lg font-bold">知识图谱可视化</h3></div>
 </div>
 <div class="grid lg:grid-cols-2 gap-3 mb-4">
 <div class="flex flex-wrap gap-3">
-<button class="btn-lite active" id="forceLayoutBtn"><i class="fa fa-random"></i>鍔涘甯冨眬</button>
-<button class="btn-lite" id="hierarchyLayoutBtn"><i class="fa fa-sitemap"></i>灞傜骇甯冨眬</button>
-<button class="btn-lite" id="circleLayoutBtn"><i class="fa fa-circle-o"></i>鐜舰甯冨眬</button>
-<button class="btn-lite" id="physicsBtn"><i class="fa fa-pause"></i>鍏抽棴鐗╃悊妯℃嫙</button>
+<button class="btn-lite active" id="forceLayoutBtn"><i class="fa fa-random"></i>力导布局</button>
+<button class="btn-lite" id="hierarchyLayoutBtn"><i class="fa fa-sitemap"></i>层级布局</button>
+<button class="btn-lite" id="circleLayoutBtn"><i class="fa fa-circle-o"></i>环形布局</button>
+<button class="btn-lite" id="physicsBtn"><i class="fa fa-pause"></i>关闭物理模拟</button>
 </div>
 <div class="flex flex-wrap gap-3 lg:justify-end">
-<a class="btn-lite" id="returnSandboxBtn" href="sandbox.html"><i class="fa fa-reply"></i><span>杩斿洖娌欑洏</span></a>
-<button class="btn-lite" id="fitBtn"><i class="fa fa-expand"></i>閫傞厤瑙嗗浘</button>
-<button class="btn-lite" id="fullscreenBtn"><i class="fa fa-arrows-alt"></i>鑱氱劍鍥捐氨</button>
+<a class="btn-lite" id="returnSandboxBtn" href="sandbox.html"><i class="fa fa-reply"></i><span>返回沙盘</span></a>
+<button class="btn-lite" id="fitBtn"><i class="fa fa-expand"></i>适配视图</button>
+<button class="btn-lite" id="fullscreenBtn"><i class="fa fa-arrows-alt"></i>聚焦图谱</button>
 </div>
 </div>
 <div class="graph-stage flex-1"><div id="knowledgeGraph"></div></div>
-<div class="graph-hint" id="graphHint"><span><i class="fa fa-hand-paper-o"></i>鎷栨嫿鑺傜偣</span><span><i class="fa fa-search-plus"></i>婊氳疆缂╂斁</span><span><i class="fa fa-mouse-pointer"></i>鐐瑰嚮鏌ョ湅璇︽儏</span><span><i class="fa fa-arrows"></i>鍙抽敭鎷栨嫿鐢诲竷</span></div>
-<div class="mt-4"><div class="status-card p-4 text-sm leading-7" id="graphStatus">鍔犺浇涓?..</div></div>
+<div class="graph-hint" id="graphHint"><span><i class="fa fa-hand-paper-o"></i>拖拽节点</span><span><i class="fa fa-search-plus"></i>滚轮缩放</span><span><i class="fa fa-mouse-pointer"></i>点击查看详情</span><span><i class="fa fa-arrows"></i>右键拖拽画布</span></div>
+<div class="mt-4"><div class="status-card p-4 text-sm leading-7" id="graphStatus">加载中...</div></div>
 </section>
 <section class="panel p-5" style="flex:0 0 auto">
 <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
 <div class="flex items-center gap-3">
-<h3 class="text-lg font-bold">瓒呮爣浜嬩欢鏌ヨ</h3>
+<h3 class="text-lg font-bold">超标事件查询</h3>
 <div class="chip px-3 py-2 text-xs" id="exceedPollutantTag" style="display:none"></div>
 </div>
-<div class="chip px-3 py-2 text-xs" id="exceedSummary">灏氭湭鎵ц鏌ヨ銆?/div>
+<div class="chip px-3 py-2 text-xs" id="exceedSummary">尚未执行查询。</div>
 </div>
 <div class="flex flex-wrap items-end gap-4">
-<div class="flex-1 min-w-[140px]"><label class="text-[11px] uppercase tracking-[0.12em] muted block mb-1">鐪佷唤</label><div class="field-box px-3 py-2"><select id="exceedProvince" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></select></div></div>
-<div class="flex-1 min-w-[140px]"><label class="text-[11px] uppercase tracking-[0.12em] muted block mb-1">寮€濮嬫棩鏈?/label><div class="field-box px-3 py-2"><input id="exceedStart" type="date" value="2022-03-24" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></div></div>
-<div class="flex-1 min-w-[140px]"><label class="text-[11px] uppercase tracking-[0.12em] muted block mb-1">缁撴潫鏃ユ湡</label><div class="field-box px-3 py-2"><input id="exceedEnd" type="date" value="2022-06-18" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></div></div>
-<button class="btn-lite primary" id="runExceedBtn"><i class="fa fa-search"></i>鏌ヨ瓒呮爣浜嬩欢</button>
+<div class="flex-1 min-w-[140px]"><label class="text-[11px] uppercase tracking-[0.12em] muted block mb-1">省份</label><div class="field-box px-3 py-2"><select id="exceedProvince" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></select></div></div>
+<div class="flex-1 min-w-[140px]"><label class="text-[11px] uppercase tracking-[0.12em] muted block mb-1">开始日期</label><div class="field-box px-3 py-2"><input id="exceedStart" type="date" value="2022-03-24" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></div></div>
+<div class="flex-1 min-w-[140px]"><label class="text-[11px] uppercase tracking-[0.12em] muted block mb-1">结束日期</label><div class="field-box px-3 py-2"><input id="exceedEnd" type="date" value="2022-06-18" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></div></div>
+<button class="btn-lite primary" id="runExceedBtn"><i class="fa fa-search"></i>查询超标事件</button>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mt-4" id="exceedList"></div>
 </section>
@@ -179,31 +179,30 @@ strong,.font-semibold{font-weight:600;}
 
 <aside class="right-col" id="rightRail">
 <section class="panel p-5" style="flex:0 0 auto">
-<div class="mb-4"><h3 class="text-lg font-bold">鑺傜偣璇︽儏</h3></div>
-<div id="nodeDetailBody" class="status-card p-4 text-sm leading-7">鐐瑰嚮鑺傜偣鏌ョ湅璇︽儏銆?/div>
+<div class="mb-4"><h3 class="text-lg font-bold">节点详情</h3></div>
+<div id="nodeDetailBody" class="status-card p-4 text-sm leading-7">点击节点查看详情。</div>
 </section>
 <section class="panel p-5" style="flex:0 0 auto">
-<div class="mb-4"><h3 class="text-lg font-bold">姹℃煋婧簮</h3></div>
+<div class="mb-4"><h3 class="text-lg font-bold">污染溯源</h3></div>
 <div class="grid gap-4">
-<div class="grid gap-2"><label class="text-[11px] uppercase tracking-[0.12em] muted">鐩爣绔欑偣</label><div class="field-box px-3 py-2"><select id="traceStation" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></select></div></div>
-<div class="grid gap-2"><label class="text-[11px] uppercase tracking-[0.12em] muted">鎸囨爣</label><div class="field-box px-3 py-2"><select id="tracePollutant" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></select></div></div>
-<div class="grid gap-2"><label class="text-[11px] uppercase tracking-[0.12em] muted">鏃ユ湡</label><div class="field-box px-3 py-2"><input id="traceDate" type="date" value="2022-05-01" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></div></div>
-<button class="btn-lite primary" id="runTraceBtn"><i class="fa fa-play"></i>鎵ц婧簮</button>
-<div class="status-card p-4 text-sm leading-7" id="traceSummary">灏氭湭鎵ц婧簮鏌ヨ銆?/div>
+<div class="grid gap-2"><label class="text-[11px] uppercase tracking-[0.12em] muted">目标站点</label><div class="field-box px-3 py-2"><select id="traceStation" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></select></div></div>
+<div class="grid gap-2"><label class="text-[11px] uppercase tracking-[0.12em] muted">指标</label><div class="field-box px-3 py-2"><select id="tracePollutant" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></select></div></div>
+<div class="grid gap-2"><label class="text-[11px] uppercase tracking-[0.12em] muted">日期</label><div class="field-box px-3 py-2"><input id="traceDate" type="date" value="2022-05-01" class="w-full bg-transparent outline-none text-sm" style="color:var(--text-secondary)"></div></div>
+<button class="btn-lite primary" id="runTraceBtn"><i class="fa fa-play"></i>执行溯源</button>
+<div class="status-card p-4 text-sm leading-7" id="traceSummary">尚未执行溯源查询。</div>
 <div class="grid gap-2" id="traceList"></div>
 </div>
 </section>
 <section class="panel p-5" style="flex:0 0 auto">
-<div class="mb-4"><h3 class="text-lg font-bold">涓婃父绔欑偣</h3></div>
-<div class="status-card p-4 text-sm leading-7" id="upstreamSummary">灏氭湭閫夋嫨鐩戞祴绔欑偣銆?/div>
+<div class="mb-4"><h3 class="text-lg font-bold">上游站点</h3></div>
+<div class="status-card p-4 text-sm leading-7" id="upstreamSummary">尚未选择监测站点。</div>
 <div class="grid gap-2 mt-3" id="upstreamList"></div>
 </section>
 </aside>
 </section>
 </div>
 
-<div class="loading" id="loadingMask"><div class="spinner"></div><div>姝ｅ湪鍚屾鐭ヨ瘑鍥捐氨...</div></div>
+<div class="loading" id="loadingMask"><div class="spinner"></div><div>正在同步知识图谱...</div></div>
 <script src="../assets/js/knowledge-graph-page.js?v=20260423-trace"></script>
 </body>
 </html>
-

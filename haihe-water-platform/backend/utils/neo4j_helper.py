@@ -13,7 +13,7 @@ import pymysql
 from neo4j import GraphDatabase
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+load_dotenv(override=False)
 
 # 节点类别颜色映射
 CATEGORY_COLORS = {
@@ -82,12 +82,41 @@ DEFAULT_TRACE_WINDOW_DAYS = 5
 SAME_PROVINCE_DIRECTION_GAP = 0.03
 
 
+def _get_env_first(*names, default=''):
+    for name in names:
+        value = os.getenv(name)
+        if value is None:
+            continue
+        text = str(value).strip()
+        if text:
+            return text
+    return default
+
+
+def _running_on_railway():
+    return bool(
+        os.getenv('RAILWAY_ENVIRONMENT')
+        or os.getenv('RAILWAY_ENVIRONMENT_ID')
+        or os.getenv('RAILWAY_PROJECT_ID')
+    )
+
+
 def get_neo4j_config():
-    load_dotenv(override=True)
-    uri = os.getenv('NEO4J_URI', 'bolt://localhost:7687')
-    user = os.getenv('NEO4J_USER', 'neo4j')
-    password = os.getenv('NEO4J_PASSWORD', '12345678')
-    database = (os.getenv('NEO4J_DATABASE', '') or '').strip() or None
+    load_dotenv(override=False)
+    database = _get_env_first('NEO4J_DATABASE', 'AURA_INSTANCEID')
+    uri = _get_env_first('NEO4J_URI')
+    if (not uri or uri.startswith('bolt://localhost')) and database and '://' not in database and '.' not in database:
+        uri = f'neo4j+s://{database}.databases.neo4j.io'
+    if not uri:
+        uri = 'bolt://localhost:7687'
+    user = _get_env_first('NEO4J_USERNAME', 'NEO4J_USER', default='neo4j')
+    password = _get_env_first('NEO4J_PASSWORD', default='12345678')
+    database = database or None
+    if _running_on_railway() and uri.startswith('bolt://localhost'):
+        raise RuntimeError(
+            'Railway 未配置 AuraDB 环境变量，请在后端服务中设置 '
+            'NEO4J_URI、NEO4J_USER/NEO4J_USERNAME、NEO4J_PASSWORD、NEO4J_DATABASE'
+        )
     return {
         'uri': uri,
         'user': user,

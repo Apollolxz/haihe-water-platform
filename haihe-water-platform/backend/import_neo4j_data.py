@@ -7,10 +7,11 @@
 from neo4j import GraphDatabase
 import os
 from dotenv import load_dotenv
+from utils.neo4j_helper import get_neo4j_config
 
 # 加载环境变量
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
+load_dotenv(os.path.join(BASE_DIR, '.env'), override=False)
 
 def get_neo4j_driver():
     """
@@ -19,9 +20,10 @@ def get_neo4j_driver():
     Returns:
         Neo4j驱动对象
     """
-    uri = os.getenv('NEO4J_URI', 'bolt://localhost:7687')
-    user = os.getenv('NEO4J_USER', 'neo4j')
-    password = os.getenv('NEO4J_PASSWORD', '12345678')
+    config = get_neo4j_config()
+    uri = config['uri']
+    user = config['user']
+    password = config['password']
     
     print(f"连接Neo4j数据库: {uri}")
     print(f"用户名: {user}")

@@ -13,14 +13,16 @@ import pymysql
 from neo4j import GraphDatabase
 from dotenv import load_dotenv
 from decimal import Decimal
+from utils.neo4j_helper import get_neo4j_config
 
 load_dotenv(override=False)
 
 # Neo4j 配置
-NEO4J_URI = os.getenv('NEO4J_URI', 'bolt://localhost:7687')
-NEO4J_USER = os.getenv('NEO4J_USER', 'neo4j')
-NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD', '12345678')
-NEO4J_DATABASE = os.getenv('NEO4J_DATABASE', '').strip()
+NEO4J_CONFIG = get_neo4j_config()
+NEO4J_URI = NEO4J_CONFIG['uri']
+NEO4J_USER = NEO4J_CONFIG['user']
+NEO4J_PASSWORD = NEO4J_CONFIG['password']
+NEO4J_DATABASE = NEO4J_CONFIG['database'] or ''
 
 # MySQL 配置
 MYSQL_HOST = os.getenv('MYSQL_HOST', 'localhost')

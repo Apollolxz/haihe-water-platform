@@ -20,6 +20,7 @@ import pymysql
 import requests
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
+from utils.neo4j_helper import get_neo4j_config
 
 load_dotenv(override=False)
 
@@ -53,10 +54,11 @@ MYSQL_CONFIG = {
     "cursorclass": pymysql.cursors.DictCursor,
 }
 
-NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "12345678")
-NEO4J_DATABASE = (os.getenv("NEO4J_DATABASE", "") or "").strip() or None
+NEO4J_CONFIG = get_neo4j_config()
+NEO4J_URI = NEO4J_CONFIG["uri"]
+NEO4J_USER = NEO4J_CONFIG["user"]
+NEO4J_PASSWORD = NEO4J_CONFIG["password"]
+NEO4J_DATABASE = NEO4J_CONFIG["database"]
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "").strip()
 DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash").strip() or "deepseek-v4-flash"
