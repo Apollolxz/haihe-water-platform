@@ -1238,9 +1238,9 @@ def get_overview_stats():
                     "total_records": total,
                     "monitoring_stations": stations,
                     "provinces": provinces,
-                    "avg_dissolved_oxygen": round(float(avg_data['avg_do']), 2),
-                    "avg_ammonia_nitrogen": round(float(avg_data['avg_nh3']), 3),
-                    "avg_ph": round(float(avg_data['avg_ph']), 2)
+                    "avg_dissolved_oxygen": round(float(avg_data['avg_do'] or 0), 2),
+                    "avg_ammonia_nitrogen": round(float(avg_data['avg_nh3'] or 0), 3),
+                    "avg_ph": round(float(avg_data['avg_ph'] or 0), 2)
                 }
             }), 200
             

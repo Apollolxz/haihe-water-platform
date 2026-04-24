@@ -15,11 +15,28 @@ import pandas as pd
 import pymysql
 from dotenv import load_dotenv
 
+PREFERRED_ENV_KEYS = (
+    "MYSQL_HOST",
+    "MYSQL_PORT",
+    "MYSQL_USER",
+    "MYSQL_PASSWORD",
+    "MYSQL_DATABASE",
+    "SANDBOX_DATA_ROOT",
+    "COORDINATE_CSV_PATH",
+)
+PREFERRED_ENV_VALUES = {
+    key: os.environ[key]
+    for key in PREFERRED_ENV_KEYS
+    if key in os.environ and os.environ[key]
+}
+
 import init_new_database as db_init
 
 
 BASE_DIR = Path(__file__).resolve().parent
-load_dotenv(BASE_DIR / ".env", override=True)
+load_dotenv(BASE_DIR / ".env", override=False)
+for key, value in PREFERRED_ENV_VALUES.items():
+    os.environ[key] = value
 
 DEFAULT_DATA_ROOT = Path(r"D:\haihe")
 DEFAULT_COORD_ROOT = Path(r"D:\经纬度信息")
