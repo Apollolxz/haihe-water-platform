@@ -17,6 +17,7 @@ from utils.sandbox_validation import (
     get_grid_image_path,
     get_feature_importance_path,
     get_export_file_path,
+    build_export_workbook,
 )
 
 # 创建蓝图
@@ -92,9 +93,18 @@ def download_validation_export_file():
         province = request.args.get('province', '河北省')
         model_type = request.args.get('model_type', 'ARIMA')
         path = get_export_file_path(province, model_type)
-        if not os.path.isfile(path):
+        if os.path.isfile(path):
+            return send_file(path, as_attachment=True, download_name=os.path.basename(path))
+
+        buffer, file_name, available = build_export_workbook(province, model_type)
+        if not available or buffer is None:
             return jsonify({"success": False, "error": "文件不存在"}), 404
-        return send_file(path, as_attachment=True, download_name=os.path.basename(path))
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name=file_name,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
     except Exception as e:
         import traceback
         print(f"[ERROR] validation-export-file error: {str(e)}")

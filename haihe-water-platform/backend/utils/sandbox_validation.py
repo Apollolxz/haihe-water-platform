@@ -2,6 +2,7 @@ import math
 import os
 from collections import defaultdict
 from functools import lru_cache
+from io import BytesIO
 
 import numpy as np
 import pandas as pd
@@ -459,17 +460,59 @@ def _read_source_csv(province):
     return df, path
 
 
+def _read_feature_frame_from_db(province):
+    available_items = [
+        item for item in INDICATORS
+        if _table_has_column('fact_water_quality_history', item['field'])
+    ]
+    if len(available_items) < 2:
+        return None, None
+
+    select_columns = ', '.join(
+        f"AVG({item['field']}) AS `{item['metric_label']}`"
+        for item in available_items
+    )
+
+    conn = _get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(f"""
+                SELECT DATE(monitor_time) AS sample_date, {select_columns}
+                FROM fact_water_quality_history
+                WHERE region_name = %s
+                GROUP BY DATE(monitor_time)
+                ORDER BY sample_date
+            """, (province,))
+            rows = cursor.fetchall()
+    finally:
+        conn.close()
+
+    if not rows:
+        return None, None
+    return pd.DataFrame(rows), f'MySQL 日均聚合（{province}）'
+
+
+def _load_feature_dataset(province):
+    try:
+        df, path = _read_source_csv(province)
+        return df, path, 'csv'
+    except FileNotFoundError:
+        df, source_name = _read_feature_frame_from_db(province)
+        if df is None:
+            return None, None, None
+        return df, source_name, 'mysql'
+
+
 @lru_cache(maxsize=128)
 def _feature_panel(radar_province, target_field):
     indicator = _normalize_indicator(target_field)
     target_column = indicator['metric_label']
 
-    try:
-        df, path = _read_source_csv(radar_province)
-    except FileNotFoundError:
+    df, source_name, source_kind = _load_feature_dataset(radar_province)
+    if df is None:
         return {
             'title': '特征重要性双模型对比',
-            'subtitle': '未找到对应省份的 6 小时均值 CSV 文件。',
+            'subtitle': '未找到可用于特征重要性分析的本地 CSV 或云端数据库数据。',
             'province': radar_province,
             'target_column': target_column,
             'available': False,
@@ -487,7 +530,22 @@ def _feature_panel(radar_province, target_field):
             'table': [],
         }
 
-    predictors = [column for column in feature_columns if column != target_column]
+    numeric_df = df[feature_columns].apply(pd.to_numeric, errors='coerce')
+    target_series = numeric_df[target_column]
+    if target_series.notna().sum() < 36:
+        return {
+            'title': '特征重要性双模型对比',
+            'subtitle': '目标指标有效样本不足，暂不展示特征重要性。',
+            'province': radar_province,
+            'target_column': target_column,
+            'available': False,
+            'table': [],
+        }
+
+    predictors = [
+        column for column in feature_columns
+        if column != target_column and numeric_df[column].notna().sum() >= 36
+    ]
     if len(predictors) < 2:
         return {
             'title': '特征重要性双模型对比',
@@ -498,7 +556,7 @@ def _feature_panel(radar_province, target_field):
             'table': [],
         }
 
-    data = df[predictors + [target_column]].apply(pd.to_numeric, errors='coerce')
+    data = numeric_df[predictors + [target_column]]
     data = data.replace([np.inf, -np.inf], np.nan).dropna()
     if len(data) < 36:
         return {
@@ -560,13 +618,17 @@ def _feature_panel(radar_province, target_field):
 
     return {
         'title': '特征重要性双模型对比',
-        'subtitle': f"基于 {os.path.basename(path)}，按 随机森林.py / XGBoost 对比分析.py 思路实时重算。",
+        'subtitle': (
+            f"基于 {os.path.basename(source_name)}，按 随机森林.py / XGBoost 对比分析.py 思路实时重算。"
+            if source_kind == 'csv'
+            else f"基于 {source_name} 的省份日均聚合数据实时计算。"
+        ),
         'province': radar_province,
         'indicator_label': indicator['label'],
         'target_column': target_column,
         'available': True,
         'sample_count': int(len(data)),
-        'data_source': os.path.basename(path),
+        'data_source': os.path.basename(source_name) if source_kind == 'csv' else source_name,
         'xgb_available': xgb_importances is not None,
         'features': features,
         'rf': rf_values,
@@ -587,25 +649,102 @@ def get_feature_importance_path(province):
     return os.path.join(DATA_ROOT, f"{safe_province}_特征重要性.png")
 
 
-def get_export_file_path(province, model_type):
+def get_export_file_name(province, model_type):
     province = province if province in SIX_PROVINCES else '河北省'
     prefix = PROVINCE_FILE_PREFIX[province]
     if model_type == 'LSTM':
-        return os.path.join(LSTM_EXPORT_DIR, f"{prefix}_全指标预测数据.xlsx")
-    return os.path.join(ARIMA_EXPORT_DIR, f"{prefix}_预测数据_带波动.xlsx")
+        return f"{prefix}_全指标预测数据.xlsx"
+    return f"{prefix}_预测数据_带波动.xlsx"
+
+
+def get_export_file_path(province, model_type):
+    file_name = get_export_file_name(province, model_type)
+    if model_type == 'LSTM':
+        return os.path.join(LSTM_EXPORT_DIR, file_name)
+    return os.path.join(ARIMA_EXPORT_DIR, file_name)
+
+
+def _build_export_dataframe_from_db(province, model_type):
+    available_items = [
+        item for item in INDICATORS
+        if _table_has_column('fact_water_quality_predict', item['field'])
+    ]
+    if not available_items:
+        return pd.DataFrame()
+
+    select_columns = ', '.join(
+        f"AVG({item['field']}) AS `{item['label']}`"
+        for item in available_items
+    )
+
+    conn = _get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(f"""
+                SELECT
+                    DATE(predict_time) AS `预测日期`,
+                    {select_columns}
+                FROM fact_water_quality_predict
+                WHERE region_name = %s
+                  AND model_type = %s
+                GROUP BY DATE(predict_time)
+                ORDER BY DATE(predict_time)
+            """, (province, model_type))
+            rows = cursor.fetchall()
+    finally:
+        conn.close()
+
+    if not rows:
+        return pd.DataFrame()
+
+    df = pd.DataFrame(rows)
+    non_empty_columns = [
+        column for column in df.columns
+        if column == '预测日期' or df[column].notna().any()
+    ]
+    df = df[non_empty_columns]
+    for column in df.columns:
+        if column == '预测日期':
+            df[column] = pd.to_datetime(df[column]).dt.strftime('%Y-%m-%d')
+        else:
+            df[column] = pd.to_numeric(df[column], errors='coerce').round(4)
+    return df
+
+
+def build_export_workbook(province='河北省', model_type='ARIMA'):
+    path = get_export_file_path(province, model_type)
+    if os.path.isfile(path):
+        with open(path, 'rb') as handle:
+            return BytesIO(handle.read()), os.path.basename(path), True
+
+    df = _build_export_dataframe_from_db(province, model_type)
+    if df.empty:
+        return None, get_export_file_name(province, model_type), False
+
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='预测结果')
+    buffer.seek(0)
+    return buffer, get_export_file_name(province, model_type), True
 
 
 def get_export_preview(province='河北省', model_type='ARIMA', limit=12):
     path = get_export_file_path(province, model_type)
-    if not os.path.isfile(path):
+    source_name = os.path.basename(path)
+    if os.path.isfile(path):
+        df = pd.read_excel(path)
+    else:
+        df = _build_export_dataframe_from_db(province, model_type)
+
+    if df.empty:
         return {
             'province': province,
             'model_type': model_type,
             'available': False,
-            'message': '未找到对应导出文件',
+            'message': '未找到可用的预测预览数据',
         }
 
-    df = pd.read_excel(path)
+    total_rows = int(len(df))
     df = df.head(limit).copy()
     for column in df.columns:
         if pd.api.types.is_datetime64_any_dtype(df[column]):
@@ -617,10 +756,10 @@ def get_export_preview(province='河北省', model_type='ARIMA', limit=12):
         'province': province,
         'model_type': model_type,
         'available': True,
-        'file_name': os.path.basename(path),
+        'file_name': source_name,
         'columns': [str(column) for column in df.columns],
         'rows': df.to_dict(orient='records'),
-        'total_rows': int(pd.read_excel(path, usecols=[0]).shape[0]),
+        'total_rows': total_rows,
         'download_url': f"/api/dashboard/validation-export-file?province={province}&model_type={model_type}",
     }
 
