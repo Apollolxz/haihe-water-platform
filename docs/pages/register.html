@@ -1,0 +1,513 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>娴锋渤鍏煙 - 娉ㄥ唽</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        'secondary-dark': '#16a34a',
+                        accent: '#06b6d4',
+                        'accent-dark': '#0891b2',
+                        water: '#3b82f6',
+                        'water-dark': '#2563eb',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b',
+                        'dark-lighter': '#334155'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'Microsoft YaHei', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 4s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'wave': 'wave 8s linear infinite',
+                        'ripple': 'ripple 2s ease-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        wave: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' }
+                        },
+                        ripple: {
+                            '0%': { transform: 'scale(1)', opacity: '1' },
+                            '100%': { transform: 'scale(1.5)', opacity: '0' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(14, 165, 233, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.8), 0 0 40px rgba(14, 165, 233, 0.4)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .bg-gradient-water {
+                background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #22c55e 100%);
+            }
+            .bg-gradient-dark {
+                background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                background-image: linear-gradient(135deg, #0ea5e9 0%, #22c55e 100%);
+            }
+            .card-glass {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .card-shadow {
+                box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.3);
+            }
+            .input-focus {
+                @apply focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none;
+            }
+            .feature-card {
+                @apply p-6 rounded-2xl transition-all duration-500;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .feature-card:hover {
+                transform: translateY(-10px);
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(14, 165, 233, 0.3);
+                box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
+            }
+        }
+    </style>
+    <style>
+        body {
+            background-color: #0f172a;
+            overflow-x: hidden;
+        }
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230ea5e9' fill-opacity='0.1' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+            animation: wave 8s linear infinite;
+        }
+        @keyframes wave {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-x-hidden">
+    <!-- 鑳屾櫙瑁呴グ -->
+    <div class="fixed inset-0 pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 4s;"></div>
+    </div>
+    
+    <!-- 绮掑瓙鑳屾櫙 -->
+    <div id="particles-js"></div>
+    
+    <!-- 娉㈡氮鏁堟灉 -->
+    <div class="wave"></div>
+    
+    <div class="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-center relative z-10">
+        <!-- 宸︿晶淇℃伅 -->
+        <div class="w-full md:w-1/2 space-y-6 animate-fade-in">
+            <div class="flex items-center space-x-3 group">
+                <div class="w-12 h-12 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
+                    <i class="fa fa-tint text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white">娴锋渤鍏煙</h1>
+                    <p class="text-xs text-gray-400">娴佸煙姘磋川鏃剁┖婕斿彉涓庣煡璇嗗浘璋辨櫤鑳芥不鐞嗙郴缁?/p>
+                </div>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold text-white leading-tight">
+                鍒涘缓璐﹀彿锛岃繘鍏?br>
+                <span class="text-gradient">鍥涘ぇ鏍稿績妯″潡</span>
+            </h2>
+            <p class="text-lg text-gray-400 max-w-lg leading-relaxed">
+                娉ㄥ唽鍚庡嵆鍙粺涓€璁块棶鏁版嵁澶у睆銆佹祦鍩熸椂绌烘帹婕旀矙鐩樸€佺煡璇嗗浘璋卞拰鏅鸿兘闂瓟锛屽舰鎴愪粠鍒嗘瀽銆佹帹婕斿埌婧簮瑙ｉ噴鐨勪竴浣撳寲浣跨敤浣撻獙銆?            </p>
+            <div class="grid grid-cols-2 gap-4 mt-8">
+                <div class="feature-card p-4 rounded-xl flex items-center space-x-4 border border-white/10">
+                    <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <i class="fa fa-share-alt text-primary"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-white">澶氱淮鍒嗘瀽</h3>
+                        <p class="text-sm text-gray-400">鏌ョ湅鐪佸競涓庢寚鏍囪秼鍔?/p>
+                    </div>
+                </div>
+                <div class="feature-card p-4 rounded-xl flex items-center space-x-4 border border-white/10">
+                    <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
+                        <i class="fa fa-comments text-secondary"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-white">鎺ㄦ紨鍐崇瓥</h3>
+                        <p class="text-sm text-gray-400">杩涘叆娌欑洏鑱斿姩 AI</p>
+                    </div>
+                </div>
+                <div class="feature-card p-4 rounded-xl flex items-center space-x-4 border border-white/10">
+                    <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <i class="fa fa-line-chart text-primary"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-white">鍥捐氨婧簮</h3>
+                        <p class="text-sm text-gray-400">鏌ョ湅涓婃父閾捐矾鍏崇郴</p>
+                    </div>
+                </div>
+                <div class="feature-card p-4 rounded-xl flex items-center space-x-4 border border-white/10">
+                    <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
+                        <i class="fa fa-lightbulb-o text-secondary"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-white">鏅鸿兘闂瓟</h3>
+                        <p class="text-sm text-gray-400">鑾峰緱椤甸潰涓庢寚鏍囪В閲?/p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 鍙充晶娉ㄥ唽琛ㄥ崟 -->
+        <div class="w-full md:w-1/2 animate-slide-up">
+            <div class="card-glass rounded-2xl p-8 border border-white/10 card-shadow">
+                <h2 class="text-2xl font-bold text-center text-white mb-2">鍒涘缓骞冲彴璐﹀彿</h2>
+                <p class="text-center text-sm text-gray-400 mb-6">瀹屾垚娉ㄥ唽鍚庡嵆鍙櫥褰曞苟璁块棶褰撳墠椤圭洰鍏ㄩ儴鏍稿績椤甸潰</p>
+                <form id="registerForm" class="space-y-6">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-400 mb-1">璐﹀彿</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <input type="text" id="username" name="username" class="w-full pl-10 pr-4 py-3 border border-dark-lighter rounded-lg input-focus bg-dark-light text-white" placeholder="璇疯缃处鍙? required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-400 mb-1">瀵嗙爜</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                <i class="fa fa-lock"></i>
+                            </span>
+                            <input type="password" id="password" name="password" class="w-full pl-10 pr-4 py-3 border border-dark-lighter rounded-lg input-focus bg-dark-light text-white" placeholder="璇疯缃瘑鐮? required>
+                            <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white">
+                                <i class="fa fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="confirmPassword" class="block text-sm font-medium text-gray-400 mb-1">纭瀵嗙爜</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                <i class="fa fa-lock"></i>
+                            </span>
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="w-full pl-10 pr-4 py-3 border border-dark-lighter rounded-lg input-focus bg-dark-light text-white" placeholder="璇峰啀娆¤緭鍏ュ瘑鐮? required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-400 mb-1">閭</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                <i class="fa fa-envelope"></i>
+                            </span>
+                            <input type="email" id="email" name="email" class="w-full pl-10 pr-4 py-3 border border-dark-lighter rounded-lg input-focus bg-dark-light text-white" placeholder="璇疯緭鍏ラ偖绠? required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="verificationCode" class="block text-sm font-medium text-gray-400 mb-1">楠岃瘉鐮?/label>
+                        <div class="flex space-x-2">
+                            <div class="relative flex-grow">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                    <i class="fa fa-shield"></i>
+                                </span>
+                                <input type="text" id="verificationCode" name="verificationCode" class="w-full pl-10 pr-4 py-3 border border-dark-lighter rounded-lg input-focus bg-dark-light text-white" placeholder="璇疯緭鍏ラ獙璇佺爜" required>
+                            </div>
+                            <button type="button" id="sendCodeBtn" class="px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors whitespace-nowrap">
+                                鍙戦€侀獙璇佺爜
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1">浣跨敤瑙掕壊</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="tag" value="瀛︾敓" class="h-4 w-4 text-primary focus:ring-primary border-dark-lighter" required>
+                                <span class="text-sm text-gray-400">瀛︾敓</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="tag" value="绉戠爺浜哄憳" class="h-4 w-4 text-primary focus:ring-primary border-dark-lighter">
+                                <span class="text-sm text-gray-400">绉戠爺浜哄憳</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="tag" value="鐜繚宸ヤ綔鑰? class="h-4 w-4 text-primary focus:ring-primary border-dark-lighter">
+                                <span class="text-sm text-gray-400">鐜繚宸ヤ綔鑰?/span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="tag" value="鏁欒偛宸ヤ綔鑰? class="h-4 w-4 text-primary focus:ring-primary border-dark-lighter">
+                                <span class="text-sm text-gray-400">鏁欒偛宸ヤ綔鑰?/span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="tag" value="浼佷笟浜哄憳" class="h-4 w-4 text-primary focus:ring-primary border-dark-lighter">
+                                <span class="text-sm text-gray-400">浼佷笟浜哄憳</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="tag" value="鍏朵粬" class="h-4 w-4 text-primary focus:ring-primary border-dark-lighter">
+                                <span class="text-sm text-gray-400">鍏朵粬</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="agreeTerms" name="agreeTerms" class="h-4 w-4 text-primary focus:ring-primary border-dark-lighter rounded" required>
+                        <label for="agreeTerms" class="ml-2 block text-sm text-gray-400">
+                            鎴戝凡闃呰骞跺悓鎰?a href="#" class="text-primary hover:underline">鐢ㄦ埛鍗忚</a>鍜?a href="#" class="text-primary hover:underline">闅愮鏀跨瓥</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-water text-white py-3 px-6 rounded-lg hover:opacity-90 transition-opacity font-medium">
+                        鍒涘缓璐﹀彿
+                    </button>
+                    <div class="text-center text-sm">
+                        <span class="text-gray-400">宸叉湁璐﹀彿?</span>
+                        <a href="login.html" class="text-primary font-medium hover:text-white ml-1 transition-colors">绔嬪嵆鐧诲綍</a>
+                    </div>
+                </form>
+            </div>
+            <div class="mt-6 text-center text-sm text-gray-400">
+                <p>漏 2026 娴锋渤鍏煙 鐗堟潈鎵€鏈?/p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 绮掑瓙鍔ㄧ敾鑴氭湰 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#0ea5e9'
+                },
+                shape: {
+                    type: 'circle',
+                    stroke: {
+                        width: 0,
+                        color: '#000000'
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 2,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#06b6d4',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                    attract: {
+                        enable: false,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'repulse'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                },
+                modes: {
+                    repulse: {
+                        distance: 100,
+                        duration: 0.4
+                    },
+                    push: {
+                        particles_nb: 4
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+
+    <script>
+        // 鍒囨崲瀵嗙爜鍙鎬?        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        });
+
+        // 鍙戦€侀獙璇佺爜
+        document.getElementById('sendCodeBtn').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            const sendCodeBtn = this;
+            
+            if (!email) {
+                alert('璇峰厛杈撳叆閭');
+                return;
+            }
+            
+            // 妯℃嫙鍙戦€侀獙璇佺爜
+            sendCodeBtn.disabled = true;
+            sendCodeBtn.textContent = '60s鍚庨噸鍙?;
+            
+            let countdown = 60;
+            const timer = setInterval(() => {
+                countdown--;
+                sendCodeBtn.textContent = `${countdown}s鍚庨噸鍙慲;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    sendCodeBtn.disabled = false;
+                    sendCodeBtn.textContent = '鍙戦€侀獙璇佺爜';
+                }
+            }, 1000);
+            
+            alert(`閭楠岃瘉鐮佸凡鍙戦€佽嚦 ${email}`);
+        });
+
+        // 娉ㄥ唽琛ㄥ崟鎻愪氦
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const email = document.getElementById('email').value;
+            const verificationCode = document.getElementById('verificationCode').value;
+            const tag = document.querySelector('input[name="tag"]:checked')?.value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            
+            // 琛ㄥ崟楠岃瘉
+            if (!username || !password || !confirmPassword || !email || !verificationCode || !tag || !agreeTerms) {
+                alert('璇峰～鍐欐墍鏈夊繀濉」');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('涓ゆ杈撳叆鐨勫瘑鐮佷笉涓€鑷?);
+                return;
+            }
+            
+            // 楠岃瘉鐮侀獙璇侊紙杩欓噷浣跨敤妯℃嫙楠岃瘉鐮侊紝瀹為檯搴旂敤涓簲璇ョ敱鍚庣楠岃瘉锛?            if (verificationCode !== '123456') {
+                alert('楠岃瘉鐮侀敊璇?);
+                return;
+            }
+            
+            try {
+                // 璋冪敤鍚庣娉ㄥ唽API
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, email, tag })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('娉ㄥ唽澶辫触');
+                }
+                
+                const data = await response.json();
+                
+                alert('璐﹀彿鍒涘缓鎴愬姛锛岃鐧诲綍娴锋渤鍏煙');
+                window.location.href = 'login.html';
+            } catch (error) {
+                alert('娉ㄥ唽澶辫触锛岃妫€鏌ヨ緭鍏ヤ俊鎭?);
+                console.error('娉ㄥ唽閿欒:', error);
+            }
+        });
+    </script>
+</body>
+</html>
+

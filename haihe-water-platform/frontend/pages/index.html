@@ -913,7 +913,7 @@
             
             <div class="border-t border-white/10 pt-8 text-center">
                 <p class="text-gray-500 text-sm">
-                    © 2025 海河六域 - 流域水质时空演变与知识图谱智能治理系统 版权所有
+                    © 2026 海河六域 - 流域水质时空演变与知识图谱智能治理系统 版权所有
                 </p>
             </div>
         </div>
@@ -1023,7 +1023,7 @@
         // 加载数据
         function loadData() {
             // 加载水质数据
-            fetch('http://127.0.0.1:5001/api/water-quality/latest')
+            fetch('/api/water-quality/latest')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -1035,7 +1035,7 @@
                 });
             
             // 加载季度数据
-            fetch('http://127.0.0.1:5001/api/water-quality/quarterly')
+            fetch('/api/water-quality/quarterly')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

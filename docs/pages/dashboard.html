@@ -1,0 +1,387 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>娴锋渤鍏煙銉绘按璐ㄦ椂绌烘紨鍙樻櫤鑳芥不鐞嗙郴缁?/title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="../assets/styles/dashboard-screen.css?v=20260420d">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        'secondary-dark': '#16a34a',
+                        accent: '#06b6d4',
+                        'accent-dark': '#0891b2',
+                        water: '#3b82f6',
+                        'water-dark': '#2563eb',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'Microsoft YaHei', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 4s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(14, 165, 233, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.8), 0 0 40px rgba(14, 165, 233, 0.4)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
+</head>
+<body>
+    <!-- 绮掑瓙鑳屾櫙 -->
+    <canvas id="particleCanvas"></canvas>
+    <!-- 鑳屾櫙瑁呴グ -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/5 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- 椤堕儴瀵艰埅鏍忥紙棣栭〉鍚屾锛?-->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
+                        <i class="fa fa-tint text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">娴锋渤鍏煙</h1>
+                        <p class="text-xs text-gray-400">娴佸煙姘磋川鏃剁┖婕斿彉涓庣煡璇嗗浘璋辨櫤鑳芥不鐞嗙郴缁?/p>
+                    </div>
+                </div>
+                
+                <!-- 瀵艰埅鑿滃崟 -->
+                <nav class="hidden md:flex space-x-1">
+                    <a href="index.html" class="nav-link">
+                        <i class="fa fa-home mr-2"></i>
+                        <span>棣栭〉</span>
+                    </a>
+                    <a href="dashboard.html" class="nav-link active">
+                        <i class="fa fa-dashboard mr-2"></i>
+                        <span>鏁版嵁澶у睆</span>
+                    </a>
+                    <a href="sandbox.html" class="nav-core mx-2">
+                        <i class="fa fa-globe mr-2"></i><span>娴佸煙鏃剁┖鎺ㄦ紨娌欑洏</span>
+                    </a>
+                    <a href="knowledge-graph.html" class="nav-link">
+                        <i class="fa fa-project-diagram mr-2"></i>
+                        <span>鐭ヨ瘑鍥捐氨</span>
+                    </a>
+                    <a href="chat.html" class="nav-link">
+                        <i class="fa fa-robot mr-2"></i>
+                        <span>鏅鸿兘闂瓟</span>
+                    </a>
+                </nav>
+                
+                <!-- 鍙充晶鐢ㄦ埛鎿嶄綔 -->
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                    <button class="text-gray-400 hover:text-white transition-colors relative">
+                        <i class="fa fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    </button>
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 focus:outline-none" id="userMenuBtn">
+                            <div class="w-8 h-8 rounded-full bg-gradient-water flex items-center justify-center">
+                                <i class="fa fa-user text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-300 hidden md:inline" id="userName">鐢ㄦ埛鍚?/span>
+                            <i class="fa fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                        <!-- 鐢ㄦ埛鑿滃崟 -->
+                        <div class="absolute right-0 mt-2 w-48 bg-dark-light rounded-lg shadow-2xl py-2 z-50 hidden border border-white/10" id="userMenu">
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-user-o mr-2"></i>涓汉涓績
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-cog mr-2"></i>璁剧疆
+                            </a>
+                            <div class="border-t border-white/10 my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors" onclick="logout()">
+                                <i class="fa fa-sign-out mr-2"></i>閫€鍑虹櫥褰?                            </a>
+                        </div>
+                    </div>
+                    <!-- 绉诲姩绔彍鍗曟寜閽?-->
+                    <button class="md:hidden text-gray-400 hover:text-white" id="mobileMenuBtn">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 绉诲姩绔鑸彍鍗?-->
+        <div class="md:hidden bg-dark-light border-t border-white/10 hidden" id="mobileMenu">
+            <div class="container mx-auto px-4 py-2 space-y-1">
+                <a href="index.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-home mr-2"></i>棣栭〉
+                </a>
+                <a href="dashboard.html" class="block px-4 py-3 text-white bg-white/10 rounded-lg">
+                    <i class="fa fa-dashboard mr-2"></i>鏁版嵁澶у睆
+                </a>
+                <a href="sandbox.html" class="block px-4 py-3 text-white bg-gradient-water rounded-lg transition-colors">
+                    <i class="fa fa-globe mr-2"></i>娴佸煙鏃剁┖鎺ㄦ紨娌欑洏
+                </a>
+                <a href="knowledge-graph.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-project-diagram mr-2"></i>鐭ヨ瘑鍥捐氨
+                </a>
+                <a href="chat.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-robot mr-2"></i>鏅鸿兘闂瓟
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 澶у睆涓讳綋 -->
+    <div class="dashboard-shell">
+        <!-- 椤堕儴KPI鏍?-->
+        <div class="dash-header">
+            <div class="dash-header-left">
+                <div class="scope-badge" id="currentScope">鍏ㄦ祦鍩熷畯瑙傛按璐ㄦ€昏</div>
+                <div class="dash-meta-row">
+                    <span class="meta-pill"><i class="fa fa-map-marker mr-1"></i><strong id="metaRange">浜触鏅嬪唨椴佽鲍 6 鐪佸競</strong></span>
+                    <span class="meta-pill"><i class="fa fa-flask mr-1"></i><strong id="metaIndicators">11 椤规牳蹇冩按璐ㄦ寚鏍?/strong></span>
+                    <span class="meta-pill"><i class="fa fa-clock-o mr-1"></i><span id="metaCycle">鍘嗗彶鐩戞祴 / 妯″瀷棰勬祴</span></span>
+                </div>
+            </div>
+            <div class="dash-header-right">
+                <div class="kpi-cards" id="kpiCards">
+                    <div class="kpi-card">
+                        <div class="kpi-label">缁煎悎姘磋川鎸囨暟</div>
+                        <div class="kpi-value" id="kpiScore">--</div>
+                        <div class="kpi-bar"><span id="kpiScoreBar"></span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">缁煎悎绛夌骇</div>
+                        <div class="kpi-value" id="kpiLevel">--</div>
+                        <div class="kpi-level-dot" id="kpiLevelDot"></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">鐩戞祴绔欑偣</div>
+                        <div class="kpi-value" id="kpiStations">--</div>
+                        <div class="kpi-sublabel">涓椿璺冪珯鐐?/div>
+                    </div>
+                    <div class="kpi-card alert">
+                        <div class="kpi-label">30澶╁紓甯歌褰?/div>
+                        <div class="kpi-value" id="kpiAlerts">--</div>
+                        <div class="kpi-sublabel">椤硅秴鏍囧憡璀?/div>
+                    </div>
+                </div>
+                <div class="dash-time" id="metaClock">--</div>
+            </div>
+        </div>
+
+        <!-- 涓讳綋缃戞牸 -->
+        <div class="dash-body">
+            <!-- 宸︿晶杈规爮 -->
+            <aside class="dash-side left">
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-map-signs"></i>
+                        <span>鐪佷唤鍒囨崲</span>
+                    </div>
+                    <div class="province-pills" id="provinceButtons"></div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-trophy"></i>
+                        <span>鐪佷唤姘磋川鎺掑悕</span>
+                    </div>
+                    <div class="chart-side" id="provinceRankChart"></div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <span>姹℃煋鐗╄秴鏍囨帓琛?/span>
+                    </div>
+                    <div class="chart-side" id="pollutantChart"></div>
+                </div>
+            </aside>
+
+            <!-- 涓績鍦板浘 -->
+            <main class="dash-center">
+                <div class="map-panel">
+                    <div class="corner-deco tl"></div>
+                    <div class="corner-deco tr"></div>
+                    <div class="corner-deco bl"></div>
+                    <div class="corner-deco br"></div>
+                    <div class="map-head">
+                        <h2><i class="fa fa-globe"></i> 娴锋渤娴佸煙鍦扮悊绌洪棿</h2>
+                        <span class="map-hint"><i class="fa fa-hand-o-up mr-1"></i>鐐瑰嚮鐪佷唤鍒囨崲 &middot; 鍙屽嚮鍥炲埌鍏ㄦ祦鍩?/span>
+                    </div>
+                    <div class="chart-map" id="mapChart"></div>
+                </div>
+
+                <div class="trend-panel center-trend-panel">
+                    <div class="trend-head">
+                        <h3><i class="fa fa-area-chart"></i> 鍏ㄥ煙鏃堕棿瓒嬪娍杞?/h3>
+                        <span class="trend-meta" id="trendMeta"></span>
+                    </div>
+                    <div class="chart-trend" id="trendChart"></div>
+                </div>
+            </main>
+
+            <!-- 鍙充晶杈规爮 -->
+            <aside class="dash-side right">
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-dashboard"></i>
+                        <span>鏍稿績姘磋川鎸囨爣</span>
+                    </div>
+                    <div class="chart-side" id="indicatorRadarChart"></div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="side-head">
+                        <i class="fa fa-cogs"></i>
+                        <span>妯″瀷绮惧害</span>
+                    </div>
+                    <div class="model-mini">
+                        <div class="chart-mini" id="modelChart"></div>
+                        <div class="model-caption" id="modelMeta"></div>
+                    </div>
+                </div>
+
+                <!-- 蹇嵎鍏ュ彛 -->
+                <div class="side-panel links-panel">
+                    <div class="side-head">
+                        <i class="fa fa-th-large"></i>
+                        <span>娣卞害鍒嗘瀽</span>
+                    </div>
+                    <div class="quick-links">
+                        <a href="trend-analysis.html" class="q-card" title="鏃跺簭瓒嬪娍涓撻」鍒嗘瀽">
+                            <div class="q-icon"><i class="fa fa-line-chart"></i></div>
+                            <div class="q-text">鏃跺簭瓒嬪娍</div>
+                            <div class="q-data" id="qTrend">--</div>
+                        </a>
+                        <a href="boxplot-analysis.html" class="q-card" title="鎸囨爣鍒嗗竷涓庡紓甯搁璀?>
+                            <div class="q-icon"><i class="fa fa-bar-chart"></i></div>
+                            <div class="q-text">绠辩嚎鍒嗘瀽</div>
+                            <div class="q-data" id="qBox">--</div>
+                        </a>
+                        <a href="correlation-analysis.html" class="q-card" title="鎸囨爣鐩稿叧鎬у垎鏋?>
+                            <div class="q-icon"><i class="fa fa-fire"></i></div>
+                            <div class="q-text">鐩稿叧鎬?/div>
+                            <div class="q-data" id="qCorr">--</div>
+                        </a>
+                        <a href="province-comparison.html" class="q-card" title="鐪侀檯绌洪棿瀵规瘮">
+                            <div class="q-icon"><i class="fa fa-map"></i></div>
+                            <div class="q-text">鐪佷唤瀵规瘮</div>
+                            <div class="q-data" id="qCompare">--</div>
+                        </a>
+                        <a href="sandbox.html" class="q-card" title="娴佸煙鏃剁┖鎺ㄦ紨娌欑洏">
+                            <div class="q-icon"><i class="fa fa-globe"></i></div>
+                            <div class="q-text">鎺ㄦ紨娌欑洏</div>
+                            <div class="q-data" id="qSandbox">--</div>
+                        </a>
+                        <a href="knowledge-graph.html" class="q-card" title="鐭ヨ瘑鍥捐氨">
+                            <div class="q-icon"><i class="fa fa-project-diagram"></i></div>
+                            <div class="q-text">鐭ヨ瘑鍥捐氨</div>
+                            <div class="q-data" id="qGraph">--</div>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-mask hidden" id="loadingMask">
+        <div class="spinner"></div>
+        <div class="loading-text">鏁版嵁鍚屾涓?..</div>
+    </div>
+
+    <!-- 鍏煎鏃S鐨勯殣钘忓厓绱?-->
+    <div style="display:none">
+        <div id="pageTitle"></div>
+        <div id="indicatorWindow"></div>
+        <div id="indicatorNotes"></div>
+        <div id="scopeScore">--</div>
+        <div id="scopeScoreFoot">--</div>
+        <div id="scopeLevel">--</div>
+        <div id="scopeLevelFoot">--</div>
+        <div id="scopeStations">--</div>
+        <div id="scopeStationsFoot">--</div>
+        <div id="scopeAlerts">--</div>
+        <div id="scopeAlertsFoot">--</div>
+        <div id="modelScope"></div>
+        <div id="provinceRanking"></div>
+        <div id="pollutantRanking"></div>
+        <div id="indicatorGrid"></div>
+    </div>
+
+    <script type="module" src="../assets/js/dashboard-screen.js?v=20260420d"></script>
+    <script>
+        // 瀵艰埅鏍忎氦浜掞紙棣栭〉鍚屾锛?        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { username: '璁垮', role: '鏈櫥褰? };
+            document.getElementById('userName').textContent = currentUser.username;
+            
+            // 绉诲姩绔彍鍗曞垏鎹?            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('mobileMenu').classList.toggle('hidden');
+            });
+            
+            // 鐢ㄦ埛鑿滃崟鍒囨崲
+            document.getElementById('userMenuBtn').addEventListener('click', function() {
+                document.getElementById('userMenu').classList.toggle('hidden');
+            });
+            
+            // 鐐瑰嚮鍏朵粬鍦版柟鍏抽棴鑿滃崟
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#userMenuBtn') && !e.target.closest('#userMenu')) {
+                    document.getElementById('userMenu').classList.add('hidden');
+                }
+                if (!e.target.closest('#mobileMenuBtn') && !e.target.closest('#mobileMenu')) {
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
+        
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
+

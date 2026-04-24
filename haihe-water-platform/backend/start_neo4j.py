@@ -14,13 +14,9 @@ from dotenv import load_dotenv
 BACKEND_DIR = Path(__file__).resolve().parent
 load_dotenv(BACKEND_DIR / ".env", override=True)
 
-DBMS_HOME = Path(os.getenv("NEO4J_DBMS_HOME", r"E:\town_sewage_new_dbms"))
-JAVA_HOME = Path(
-    os.getenv(
-        "NEO4J_JAVA_HOME",
-        r"C:\Users\李仙女儿\.Neo4jDesktop2\Cache\runtime\zulu21.44.17-ca-jdk21.0.8-win_x64",
-    )
-)
+DBMS_HOME = Path(os.getenv("NEO4J_DBMS_HOME") or (BACKEND_DIR / "neo4j-dbms"))
+JAVA_HOME_RAW = os.getenv("NEO4J_JAVA_HOME", "").strip()
+JAVA_HOME = Path(JAVA_HOME_RAW) if JAVA_HOME_RAW else None
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:8687")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "12345678")
 
@@ -92,8 +88,9 @@ def remove_stale_pid(dbms_home: Path) -> None:
 
 def build_env() -> dict[str, str]:
     env = os.environ.copy()
-    env["JAVA_HOME"] = str(JAVA_HOME)
-    env["PATH"] = str(JAVA_HOME / "bin") + os.pathsep + env.get("PATH", "")
+    if JAVA_HOME:
+        env["JAVA_HOME"] = str(JAVA_HOME)
+        env["PATH"] = str(JAVA_HOME / "bin") + os.pathsep + env.get("PATH", "")
     env["NEO4J_ACCEPT_LICENSE_AGREEMENT"] = "yes"
     return env
 

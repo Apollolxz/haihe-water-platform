@@ -10,7 +10,11 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 # 加载环境变量
-load_dotenv(override=True)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
+
+DEFAULT_IMPORT_DATA_DIR = r'D:\shuju'
+DEFAULT_IMPORT_CSV_PATH = os.path.join(DEFAULT_IMPORT_DATA_DIR, '数据.csv')
 
 def get_db_connection():
     """获取数据库连接"""
@@ -178,7 +182,8 @@ def calculate_province_stats():
 
 def main():
     """主函数"""
-    csv_path = r'D:\shuju\数据.csv'
+    csv_path = os.getenv('IMPORT_CSV_PATH', DEFAULT_IMPORT_CSV_PATH)
+    csv_dir = os.getenv('IMPORT_DATA_DIR', os.path.dirname(csv_path) or DEFAULT_IMPORT_DATA_DIR)
     
     print("="*50)
     print("Water Quality Data Import Tool")
@@ -195,7 +200,7 @@ def main():
     else:
         # 尝试glob查找
         import glob
-        csv_files = glob.glob(r'D:\shuju\*.csv')
+        csv_files = glob.glob(os.path.join(csv_dir, '*.csv'))
         if csv_files:
             import_csv_data(csv_files[0])
         else:

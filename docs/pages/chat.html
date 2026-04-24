@@ -1,0 +1,552 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>娴锋渤鍏煙 - 鏅鸿兘闂瓟</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#06b6d4',
+                        secondary: '#10b981',
+                        accent: '#3b82f6',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b',
+                        'dark-lighter': '#334155',
+                        'text-light': '#e2e8f0'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'Microsoft YaHei', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-in-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'wave': 'wave 10s linear infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        wave: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(6, 182, 212, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(6, 182, 212, 0.8), 0 0 30px rgba(16, 185, 129, 0.5)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .bg-gradient-eco {
+                background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            }
+            .bg-gradient-dark {
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            }
+            .bg-gradient-wave {
+                background: linear-gradient(-45deg, #06b6d4, #10b981, #3b82f6, #06b6d4);
+                background-size: 400% 400%;
+                animation: wave 10s ease infinite;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                background-image: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            }
+            .card-shadow {
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            }
+            .glass {
+                background: rgba(30, 41, 59, 0.7);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .glass-light {
+                background: rgba(49, 64, 84, 0.7);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .nav-link {
+                @apply relative px-4 py-2 text-gray-400 hover:text-primary transition-colors duration-300;
+            }
+            .nav-link::after {
+                content: '';
+                @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+            }
+            .nav-link:hover::after {
+                @apply w-full;
+            }
+            .nav-link.active {
+                @apply text-primary font-medium;
+            }
+            .nav-link.active::after {
+                @apply w-full;
+            }
+            .nav-core {
+                @apply relative px-5 py-2 rounded-full text-white font-semibold text-sm shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 flex items-center;
+                background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+                animation: glow-pulse 2s infinite;
+            }
+            @keyframes glow-pulse {
+                0%, 100% { box-shadow: 0 0 8px rgba(6,182,212,0.6); transform: scale(1); }
+                50% { box-shadow: 0 0 20px rgba(6,182,212,0.9); transform: scale(1.02); }
+            }
+            .chat-message {
+                @apply rounded-lg p-4 max-w-[80%] animate-fade-in;
+            }
+            .user-message {
+                @apply bg-gradient-eco text-white self-end;
+            }
+            .bot-message {
+                @apply glass-light text-text-light self-start;
+            }
+            .typing-indicator {
+                @apply flex items-center space-x-1;
+            }
+            .typing-dot {
+                @apply w-2 h-2 bg-primary rounded-full animate-pulse;
+            }
+            .input-glow {
+                box-shadow: 0 0 5px rgba(6, 182, 212, 0.5);
+                transition: box-shadow 0.3s ease;
+            }
+            .input-glow:focus {
+                box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
+            }
+        }
+    </style>
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
+</head>
+<body class="bg-dark min-h-screen text-text-light overflow-x-hidden">
+    <!-- 绮掑瓙鑳屾櫙 -->
+    <div id="particles-js" class="fixed inset-0 z-0"></div>
+    <!-- 娉㈡氮鑳屾櫙 -->
+    <div class="fixed inset-0 z-0 opacity-20">
+        <div class="absolute bottom-0 left-0 right-0 h-64 bg-gradient-wave"></div>
+    </div>
+    <!-- 椤堕儴瀵艰埅鏍?-->
+    <header class="glass sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-eco flex items-center justify-center animate-float animate-glow">
+                        <i class="fa fa-tint text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-white">娴锋渤鍏煙</h1>
+                </div>
+                
+                <!-- 瀵艰埅鑿滃崟 -->
+                <nav class="hidden md:flex space-x-1">
+                    <a href="index.html" class="nav-link">
+                        <i class="fa fa-home mr-2"></i>
+                        <span>棣栭〉</span>
+                    </a>
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fa fa-dashboard mr-2"></i>
+                        <span>鏁版嵁澶у睆</span>
+                    </a>
+                    <a href="sandbox.html" class="nav-core mx-2">
+                        <i class="fa fa-globe mr-2"></i><span>娴佸煙鏃剁┖鎺ㄦ紨娌欑洏</span>
+                    </a>
+                    <a href="knowledge-graph.html" class="nav-link">
+                        <i class="fa fa-project-diagram mr-2"></i>
+                        <span>鐭ヨ瘑鍥捐氨</span>
+                    </a>
+                    <a href="chat.html" class="nav-link active">
+                        <i class="fa fa-question-circle mr-2"></i>
+                        <span>鏅鸿兘闂瓟</span>
+                    </a>
+                </nav>
+                
+                <!-- 鍙充晶鐢ㄦ埛鎿嶄綔 -->
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-primary transition-colors">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                    <button class="text-gray-400 hover:text-primary transition-colors">
+                        <i class="fa fa-bell text-lg"></i>
+                    </button>
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 focus:outline-none" id="userMenuBtn">
+                            <div class="w-8 h-8 rounded-full bg-dark-lighter flex items-center justify-center">
+                                <i class="fa fa-user text-primary"></i>
+                            </div>
+                            <span class="text-sm font-medium text-text-light hidden md:inline" id="userName">鐢ㄦ埛鍚?/span>
+                            <i class="fa fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                        <!-- 鐢ㄦ埛鑿滃崟 -->
+                        <div class="absolute right-0 mt-2 w-48 glass rounded-lg shadow-lg py-2 z-50 hidden" id="userMenu">
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-text-light hover:bg-dark-lighter rounded-md">
+                                <i class="fa fa-user-o mr-2"></i>涓汉涓績
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-text-light hover:bg-dark-lighter rounded-md">
+                                <i class="fa fa-cog mr-2"></i>璁剧疆
+                            </a>
+                            <div class="border-t border-dark-lighter my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-dark-lighter rounded-md" onclick="logout()">
+                                <i class="fa fa-sign-out mr-2"></i>閫€鍑虹櫥褰?                            </a>
+                        </div>
+                    </div>
+                    <!-- 绉诲姩绔彍鍗曟寜閽?-->
+                    <button class="md:hidden text-gray-400 hover:text-primary" id="mobileMenuBtn">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 绉诲姩绔鑸彍鍗?-->
+        <div class="md:hidden glass shadow-md hidden" id="mobileMenu">
+            <div class="container mx-auto px-4 py-2 space-y-1">
+                <a href="index.html" class="block px-4 py-3 text-text-light hover:bg-dark-lighter rounded-md">
+                    <i class="fa fa-home mr-2"></i>棣栭〉
+                </a>
+                <a href="dashboard.html" class="block px-4 py-3 text-text-light hover:bg-dark-lighter rounded-md">
+                    <i class="fa fa-dashboard mr-2"></i>鏁版嵁澶у睆
+                </a>
+                <a href="sandbox.html" class="block px-4 py-3 text-white rounded-md" style="background:linear-gradient(135deg,#06b6d4 0%,#10b981 100%);">
+                    <i class="fa fa-globe mr-2"></i>娴佸煙鏃剁┖鎺ㄦ紨娌欑洏
+                </a>
+                <a href="knowledge-graph.html" class="block px-4 py-3 text-text-light hover:bg-dark-lighter rounded-md">
+                    <i class="fa fa-project-diagram mr-2"></i>鐭ヨ瘑鍥捐氨
+                </a>
+                <a href="chat.html" class="block px-4 py-3 text-text-light hover:bg-dark-lighter rounded-md">
+                    <i class="fa fa-question-circle mr-2"></i>鏅鸿兘闂瓟
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 涓诲唴瀹瑰尯 -->
+    <main class="container mx-auto px-4 py-8 relative z-10">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- 宸︿晶鑱婂ぉ鍖哄煙 -->
+            <div class="lg:w-3/4">
+                <div class="glass rounded-xl card-shadow h-[80vh] flex flex-col animate-fade-in">
+                    <!-- 鑱婂ぉ澶撮儴 -->
+                    <div class="border-b border-dark-lighter p-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-eco flex items-center justify-center animate-float">
+                                <i class="fa fa-robot text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">娴佸煙鏅鸿兘闂瓟鍔╂墜</h2>
+                                <p class="text-sm text-gray-400">鍥寸粫鏁版嵁澶у睆銆佹帹婕旀矙鐩樸€佺煡璇嗗浘璋变笌鎸囨爣瑙ｉ噴鎻愪緵闂瓟鏀寔</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 鑱婂ぉ鍐呭 -->
+                    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chatMessages">
+                        <!-- 绯荤粺娑堟伅 -->
+                        <div class="chat-message bot-message">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-gradient-eco flex items-center justify-center flex-shrink-0 animate-glow">
+                                    <i class="fa fa-robot text-white"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm">鎮ㄥソ锛佹垜鏄祦鍩熸櫤鑳介棶绛斿姪鎵嬶紝涓烘偍瑙ｇ瓟椤甸潰浣跨敤銆佹寚鏍囧惈涔夊拰娴佸煙娌荤悊鐩稿叧闂銆?/p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 杈撳叆鍖哄煙 -->
+                    <div class="border-t border-dark-lighter p-4">
+                        <form id="chatForm" class="flex space-x-2">
+                            <input type="text" id="messageInput" class="flex-1 glass-light border border-dark-lighter rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none text-text-light input-glow" placeholder="璇疯緭鍏ユ偍鐨勯棶棰?.." required>
+                            <button type="submit" class="bg-gradient-eco text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity animate-glow">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </form>
+                        <div class="mt-2 text-xs text-gray-400 flex items-center justify-between">
+                            <span>鏀寔椤甸潰浣跨敤銆佹寚鏍囪В閲娿€佸浘璋辨函婧愪笌娌欑洏鎺ㄦ紨闂</span>
+                            <button class="text-primary hover:underline" id="clearChatBtn">娓呯┖鑱婂ぉ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 鍙充晶渚ц竟鏍?-->
+            <div class="lg:w-1/4 space-y-6">
+                <!-- 鐑棬闂 -->
+                <div class="glass rounded-xl card-shadow p-4 animate-slide-up">
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
+                        <i class="fa fa-fire text-primary mr-2"></i>
+                        鐑棬闂
+                    </h3>
+                    <ul class="space-y-2">
+                        <li>
+                            <button class="w-full text-left text-gray-300 hover:text-primary transition-colors text-sm py-2 px-3 rounded-md hover:bg-dark-lighter hot-question">
+                                浠€涔堟槸COD锛?                            </button>
+                        </li>
+                        <li>
+                            <button class="w-full text-left text-gray-300 hover:text-primary transition-colors text-sm py-2 px-3 rounded-md hover:bg-dark-lighter hot-question">
+                                鏁版嵁澶у睆鎬庝箞鐪嬪叚鐪佸競瀵规瘮锛?                            </button>
+                        </li>
+                        <li>
+                            <button class="w-full text-left text-gray-300 hover:text-primary transition-colors text-sm py-2 px-3 rounded-md hover:bg-dark-lighter hot-question">
+                                濡備綍鍦ㄦ祦鍩熸椂绌烘帹婕旀矙鐩樹腑鏌ョ湅AI鍐崇瓥锛?                            </button>
+                        </li>
+                        <li>
+                            <button class="w-full text-left text-gray-300 hover:text-primary transition-colors text-sm py-2 px-3 rounded-md hover:bg-dark-lighter hot-question">
+                                濡備綍浠庢矙鐩樿烦杞埌鐭ヨ瘑鍥捐氨婧簮锛?                            </button>
+                        </li>
+                        <li>
+                            <button class="w-full text-left text-gray-300 hover:text-primary transition-colors text-sm py-2 px-3 rounded-md hover:bg-dark-lighter hot-question">
+                                鐭ヨ瘑鍥捐氨閲屽浣曟煡璇㈣秴鏍囦簨浠讹紵
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 鍘嗗彶璁板綍 -->
+                <div class="glass rounded-xl card-shadow p-4 animate-slide-up" style="animation-delay: 0.2s;">
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
+                        <i class="fa fa-history text-primary mr-2"></i>
+                        鍘嗗彶璁板綍
+                    </h3>
+                    <div class="space-y-2 max-h-48 overflow-y-auto" id="historyList">
+                        <div class="text-sm text-gray-500 italic">鏆傛棤鍘嗗彶璁板綍</div>
+                    </div>
+                </div>
+                
+                <!-- 鍔熻兘鎻愮ず -->
+                <div class="glass rounded-xl card-shadow p-4 animate-slide-up" style="animation-delay: 0.4s;">
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
+                        <i class="fa fa-lightbulb-o text-primary mr-2"></i>
+                        鍔熻兘鎻愮ず
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-start space-x-2 p-2 rounded-md hover:bg-dark-lighter transition-colors">
+                            <i class="fa fa-check-circle mt-0.5 text-primary"></i>
+                            <span>鏀寔鑷劧璇█鎻愰棶鍜岄〉闈娇鐢ㄥ挩璇?/span>
+                        </li>
+                        <li class="flex items-start space-x-2 p-2 rounded-md hover:bg-dark-lighter transition-colors">
+                            <i class="fa fa-check-circle mt-0.5 text-primary"></i>
+                            <span>鏀寔鏈湴鐭ヨ瘑搴?/span>
+                        </li>
+                        <li class="flex items-start space-x-2 p-2 rounded-md hover:bg-dark-lighter transition-colors">
+                            <i class="fa fa-check-circle mt-0.5 text-primary"></i>
+                            <span>鎺ュ叆deepseek澶фā鍨?/span>
+                        </li>
+                        <li class="flex items-start space-x-2 p-2 rounded-md hover:bg-dark-lighter transition-colors">
+                            <i class="fa fa-check-circle mt-0.5 text-primary"></i>
+                            <span>鏀寔鏁版嵁澶у睆銆佹矙鐩樸€佸浘璋卞拰鎸囨爣闂瓟</span>
+                        </li>
+                        <li class="flex items-start space-x-2 p-2 rounded-md hover:bg-dark-lighter transition-colors">
+                            <i class="fa fa-check-circle mt-0.5 text-primary"></i>
+                            <span>璁板綍鍘嗗彶闂瓟锛屾柟渚垮洖椤?/span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 椤佃剼 -->
+    <footer class="glass py-12 mt-12 relative z-10">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- 鍏充簬鎴戜滑 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">鍏充簬鎴戜滑</h3>
+                    <p class="text-gray-400 text-sm">
+                        娴锋渤鍏煙骞冲彴鏁村悎鏁版嵁澶у睆銆佹祦鍩熸椂绌烘帹婕旀矙鐩樸€佺煡璇嗗浘璋变笌鏅鸿兘闂瓟锛屾敮鎸佹祦鍩熸按鐜鍒嗘瀽涓庢不鐞嗗喅绛栥€?                    </p>
+                </div>
+                <!-- 蹇€熼摼鎺?-->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">蹇€熼摼鎺?/h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="index.html" class="hover:text-primary transition-colors">棣栭〉</a></li>
+                        <li><a href="dashboard.html" class="hover:text-primary transition-colors">鏁版嵁澶у睆</a></li>
+                        <li><a href="sandbox.html" class="hover:text-primary transition-colors">娴佸煙鏃剁┖鎺ㄦ紨娌欑洏</a></li>
+                        <li><a href="knowledge-graph.html" class="hover:text-primary transition-colors">鐭ヨ瘑鍥捐氨</a></li>
+                        <li><a href="chat.html" class="hover:text-primary transition-colors">鏅鸿兘闂瓟</a></li>
+                    </ul>
+                </div>
+                <!-- 鑱旂郴鎴戜滑 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">鑱旂郴鎴戜滑</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center space-x-2">
+                            <i class="fa fa-envelope text-primary"></i>
+                            <span>contact@haihe-water.com</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fa fa-phone text-primary"></i>
+                            <span>400-123-4567</span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 鍏虫敞鎴戜滑 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">鍏虫敞鎴戜滑</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-lighter flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-lighter flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-lighter flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-dark-lighter mt-8 pt-8 text-center text-sm text-gray-400">
+                <p>漏 2026 娴锋渤鍏煙骞冲彴 鐗堟潈鎵€鏈?/p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 寮曞叆蹇呰鐨勮剼鏈?-->
+    <script src="../services/chatService.js"></script>
+    <script src="../utils/chatUtils.js"></script>
+    <script src="../components/ChatMessage.js"></script>
+    <script src="../layouts/layout.js"></script>
+    
+    <script>
+        // 鍒濆鍖?        document.addEventListener('DOMContentLoaded', function() {
+            // 鍒濆鍖栫矑瀛愯儗鏅?            chatUtils.initParticles();
+            
+            // 浠庢湰鍦板瓨鍌ㄨ幏鍙栫敤鎴蜂俊鎭?            const currentUser = chatUtils.getCurrentUser();
+            layout.updateUserInfo(currentUser);
+            
+            // 鍒濆鍖栧鑸?            layout.initNavigation();
+            
+            // 缁戝畾浜嬩欢
+            bindEvents();
+            
+            // 鍔犺浇鍘嗗彶璁板綍
+            loadHistoryList();
+        });
+
+        // 缁戝畾浜嬩欢
+        function bindEvents() {
+            // 缁戝畾鑱婂ぉ琛ㄥ崟
+            layout.bindChatForm(sendMessage);
+            
+            // 缁戝畾鐑棬闂
+            layout.bindHotQuestions(sendMessage);
+            
+            // 缁戝畾娓呯┖鑱婂ぉ
+            layout.bindClearChat(clearChat);
+        }
+        
+        // 鍙戦€佹秷鎭?        async function sendMessage(message) {
+            // 娣诲姞鐢ㄦ埛娑堟伅
+            addMessage(message, 'user');
+            
+            // 淇濆瓨鍒板巻鍙茶褰?            chatUtils.saveToHistory(message);
+            loadHistoryList();
+            
+            // 鏄剧ず姝ｅ湪杈撳叆
+            showTyping();
+            
+            try {
+                // 璋冪敤API鑾峰彇鍥炲锛屼紶閫掓纭殑token
+                const token = chatService.getToken();
+                const answer = await chatService.callChatAPI(message, token);
+                chatMessage.hideTypingIndicator();
+                addMessage(answer, 'bot');
+            } catch (error) {
+                chatMessage.hideTypingIndicator();
+                console.error('Chat API Error:', error);
+                addMessage('鎶辨瓑锛屾湇鍔℃殏鏃朵笉鍙敤銆傞敊璇俊鎭細' + (error.message || '鏈煡閿欒'), 'bot');
+            }
+        }
+        
+        // 娣诲姞娑堟伅鍒拌亰澶╃晫闈?        function addMessage(message, type) {
+            const chatMessages = document.getElementById('chatMessages');
+            let messageElement;
+            
+            if (type === 'user') {
+                messageElement = chatMessage.createUserMessage(message);
+            } else {
+                messageElement = chatMessage.createBotMessage(message);
+            }
+            
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // 鏄剧ず姝ｅ湪杈撳叆
+        function showTyping() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingElement = chatMessage.createTypingIndicator();
+            chatMessages.appendChild(typingElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // 娓呯┖鑱婂ぉ
+        function clearChat() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '<div class="chat-message bot-message"><div class="flex items-start space-x-3"><div class="w-8 h-8 rounded-full bg-gradient-eco flex items-center justify-center flex-shrink-0 animate-glow"><i class="fa fa-robot text-white"></i></div><div><p class="text-sm">鎮ㄥソ锛佹垜鏄祦鍩熸櫤鑳介棶绛斿姪鎵嬶紝涓烘偍瑙ｇ瓟椤甸潰浣跨敤銆佹寚鏍囧惈涔夊拰娴佸煙娌荤悊鐩稿叧闂銆?/p></div></div>';
+            chatUtils.clearHistory();
+            loadHistoryList();
+        }
+        
+        // 鍔犺浇鍘嗗彶璁板綍鍒楄〃
+        function loadHistoryList() {
+            const history = JSON.parse(localStorage.getItem('chatHistory')) || [];
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="text-sm text-gray-500 italic">鏆傛棤鍘嗗彶璁板綍</div>';
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            history.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'p-2 hover:bg-dark-lighter rounded cursor-pointer transition-colors';
+                historyItem.innerHTML = `
+                    <p class="text-sm text-gray-300 line-clamp-1">${item.message}</p>
+                    <p class="text-xs text-gray-500">${item.timestamp}</p>
+                `;
+                historyItem.addEventListener('click', function() {
+                    sendMessage(item.message);
+                });
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        // 鍏ㄥ眬瀵煎嚭logout鍑芥暟
+        window.logout = chatUtils.logout;
+    </script>
+</body>
+</html>
+

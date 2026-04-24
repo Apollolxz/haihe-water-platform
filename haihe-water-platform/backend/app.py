@@ -6,14 +6,15 @@ from dotenv import load_dotenv
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BACKEND_DIR, '.env'), override=True)
+
 from models.user import User
 from models.water_quality import WaterQuality
 from routes import auth, chat, dashboard, decision, graph, water_quality
 
-load_dotenv(override=True)
-
 APP_HOST = os.getenv('FLASK_HOST', '0.0.0.0')
-APP_PORT = int(os.getenv('FLASK_PORT', '5001'))
+APP_PORT = int(os.getenv('PORT') or os.getenv('FLASK_PORT', '5001'))
 APP_DEBUG = os.getenv('FLASK_DEBUG', 'true').lower() in {'1', 'true', 'yes', 'on'}
 
 app = Flask(__name__)

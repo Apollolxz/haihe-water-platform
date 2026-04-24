@@ -12,7 +12,8 @@ from dotenv import load_dotenv
 from datetime import datetime
 
 # 加载环境变量
-load_dotenv()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
 
 # 数据库连接配置
 DB_HOST = os.getenv('MYSQL_HOST', 'localhost')
@@ -23,7 +24,7 @@ OLD_DB = 'haihe_water'
 NEW_DB = 'haihe_river_basin'
 
 # 源数据目录
-DATA_DIR = r'D:\haihe\shuju预测\批量处理结果'
+DATA_DIR = os.getenv('SANDBOX_DATA_ROOT', r'D:\haihe\shuju预测\批量处理结果')
 
 # 省份映射（从文件名/数据中识别）
 PROVINCE_MAP = {

@@ -9,7 +9,8 @@ import os
 from dotenv import load_dotenv
 
 # 加载环境变量
-load_dotenv()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
 
 def get_neo4j_driver():
     """
@@ -18,10 +19,9 @@ def get_neo4j_driver():
     Returns:
         Neo4j驱动对象
     """
-    # 直接设置连接信息
-    uri = 'bolt://localhost:7687'  # 使用bolt协议
-    user = 'neo4j'
-    password = '12345678'  # 用户提供的密码
+    uri = os.getenv('NEO4J_URI', 'bolt://localhost:7687')
+    user = os.getenv('NEO4J_USER', 'neo4j')
+    password = os.getenv('NEO4J_PASSWORD', '12345678')
     
     print(f"连接Neo4j数据库: {uri}")
     print(f"用户名: {user}")

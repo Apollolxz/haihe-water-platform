@@ -1,0 +1,1107 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>娴锋渤鍏煙 - 娴佸煙姘磋川鏃剁┖婕斿彉涓庣煡璇嗗浘璋辨櫤鑳芥不鐞嗙郴缁?/title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        'secondary-dark': '#16a34a',
+                        accent: '#06b6d4',
+                        'accent-dark': '#0891b2',
+                        water: '#3b82f6',
+                        'water-dark': '#2563eb',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'Microsoft YaHei', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'slide-down': 'slideDown 0.8s ease-out',
+                        'pulse-slow': 'pulse 4s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'wave': 'wave 8s linear infinite',
+                        'ripple': 'ripple 2s ease-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        wave: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' }
+                        },
+                        ripple: {
+                            '0%': { transform: 'scale(1)', opacity: '1' },
+                            '100%': { transform: 'scale(1.5)', opacity: '0' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(14, 165, 233, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.8), 0 0 40px rgba(14, 165, 233, 0.4)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .bg-gradient-water {
+                background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #22c55e 100%);
+            }
+            .bg-gradient-dark {
+                background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                background-image: linear-gradient(135deg, #0ea5e9 0%, #22c55e 100%);
+            }
+            .card-glass {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .card-shadow {
+                box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.3);
+            }
+            .nav-link {
+                @apply relative px-4 py-2 text-gray-300 hover:text-white transition-all duration-300;
+            }
+            .nav-link::after {
+                content: '';
+                @apply absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-water transition-all duration-300;
+                transform: translateX(-50%);
+            }
+            .nav-link:hover::after {
+                @apply w-full;
+            }
+            .nav-link.active {
+                @apply text-white font-medium;
+            }
+            .nav-link.active::after {
+                @apply w-full;
+            }
+            .nav-core {
+                @apply relative px-5 py-2 rounded-full text-white font-semibold text-sm shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 flex items-center;
+                background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #22c55e 100%);
+                animation: glow-pulse 2s infinite;
+            }
+            @keyframes glow-pulse {
+                0%, 100% { box-shadow: 0 0 8px rgba(14,165,233,0.6); transform: scale(1); }
+                50% { box-shadow: 0 0 20px rgba(14,165,233,0.9); transform: scale(1.02); }
+            }
+            .btn-primary {
+                @apply px-6 py-3 bg-gradient-water text-white rounded-lg font-medium transition-all duration-300;
+                box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+            }
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(14, 165, 233, 0.6);
+            }
+            .btn-secondary {
+                @apply px-6 py-3 border-2 border-white/30 text-white rounded-lg font-medium transition-all duration-300 backdrop-blur-sm;
+            }
+            .btn-secondary:hover {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.5);
+            }
+            .feature-card {
+                @apply p-6 rounded-2xl transition-all duration-500;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .feature-card:hover {
+                transform: translateY(-10px);
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(14, 165, 233, 0.3);
+                box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
+            }
+            .stat-card {
+                @apply p-6 rounded-xl;
+                background: linear-gradient(145deg, rgba(14, 165, 233, 0.1) 0%, rgba(34, 197, 94, 0.1) 100%);
+                border: 1px solid rgba(14, 165, 233, 0.2);
+            }
+            .water-wave {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 200%;
+                height: 100px;
+                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230ea5e9' fill-opacity='0.1' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+                animation: wave 8s linear infinite;
+            }
+        }
+    </style>
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
+</head>
+<body class="bg-dark text-white min-h-screen overflow-x-hidden">
+    <!-- 鑳屾櫙瑁呴グ -->
+    <div class="fixed inset-0 pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- 椤堕儴瀵艰埅鏍?-->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
+                        <i class="fa fa-tint text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">娴锋渤鍏煙</h1>
+                        <p class="text-xs text-gray-400">娴佸煙姘磋川鏃剁┖婕斿彉涓庣煡璇嗗浘璋辨櫤鑳芥不鐞嗙郴缁?/p>
+                    </div>
+                </div>
+                
+                <!-- 瀵艰埅鑿滃崟 -->
+                <nav class="hidden md:flex space-x-1">
+                    <a href="index.html" class="nav-link active">
+                        <i class="fa fa-home mr-2"></i>
+                        <span>棣栭〉</span>
+                    </a>
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fa fa-dashboard mr-2"></i>
+                        <span>鏁版嵁澶у睆</span>
+                    </a>
+                    <a href="sandbox.html" class="nav-core mx-2">
+                        <i class="fa fa-globe mr-2"></i><span>娴佸煙鏃剁┖鎺ㄦ紨娌欑洏</span>
+                    </a>
+                    <a href="knowledge-graph.html" class="nav-link">
+                        <i class="fa fa-project-diagram mr-2"></i>
+                        <span>鐭ヨ瘑鍥捐氨</span>
+                    </a>
+                    <a href="chat.html" class="nav-link">
+                        <i class="fa fa-robot mr-2"></i>
+                        <span>鏅鸿兘闂瓟</span>
+                    </a>
+                </nav>
+                
+                <!-- 鍙充晶鐢ㄦ埛鎿嶄綔 -->
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                    <button class="text-gray-400 hover:text-white transition-colors relative">
+                        <i class="fa fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    </button>
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 focus:outline-none" id="userMenuBtn">
+                            <div class="w-8 h-8 rounded-full bg-gradient-water flex items-center justify-center">
+                                <i class="fa fa-user text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-300 hidden md:inline" id="userName">鐢ㄦ埛鍚?/span>
+                            <i class="fa fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                        <!-- 鐢ㄦ埛鑿滃崟 -->
+                        <div class="absolute right-0 mt-2 w-48 bg-dark-light rounded-lg shadow-2xl py-2 z-50 hidden border border-white/10" id="userMenu">
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-user-o mr-2"></i>涓汉涓績
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                                <i class="fa fa-cog mr-2"></i>璁剧疆
+                            </a>
+                            <div class="border-t border-white/10 my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors" onclick="logout()">
+                                <i class="fa fa-sign-out mr-2"></i>閫€鍑虹櫥褰?                            </a>
+                        </div>
+                    </div>
+                    <!-- 绉诲姩绔彍鍗曟寜閽?-->
+                    <button class="md:hidden text-gray-400 hover:text-white" id="mobileMenuBtn">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 绉诲姩绔鑸彍鍗?-->
+        <div class="md:hidden bg-dark-light border-t border-white/10 hidden" id="mobileMenu">
+            <div class="container mx-auto px-4 py-2 space-y-1">
+                <a href="index.html" class="block px-4 py-3 text-white bg-white/10 rounded-lg">
+                    <i class="fa fa-home mr-2"></i>棣栭〉
+                </a>
+                <a href="dashboard.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-dashboard mr-2"></i>鏁版嵁澶у睆
+                </a>
+                <a href="sandbox.html" class="block px-4 py-3 text-white bg-gradient-water rounded-lg transition-colors">
+                    <i class="fa fa-globe mr-2"></i>娴佸煙鏃剁┖鎺ㄦ紨娌欑洏
+                </a>
+                <a href="knowledge-graph.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-project-diagram mr-2"></i>鐭ヨ瘑鍥捐氨
+                </a>
+                <a href="chat.html" class="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fa fa-robot mr-2"></i>鏅鸿兘闂瓟
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 涓诲唴瀹瑰尯 -->
+    <main class="pt-16 relative">
+        <!-- Hero Section -->
+        <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+            <!-- 鑳屾櫙鍔ㄧ敾 -->
+            <div class="absolute inset-0">
+                <div class="absolute inset-0 bg-gradient-to-b from-dark via-dark-light to-dark"></div>
+                <canvas id="particleCanvas" class="absolute inset-0 w-full h-full"></canvas>
+            </div>
+            
+            <!-- 姘存尝绾硅楗?-->
+            <div class="water-wave"></div>
+            
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+                    <!-- 宸︿晶鍐呭 -->
+                    <div class="w-full lg:w-1/2 space-y-8 animate-slide-up">
+                        <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            <span class="text-sm text-gray-300">鍥涘ぇ鏍稿績鑳藉姏宸叉帴鍏?/span>
+                        </div>
+                        
+                        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                            瀹堟姢娴锋渤<br>
+                            <span class="text-gradient">姘磋川鏈潵</span>
+                        </h1>
+                        
+                        <p class="text-xl text-gray-400 max-w-xl leading-relaxed">
+                            鍥寸粫娴锋渤娴佸煙鐩戞祴鏁版嵁锛屾暣鍚堟暟鎹ぇ灞忋€佹祦鍩熸椂绌烘帹婕旀矙鐩樸€佺煡璇嗗浘璋变笌鏅鸿兘闂瓟锛屾敮鎾戞€佸娍鎰熺煡銆侀闄╂帹婕斻€佸浘璋辨函婧愪笌杈呭姪鍐崇瓥銆?                        </p>
+                        
+                        <div class="flex flex-wrap gap-4">
+                            <a href="sandbox.html" class="btn-primary flex items-center space-x-2">
+                                <i class="fa fa-globe"></i>
+                                <span>杩涘叆娌欑洏</span>
+                            </a>
+                            <a href="dashboard.html" class="btn-secondary flex items-center space-x-2">
+                                <i class="fa fa-line-chart"></i>
+                                <span>鏌ョ湅澶у睆</span>
+                            </a>
+                        </div>
+                        
+                        <!-- 鏁版嵁缁熻 -->
+                        <div class="flex items-center space-x-8 pt-8 border-t border-white/10">
+                            <div>
+                                <p class="text-3xl font-bold text-white">6</p>
+                                <p class="text-sm text-gray-400">鐪佸競鑱斿姩</p>
+                            </div>
+                            <div>
+                                <p class="text-3xl font-bold text-white">181</p>
+                                <p class="text-sm text-gray-400">鍥捐氨鑺傜偣</p>
+                            </div>
+                            <div>
+                                <p class="text-3xl font-bold text-white">4</p>
+                                <p class="text-sm text-gray-400">鏍稿績妯″潡</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 鍙充晶鍙鍖?-->
+                    <div class="w-full lg:w-1/2 animate-slide-down">
+                        <div class="relative">
+                            <!-- 鍙戝厜鏁堟灉 -->
+                            <div class="absolute inset-0 bg-gradient-water rounded-3xl blur-3xl opacity-30 animate-pulse-slow"></div>
+                            
+                            <!-- 涓诲崱鐗?-->
+                            <div class="relative card-glass rounded-3xl p-8 card-shadow">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-xl font-semibold text-white">骞冲彴鏍稿績鍏ュ彛</h3>
+                                    <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm rounded-full border border-green-500/30">
+                                        鍦ㄧ嚎杩愯
+                                    </span>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <a href="dashboard.html" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                                <i class="fa fa-bar-chart text-blue-400"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-white">鏁版嵁澶у睆</p>
+                                                <p class="text-sm text-gray-400">瓒嬪娍鍒嗘瀽涓庡缁村姣?/p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-bold text-blue-400">瀹炴椂鏌ョ湅</p>
+                                            <p class="text-xs text-gray-400">dashboard</p>
+                                        </div>
+                                    </a>
+                                    
+                                    <a href="sandbox.html" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                                                <i class="fa fa-globe text-cyan-400"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-white">鏃剁┖鎺ㄦ紨娌欑洏</p>
+                                                <p class="text-sm text-gray-400">椋庨櫓妯℃嫙涓?AI 鍐崇瓥</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-bold text-cyan-400">鏍稿績鍏ュ彛</p>
+                                            <p class="text-xs text-gray-400">sandbox</p>
+                                        </div>
+                                    </a>
+                                    
+                                    <a href="knowledge-graph.html" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
+                                                <i class="fa fa-share-alt text-teal-400"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-white">鐭ヨ瘑鍥捐氨</p>
+                                                <p class="text-sm text-gray-400">涓婃父閾捐矾涓庤秴鏍囨函婧?/p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-bold text-teal-400">鍥捐氨鑱斿姩</p>
+                                            <p class="text-xs text-gray-400">neo4j</p>
+                                        </div>
+                                    </a>
+
+                                    <a href="chat.html" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                                                <i class="fa fa-comments-o text-green-400"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-white">鏅鸿兘闂瓟</p>
+                                                <p class="text-sm text-gray-400">DeepSeek 涓庢湰鍦扮煡璇嗗崗鍚?/p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-bold text-green-400">鍗虫椂闂瓟</p>
+                                            <p class="text-xs text-gray-400">chat</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <a href="sandbox.html" class="mt-6 flex items-center justify-center space-x-2 text-primary hover:text-white transition-colors">
+                                    <span>浠庢祦鍩熸椂绌烘帹婕旀矙鐩樺紑濮嬩綋楠?/span>
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 鏍稿績鍔熻兘 -->
+        <section class="py-24 relative">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">鏍稿績鍔熻兘</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto">
+                        鍥寸粫褰撳墠椤圭洰鐨勫洓涓牳蹇冮〉闈紝褰㈡垚浠庢€佸娍灞曠ず銆佹帹婕斿喅绛栧埌鍥捐氨婧簮鍜屾櫤鑳介棶绛旂殑瀹屾暣闂幆銆?                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- 鍔熻兘鍗＄墖 1 -->
+                    <a href="dashboard.html" class="feature-card group block">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa fa-bar-chart text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-3">鏁版嵁澶у睆</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            姹囪仛鐑姏鍥俱€佺绾垮浘銆佺浉鍏虫€с€佹椂搴忓拰鐪佷唤瀵规瘮绛夊垎鏋愯瑙掞紝蹇€熸妸鎻℃祦鍩熸暣浣撴€佸娍銆?                        </p>
+                        <p class="text-sm text-primary mt-4">杩涘叆妯″潡 <i class="fa fa-arrow-right ml-1"></i></p>
+                    </a>
+                    
+                    <!-- 鍔熻兘鍗＄墖 2 -->
+                    <a href="sandbox.html" class="feature-card group block">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa fa-globe text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-3">娴佸煙鏃剁┖鎺ㄦ紨娌欑洏</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            鎸夌渷甯傘€佹棩鏈熷拰妯″瀷寮€灞曢闄╂帹婕旓紝鑱斿姩 AI 鍐崇瓥缁撴灉锛屾敮鎾戣法鍖哄煙姘寸幆澧冪爺鍒ゃ€?                        </p>
+                        <p class="text-sm text-primary mt-4">杩涘叆妯″潡 <i class="fa fa-arrow-right ml-1"></i></p>
+                    </a>
+                    
+                    <!-- 鍔熻兘鍗＄墖 3 -->
+                    <a href="knowledge-graph.html" class="feature-card group block">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-green-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa fa-share-alt text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-3">鐭ヨ瘑鍥捐氨</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            闈㈠悜绔欑偣銆佷笂娓搁摼璺拰瓒呮爣浜嬩欢寮€灞曞浘璋辨函婧愶紝骞朵笌娌欑洏鎺ㄦ紨缁撴灉褰㈡垚鍙屽悜鑱斿姩銆?                        </p>
+                        <p class="text-sm text-primary mt-4">杩涘叆妯″潡 <i class="fa fa-arrow-right ml-1"></i></p>
+                    </a>
+                    
+                    <!-- 鍔熻兘鍗＄墖 4 -->
+                    <a href="chat.html" class="feature-card group block">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa fa-comments-o text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-3">鏅鸿兘闂瓟</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            鍦ㄦ湰鍦扮煡璇嗗簱鍜?DeepSeek 鍗忓悓涓嬪畬鎴愭湳璇В閲娿€佸満鏅棶绛斿拰椤甸潰浣跨敤杈呭姪銆?                        </p>
+                        <p class="text-sm text-primary mt-4">杩涘叆妯″潡 <i class="fa fa-arrow-right ml-1"></i></p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 骞冲彴涓氬姟闂幆 -->
+        <section class="py-24 relative bg-dark-light/50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">骞冲彴涓氬姟闂幆</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto">
+                        浠庢暟鎹帴鍏ュ埌鎺ㄦ紨銆佹函婧愬拰闂瓟瑙ｉ噴锛岄椤靛睍绀虹殑鏄綋鍓嶉」鐩渶甯哥敤鐨勪竴鏉″伐浣滆矾寰勩€?                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <!-- 娴佺▼姝ラ 1 -->
+                    <div class="relative group">
+                        <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
+                            <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-4">
+                                <span class="text-2xl font-bold text-blue-400">1</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white mb-2">鏁版嵁姹囪仛</h3>
+                            <p class="text-sm text-gray-400">姹囬泦娴佸煙鐩戞祴绔欑偣涓庡鎸囨爣鏁版嵁锛屽舰鎴愮粺涓€鍒嗘瀽鍏ュ彛</p>
+                        </div>
+                        <div class="hidden lg:block absolute top-1/2 -right-2 transform -translate-y-1/2 text-gray-600">
+                            <i class="fa fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- 娴佺▼姝ラ 2 -->
+                    <div class="relative group">
+                        <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
+                            <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center mb-4">
+                                <span class="text-2xl font-bold text-cyan-400">2</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white mb-2">澶у睆娲炲療</h3>
+                            <p class="text-sm text-gray-400">閫氳繃澶氱淮鍙鍒嗘瀽蹇€熻瘑鍒渷甯傚樊寮傚拰閲嶇偣椋庨櫓鍖哄煙</p>
+                        </div>
+                        <div class="hidden lg:block absolute top-1/2 -right-2 transform -translate-y-1/2 text-gray-600">
+                            <i class="fa fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- 娴佺▼姝ラ 3 -->
+                    <div class="relative group">
+                        <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
+                            <div class="w-12 h-12 rounded-full bg-teal-500/20 flex items-center justify-center mb-4">
+                                <span class="text-2xl font-bold text-teal-400">3</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white mb-2">娌欑洏鎺ㄦ紨</h3>
+                            <p class="text-sm text-gray-400">缁撳悎鏃ユ湡銆佹ā鍨嬪拰绌洪棿鑼冨洿杩涜鏃剁┖鎺ㄦ紨涓?AI 鍐崇瓥</p>
+                        </div>
+                        <div class="hidden lg:block absolute top-1/2 -right-2 transform -translate-y-1/2 text-gray-600">
+                            <i class="fa fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- 娴佺▼姝ラ 4 -->
+                    <div class="relative group">
+                        <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
+                            <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
+                                <span class="text-2xl font-bold text-green-400">4</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white mb-2">鍥捐氨婧簮</h3>
+                            <p class="text-sm text-gray-400">鍦ㄧ煡璇嗗浘璋变腑杩借釜涓婃父閾捐矾銆佽秴鏍囦簨浠跺拰鍏抽敭绔欑偣鍏崇郴</p>
+                        </div>
+                        <div class="hidden lg:block absolute top-1/2 -right-2 transform -translate-y-1/2 text-gray-600">
+                            <i class="fa fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- 娴佺▼姝ラ 5 -->
+                    <div class="group">
+                        <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
+                            <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4">
+                                <span class="text-2xl font-bold text-emerald-400">5</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white mb-2">鏅鸿兘闂瓟</h3>
+                            <p class="text-sm text-gray-400">缁撳悎鏈湴鐭ヨ瘑鍜屽ぇ妯″瀷杈撳嚭锛岃ˉ鍏呰В閲婁笌杈呭姪鐮斿垽</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 骞冲彴鑳藉姏姒傝 -->
+        <section class="py-24 relative">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">骞冲彴鑳藉姏姒傝</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto">
+                        鐢ㄧ幇鏈夐」鐩腑鐨勫叧閿妯′俊鎭紝蹇€熻鏄庡钩鍙板綋鍓嶇殑鏁版嵁鑼冨洿鍜屽浘璋辫兘鍔涖€?                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- 鏁版嵁鍗＄墖 1 -->
+                    <div class="stat-card group hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                                <i class="fa fa-tint text-blue-400 text-xl"></i>
+                            </div>
+                            <span class="text-xs text-green-400 flex items-center">
+                                <i class="fa fa-circle mr-1"></i>鍖哄煙鑱斿姩
+                            </span>
+                        </div>
+                        <p class="text-4xl font-bold text-white mb-1">6</p>
+                        <p class="text-sm text-gray-400">鐪佸競鍗忓悓鍒嗘瀽</p>
+                        <div class="mt-4 h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500 rounded-full" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 鏁版嵁鍗＄墖 2 -->
+                    <div class="stat-card group hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                                <i class="fa fa-flask text-cyan-400 text-xl"></i>
+                            </div>
+                            <span class="text-xs text-green-400 flex items-center">
+                                <i class="fa fa-circle mr-1"></i>鐩戞祴鎺ュ叆
+                            </span>
+                        </div>
+                        <p class="text-4xl font-bold text-white mb-1">8</p>
+                        <p class="text-sm text-gray-400">鐩戞祴绔欑偣</p>
+                        <div class="mt-4 h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-500 rounded-full" style="width: 40%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 鏁版嵁鍗＄墖 3 -->
+                    <div class="stat-card group hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                                <i class="fa fa-share-alt text-green-400 text-xl"></i>
+                            </div>
+                            <span class="text-xs text-green-400 flex items-center">
+                                <i class="fa fa-circle mr-1"></i>鍥捐氨鍦ㄧ嚎
+                            </span>
+                        </div>
+                        <p class="text-4xl font-bold text-white mb-1">181</p>
+                        <p class="text-sm text-gray-400">鐭ヨ瘑鑺傜偣</p>
+                        <div class="mt-4 h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500 rounded-full" style="width: 72%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 鏁版嵁鍗＄墖 4 -->
+                    <div class="stat-card group hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-teal-500/20 flex items-center justify-center">
+                                <i class="fa fa-check-circle text-teal-400 text-xl"></i>
+                            </div>
+                            <span class="text-xs text-green-400 flex items-center">
+                                <i class="fa fa-circle mr-1"></i>婧簮鍒嗘瀽
+                            </span>
+                        </div>
+                        <p class="text-4xl font-bold text-white mb-1">4222</p>
+                        <p class="text-sm text-gray-400">鍏崇郴閾捐矾</p>
+                        <div class="mt-4 h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div class="h-full bg-teal-500 rounded-full" style="width: 88%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 鍏稿瀷浣跨敤鍦烘櫙 -->
+        <section class="py-24 relative bg-dark-light/50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-white mb-4">鍏稿瀷浣跨敤鍦烘櫙</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto">
+                        涓嶆敼鍙樼幇鏈夐〉闈㈢粨鏋勶紝鍙妸棣栭〉鐨勪笁涓噸鐐瑰睍绀轰綅鍒囨崲鎴愪笌浣犲綋鍓嶉」鐩渶璐磋繎鐨勫満鏅叆鍙ｃ€?                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 鎶€鏈崱鐗?1 -->
+                    <div class="feature-card group">
+                        <div class="relative h-48 rounded-xl overflow-hidden mb-6">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fa fa-area-chart text-6xl text-white/20"></i>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                <h3 class="text-xl font-semibold text-white">鍏ㄥ眬鎬佸娍鐮斿垽</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            浠庢暟鎹ぇ灞忔煡鐪嬬浉鍏虫€с€佺儹鍔涘浘銆佹椂搴忓拰鐪佷唤瀵规瘮锛屽厛蹇€熼攣瀹氬綋鍓嶉渶瑕佸叧娉ㄧ殑鍖哄煙鍜屾寚鏍囥€?                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-blue-400">鏁版嵁澶у睆</span>
+                            <a href="dashboard.html" class="text-primary hover:text-white transition-colors">
+                                绔嬪嵆鏌ョ湅 <i class="fa fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- 鎶€鏈崱鐗?2 -->
+                    <div class="feature-card group">
+                        <div class="relative h-48 rounded-xl overflow-hidden mb-6">
+                            <div class="absolute inset-0 bg-gradient-to-br from-cyan-600 to-cyan-800"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fa fa-globe text-6xl text-white/20"></i>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                <h3 class="text-xl font-semibold text-white">椋庨櫓鎺ㄦ紨鍐崇瓥</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            鍦ㄦ祦鍩熸椂绌烘帹婕旀矙鐩樹腑鎸夌渷甯傘€佹ā鍨嬪拰鏃ユ湡杩涜婕斿寲妯℃嫙锛屽苟鐩存帴鏌ョ湅 AI 杈呭姪鍐崇瓥缁撴灉銆?                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-cyan-400">娴佸煙娌欑洏</span>
+                            <a href="sandbox.html" class="text-primary hover:text-white transition-colors">
+                                绔嬪嵆鏌ョ湅 <i class="fa fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- 鎶€鏈崱鐗?3 -->
+                    <div class="feature-card group">
+                        <div class="relative h-48 rounded-xl overflow-hidden mb-6">
+                            <div class="absolute inset-0 bg-gradient-to-br from-teal-600 to-teal-800"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fa fa-share-alt text-6xl text-white/20"></i>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                <h3 class="text-xl font-semibold text-white">鍥捐氨婧簮瑙ｉ噴</h3>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 mb-4">
+                            杩涘叆鐭ヨ瘑鍥捐氨杩借釜涓婃父閾捐矾锛屽啀缁撳悎鏅鸿兘闂瓟蹇€熻ˉ鍏呮寚鏍囪В閲娿€侀〉闈娇鐢ㄥ拰娌荤悊鑳屾櫙璇存槑銆?                        </p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-teal-400">鍥捐氨 + 闂瓟</span>
+                            <a href="knowledge-graph.html" class="text-primary hover:text-white transition-colors">
+                                绔嬪嵆鏌ョ湅 <i class="fa fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 鐭ヨ瘑鍥捐氨鑱斿姩鑳藉姏 -->
+        <section class="py-24 relative">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-between mb-12">
+                    <div>
+                        <h2 class="text-4xl font-bold text-white mb-2">鐭ヨ瘑鍥捐氨鑱斿姩鑳藉姏</h2>
+                        <p class="text-gray-400">鍥寸粫褰撳墠鍥捐氨椤电殑鐪熷疄鑳藉姏锛屽睍绀虹珯鐐规函婧愩€佽秴鏍囨煡璇㈠拰娌欑洏鑱斿姩鍏ュ彛</p>
+                    </div>
+                    <a href="knowledge-graph.html" class="btn-secondary">
+                        鏌ョ湅瀹屾暣鍥捐氨 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 鐭ヨ瘑鍗＄墖 1 -->
+                    <div class="feature-card">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                <i class="fa fa-industry text-blue-400"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-white">绔欑偣婧簮</p>
+                                <p class="text-xs text-gray-400">鐩存帴涓婃父閾捐矾</p>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">鎸夌珯鐐规墽琛屾薄鏌撴函婧?/h3>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+                            闈㈠悜鐩戞祴绔欑偣鏌ョ湅鐩存帴涓婃父绔欑偣銆侀摼璺矾寰勫拰姹℃煋浜嬩欢锛岃緟鍔╁畾浣嶆祦鍩熶腑鐨勯闄╂潵婧愩€?                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <div class="flex items-center space-x-4">
+                                <span><i class="fa fa-sitemap mr-1"></i>璺緞杩借釜</span>
+                                <span><i class="fa fa-eye mr-1"></i>绔欑偣鑱斿姩</span>
+                            </div>
+                            <span class="text-blue-400">姹℃煋婧簮</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 鐭ヨ瘑鍗＄墖 2 -->
+                    <div class="feature-card">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                                <i class="fa fa-tint text-cyan-400"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-white">瓒呮爣浜嬩欢</p>
+                                <p class="text-xs text-gray-400">鐪佷唤 + 鏃ユ湡绐楀彛</p>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">鎸夊尯鍩熸煡璇㈣秴鏍囪褰?/h3>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+                            鏀寔鍦ㄧ煡璇嗗浘璋遍〉涓寜鐪佷唤鍜屾椂闂磋寖鍥寸瓫閫夎秴鏍囦簨浠讹紝骞跺悓姝ュ畾浣嶅埌鐩稿叧绔欑偣鍜屾寚鏍囥€?                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <div class="flex items-center space-x-4">
+                                <span><i class="fa fa-sitemap mr-1"></i>浜嬩欢绛涢€?/span>
+                                <span><i class="fa fa-eye mr-1"></i>鍥捐氨瀹氫綅</span>
+                            </div>
+                            <span class="text-cyan-400">瓒呮爣鏌ヨ</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 鐭ヨ瘑鍗＄墖 3 -->
+                    <div class="feature-card">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                                <i class="fa fa-map-marker text-green-400"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-white">娌欑洏鑱斿姩</p>
+                                <p class="text-xs text-gray-400">AI 鍐崇瓥璺宠浆</p>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">浠庢帹婕旂粨鏋滆繘鍏ュ浘璋辨函婧?/h3>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+                            娌欑洏涓殑 AI 鍐崇瓥宸插彲鐩磋揪鐭ヨ瘑鍥捐氨椤碉紝鑷姩鍏抽棴鐗╃悊妯℃嫙骞跺睍绀洪€傞厤鍚庣殑婧簮瑙嗗浘銆?                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <div class="flex items-center space-x-4">
+                                <span><i class="fa fa-sitemap mr-1"></i>涓€閿烦杞?/span>
+                                <span><i class="fa fa-eye mr-1"></i>涓婁笅鏂囦繚鐣?/span>
+                            </div>
+                            <span class="text-green-400">鑱斿姩鍒嗘瀽</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-24 relative">
+            <div class="container mx-auto px-4">
+                <div class="relative rounded-3xl overflow-hidden">
+                    <!-- 鑳屾櫙 -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20"></div>
+                    <div class="absolute inset-0 bg-gradient-water opacity-10"></div>
+                    
+                    <!-- 鍐呭 -->
+                    <div class="relative p-12 md:p-16 text-center">
+                        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+                            浠庨椤电洿杈炬牳蹇冩ā鍧?                        </h2>
+                        <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+                            鍏堢湅鍏ㄥ眬鎬佸娍锛屽啀鍋氭椂绌烘帹婕斻€佸浘璋辨函婧愬拰鏅鸿兘瑙ｉ噴锛岃棣栭〉鐪熸鎴愪负鐜板湪杩欎釜椤圭洰鐨勮捣鐐广€?                        </p>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <a href="sandbox.html" class="btn-primary text-lg px-8 py-4">
+                                杩涘叆鎺ㄦ紨娌欑洏
+                            </a>
+                            <a href="knowledge-graph.html" class="btn-secondary text-lg px-8 py-4">
+                                鎵撳紑鐭ヨ瘑鍥捐氨
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 椤佃剼 -->
+    <footer class="bg-dark-light border-t border-white/10 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <!-- 鍏充簬鎴戜滑 -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-gradient-water flex items-center justify-center">
+                            <i class="fa fa-tint text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white">娴锋渤鍏煙</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        闈㈠悜娴锋渤娴佸煙姘磋川鍒嗘瀽涓庢不鐞嗗喅绛栵紝鏁村悎鏁版嵁澶у睆銆佹椂绌烘帹婕斻€佺煡璇嗗浘璋变笌鏅鸿兘闂瓟锛屽舰鎴愮粺涓€鐨勯」鐩椤靛叆鍙ｃ€?                    </p>
+                </div>
+                
+                <!-- 蹇€熼摼鎺?-->
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">蹇€熼摼鎺?/h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition-colors">棣栭〉</a></li>
+                        <li><a href="dashboard.html" class="text-gray-400 hover:text-white transition-colors">鏁版嵁澶у睆</a></li>
+                        <li><a href="sandbox.html" class="text-gray-400 hover:text-white transition-colors">娴佸煙鏃剁┖鎺ㄦ紨娌欑洏</a></li>
+                        <li><a href="knowledge-graph.html" class="text-gray-400 hover:text-white transition-colors">鐭ヨ瘑鍥捐氨</a></li>
+                        <li><a href="chat.html" class="text-gray-400 hover:text-white transition-colors">鏅鸿兘闂瓟</a></li>
+                    </ul>
+                </div>
+                
+                <!-- 鑱旂郴鎴戜滑 -->
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">鑱旂郴鎴戜滑</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center space-x-2">
+                            <i class="fa fa-envelope text-primary"></i>
+                            <span>contact@haihe-water.com</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fa fa-phone text-primary"></i>
+                            <span>400-888-9999</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fa fa-map-marker text-primary"></i>
+                            <span>澶╂触甯傛渤瑗垮尯</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 鍏虫敞鎴戜滑 -->
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">鍏虫敞鎴戜滑</h3>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fa fa-weixin text-gray-400 hover:text-white"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fa fa-weibo text-gray-400 hover:text-white"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fa fa-github text-gray-400 hover:text-white"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 text-center">
+                <p class="text-gray-500 text-sm">
+                    漏 2026 娴锋渤鍏煙 - 娴佸煙姘磋川鏃剁┖婕斿彉涓庣煡璇嗗浘璋辨櫤鑳芥不鐞嗙郴缁?鐗堟潈鎵€鏈?                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 鍒濆鍖栫敤鎴蜂俊鎭?        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { username: '璁垮', role: '鏈櫥褰? };
+            document.getElementById('userName').textContent = currentUser.username;
+            
+            // 缁戝畾浜嬩欢
+            bindEvents();
+            
+            // 鍒濆鍖栫矑瀛愬姩鐢?            initParticles();
+        });
+
+        // 缁戝畾浜嬩欢
+        function bindEvents() {
+            // 绉诲姩绔彍鍗曞垏鎹?            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                document.getElementById('mobileMenu').classList.toggle('hidden');
+            });
+            
+            // 鐢ㄦ埛鑿滃崟鍒囨崲
+            document.getElementById('userMenuBtn').addEventListener('click', function() {
+                document.getElementById('userMenu').classList.toggle('hidden');
+            });
+            
+            // 鐐瑰嚮鍏朵粬鍦版柟鍏抽棴鐢ㄦ埛鑿滃崟
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#userMenuBtn') && !e.target.closest('#userMenu')) {
+                    document.getElementById('userMenu').classList.add('hidden');
+                }
+                if (!e.target.closest('#mobileMenuBtn') && !e.target.closest('#mobileMenu')) {
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        }
+        
+        // 绮掑瓙鍔ㄧ敾
+        function initParticles() {
+            const canvas = document.getElementById('particleCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const particles = [];
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 1,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
+                    opacity: Math.random() * 0.5 + 0.2
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(particle => {
+                    particle.x += particle.speedX;
+                    particle.y += particle.speedY;
+                    
+                    if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+                    if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+                    
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(14, 165, 233, ${particle.opacity})`;
+                    ctx.fill();
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+            
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+        
+        // 閫€鍑虹櫥褰?        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+        
+        // 椤甸潰鍔犺浇瀹屾垚鍚庢墽琛?        document.addEventListener('DOMContentLoaded', function() {
+            // 鍒濆鍖栫矑瀛愬姩鐢?            initParticles();
+            
+            // 鍔犺浇鏁版嵁
+            loadData();
+        });
+        
+        // 鍔犺浇鏁版嵁
+        function loadData() {
+            // 鍔犺浇姘磋川鏁版嵁
+            fetch('/api/water-quality/latest')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateDashboardData(data.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('鍔犺浇姘磋川鏁版嵁澶辫触:', error);
+                });
+            
+            // 鍔犺浇瀛ｅ害鏁版嵁
+            fetch('/api/water-quality/quarterly')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateQuarterlyData(data.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('鍔犺浇瀛ｅ害鏁版嵁澶辫触:', error);
+                });
+        }
+        
+        // 鏇存柊浠〃鐩樻暟鎹?        function updateDashboardData(data) {
+            if (!data || data.length === 0) return;
+            
+            // 璁＄畻骞冲潎鍊?            let totalCOD = 0;
+            let totalAmmonia = 0;
+            
+            data.forEach(item => {
+                totalCOD += item.cod || 0;
+                totalAmmonia += item.ammonia_nitrogen || 0;
+            });
+            
+            const avgCOD = totalCOD / data.length;
+            const avgAmmonia = totalAmmonia / data.length;
+            
+            // 鏇存柊COD娴撳害
+            const codElement = document.querySelector('.stat-card:nth-child(1) .text-4xl');
+            if (codElement) {
+                codElement.textContent = avgCOD.toFixed(0);
+                const codBar = document.querySelector('.stat-card:nth-child(1) .h-full');
+                if (codBar) {
+                    const codPercentage = Math.min((avgCOD / 40) * 100, 100);
+                    codBar.style.width = codPercentage + '%';
+                }
+            }
+            
+            // 鏇存柊姘ㄦ爱娴撳害
+            const ammoniaElement = document.querySelector('.stat-card:nth-child(2) .text-4xl');
+            if (ammoniaElement) {
+                ammoniaElement.textContent = avgAmmonia.toFixed(2);
+                const ammoniaBar = document.querySelector('.stat-card:nth-child(2) .h-full');
+                if (ammoniaBar) {
+                    const ammoniaPercentage = Math.min((avgAmmonia / 5) * 100, 100);
+                    ammoniaBar.style.width = ammoniaPercentage + '%';
+                }
+            }
+            
+            // 鏇存柊鐩戞祴鐐瑰垪琛?            const monitoringPoints = document.querySelector('.space-y-4');
+            if (monitoringPoints) {
+                // 娓呯┖鐜版湁鐩戞祴鐐?                monitoringPoints.innerHTML = '';
+                
+                // 娣诲姞鍓?涓洃娴嬬偣
+                const top3Points = data.slice(0, 3);
+                top3Points.forEach((point, index) => {
+                    const qualityClass = point.water_quality_index === 'I' || point.water_quality_index === 'II' ? '姘磋川浼樿壇' : '姘磋川鑹ソ';
+                    const qualityColor = point.water_quality_index === 'I' || point.water_quality_index === 'II' ? 'text-green-400' : 'text-blue-400';
+                    const bgColor = ['bg-blue-500/20', 'bg-cyan-500/20', 'bg-teal-500/20'][index % 3];
+                    const textColor = ['text-blue-400', 'text-cyan-400', 'text-teal-400'][index % 3];
+                    
+                    const pointElement = document.createElement('div');
+                    pointElement.className = 'flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors';
+                    // 纭繚绔欑偣鍚嶇О姝ｇ‘鏄剧ず
+                    const stationName = point.station_name || point.name || '鏈煡绔欑偣';
+                    pointElement.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full ${bgColor} flex items-center justify-center">
+                                <i class="fa fa-map-marker ${textColor}"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-white">${stationName}</p>
+                                <p class="text-sm text-gray-400">${qualityClass}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold ${qualityColor}">${(80 + Math.random() * 15).toFixed(1)}</p>
+                            <p class="text-xs text-gray-400">姘磋川鎸囨暟</p>
+                        </div>
+                    `;
+                    monitoringPoints.appendChild(pointElement);
+                });
+            }
+        }
+        
+        // 鏇存柊瀛ｅ害鏁版嵁
+        function updateQuarterlyData(data) {
+            if (!data || data.length === 0) return;
+            
+            // 鍙互鍦ㄨ繖閲屾坊鍔犲搴︽暟鎹殑澶勭悊閫昏緫
+        }
+    </script>
+</body>
+</html>
+

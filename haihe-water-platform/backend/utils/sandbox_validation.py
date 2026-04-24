@@ -27,7 +27,7 @@ PROVINCE_FILE_PREFIX = {
     '河南省': '河南',
 }
 
-DATA_ROOT = r'D:\haihe\shuju预测\批量处理结果'
+DATA_ROOT = os.getenv('SANDBOX_DATA_ROOT', r'D:\haihe\shuju预测\批量处理结果')
 GRID_IMAGE_DIR = os.path.join(DATA_ROOT, 'lstm预测结果图集_分指标汇总')
 ARIMA_EXPORT_DIR = os.path.join(DATA_ROOT, 'arima预测数据表格')
 LSTM_EXPORT_DIR = os.path.join(DATA_ROOT, 'lstm预测数据表格_补全后')

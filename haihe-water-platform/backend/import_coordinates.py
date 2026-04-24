@@ -4,10 +4,14 @@
 import pandas as pd
 import pymysql
 import os
+from dotenv import load_dotenv
 from models.water_quality import WaterQuality
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
+
 # 读取经纬度数据
-csv_path = r'D:\经纬度信息\海河流域监测站点_完整坐标.csv'
+csv_path = os.getenv('COORDINATE_CSV_PATH', r'D:\经纬度信息\海河流域监测站点_完整坐标.csv')
 print(f"Reading: {csv_path}")
 df = pd.read_csv(csv_path, encoding='utf-8')
 

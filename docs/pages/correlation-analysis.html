@@ -1,0 +1,1558 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>娴锋渤鍏煙 - 鎸囨爣鐩稿叧鎬у垎鏋愪笓椤瑰睆</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        'secondary-dark': '#16a34a',
+                        accent: '#06b6d4',
+                        'accent-dark': '#0891b2',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b',
+                        'dark-lighter': '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0a0f1c 0%, #0d1321 50%, #0a0f1c 100%);
+            color: #fff;
+        }
+        
+        /* 鑷畾涔夋粴鍔ㄦ潯 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.5), rgba(34, 197, 94, 0.5));
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.7), rgba(34, 197, 94, 0.7));
+        }
+        
+        /* 绉戞妧鎰熻儗鏅綉鏍?*/
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 鍙戝厜瑁呴グ */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glow-orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+        }
+        
+        .glow-orb-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%);
+        }
+        
+        /* 椤堕儴瀵艰埅 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+        
+        .nav-title {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #0ea5e9, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-back {
+            padding: 8px 20px;
+            background: rgba(14, 165, 233, 0.15);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            border-radius: 6px;
+            color: #0ea5e9;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .nav-back:hover {
+            background: rgba(14, 165, 233, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        /* 涓诲鍣?*/
+        .main-container {
+            position: relative;
+            top: 64px;
+            left: 0;
+            right: 0;
+            min-height: calc(100vh - 64px);
+            padding: 20px;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+        
+        /* 鏍稿績缁撹鏍?*/
+        .conclusion-bar {
+            display: flex;
+            gap: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, 
+                rgba(14, 165, 233, 0.1) 0%, 
+                rgba(34, 197, 94, 0.05) 50%,
+                rgba(14, 165, 233, 0.1) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .conclusion-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #0ea5e9 20%, 
+                #22c55e 50%, 
+                #0ea5e9 80%, 
+                transparent 100%);
+        }
+        
+        .conclusion-tag {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+        
+        .conclusion-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .conclusion-tag.tag-1 {
+            border-color: rgba(239, 68, 68, 0.4);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .conclusion-tag.tag-2 {
+            border-color: rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .conclusion-tag.tag-3 {
+            border-color: rgba(14, 165, 233, 0.4);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .tag-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .tag-1 .tag-icon {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .tag-2 .tag-icon {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        .tag-3 .tag-icon {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+        
+        .tag-content {
+            flex: 1;
+        }
+        
+        .tag-title {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        
+        .tag-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+        
+        .tag-highlight {
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        .corr-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .corr-value.strong-negative {
+            color: #3b82f6;
+        }
+        
+        .corr-value.strong-positive {
+            color: #ef4444;
+        }
+        
+        .corr-value.medium {
+            color: #f59e0b;
+        }
+        
+        /* 涓讳綋鍐呭鍖?*/
+        .content-area {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+            min-height: 700px;
+        }
+        
+        /* 鍥捐〃鍗＄墖 */
+        .chart-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 绉戞妧鎰熷洓瑙掕楗?*/
+        .chart-card::before,
+        .chart-card::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0ea5e9;
+        }
+        
+        .chart-card::before {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+        }
+        
+        .chart-card::after {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .corner-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0ea5e9;
+        }
+        
+        .corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; border-top-left-radius: 8px; }
+        .corner-tr { top: 0; right: 0; border-left: none; border-bottom: none; border-top-right-radius: 8px; }
+        .corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
+        .corner-br { bottom: 0; right: 0; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
+        
+        /* 鍗＄墖鏍囬 */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: #0ea5e9;
+            font-size: 18px;
+        }
+        
+        .card-subtitle {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        /* 鍥捐〃瀹瑰櫒 */
+        .chart-container {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+        
+        /* 璇︽儏闈㈡澘 */
+        .detail-panel {
+            margin-top: 15px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .detail-panel.active {
+            display: block;
+        }
+        
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .detail-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        
+        .detail-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .detail-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+        
+        .detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .scatter-container {
+            height: 280px;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 8px;
+        }
+        
+        .interpretation {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .interp-item {
+            padding: 12px;
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #0ea5e9;
+        }
+        
+        .interp-title {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        
+        .interp-text {
+            font-size: 13px;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        /* 鍙充晶杈呭姪鍒嗘瀽鍖?*/
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: fit-content;
+        }
+        
+        .right-panel .chart-card {
+            min-height: 200px;
+        }
+        
+        /* 鍒嗙被鏍囩 */
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 0;
+        }
+        
+        .category-tag {
+            padding: 6px 14px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 20px;
+            color: #94a3b8;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .category-tag:hover {
+            background: rgba(14, 165, 233, 0.25);
+            color: #e2e8f0;
+        }
+        
+        .category-tag.active {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.4), rgba(34, 197, 94, 0.3));
+            color: #fff;
+            border-color: #0ea5e9;
+        }
+        
+        /* 鐗瑰緛鎺ㄨ崘鍒楄〃 */
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .feature-item {
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            border-left: 3px solid;
+        }
+        
+        .feature-item.core {
+            border-left-color: #22c55e;
+        }
+        
+        .feature-item.pollution {
+            border-left-color: #f59e0b;
+        }
+        
+        .feature-item.auxiliary {
+            border-left-color: #0ea5e9;
+        }
+        
+        .feature-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .feature-title i {
+            font-size: 11px;
+        }
+        
+        .feature-desc {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .feature-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        
+        .tag-core {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .tag-pollution {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        .tag-auxiliary {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+        
+        /* 鍐椾綑鐗瑰緛鎻愮ず */
+        .redundant-alert {
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .redundant-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ef4444;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .redundant-item {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .redundant-item::before {
+            content: '鈥?;
+            position: absolute;
+            left: 6px;
+            color: #ef4444;
+        }
+        
+        /* 姹℃煋绠℃帶娓呭崟 */
+        .control-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .control-item {
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+        
+        .control-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .control-type {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        .control-corr {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+        
+        .control-indicators {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        
+        .control-suggestion {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.5;
+            padding: 8px;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 6px;
+        }
+        
+        /* 鍝嶅簲寮?*/
+        @media (max-width: 1400px) {
+            .content-area {
+                grid-template-columns: 1fr;
+            }
+            .right-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .right-panel .chart-card {
+                flex: 1;
+                min-width: 300px;
+            }
+            .detail-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 鍔ㄧ敾 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* 鐩稿叧绯绘暟鎻愮ず */
+        .corr-legend {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border-radius: 2px;
+        }
+    </style>
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
+</head>
+<body>
+    <!-- 鑳屾櫙瑁呴グ -->
+    <div class="bg-grid"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    
+    <!-- 椤堕儴瀵艰埅 -->
+    <nav class="top-nav">
+        <div class="nav-title">
+            <i class="fa fa-th"></i>
+            鎸囨爣鐩稿叧鎬у垎鏋愪笓椤瑰睆
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="color: #94a3b8; font-size: 13px;">
+                <i class="fa fa-clock-o mr-2"></i>
+                <span id="currentTime">--</span>
+            </div>
+            <button class="nav-back" onclick="goBack()">
+                <i class="fa fa-arrow-left"></i>
+                杩斿洖澶у睆
+            </button>
+        </div>
+    </nav>
+    
+    <!-- 涓诲鍣?-->
+    <div class="main-container">
+        <!-- 椤堕儴鏍稿績缁撹鏍?-->
+        <div class="conclusion-bar animate-fade-in">
+            <div class="conclusion-tag tag-1">
+                <div class="tag-icon">
+                    <i class="fa fa-thermometer-half"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">姘存俯 - 婧惰В姘?/div>
+                    <div class="tag-value">
+                        <span class="corr-value strong-negative">-0.58</span> 寮鸿礋鐩稿叧<br/>
+                        <span class="tag-highlight">瀹屽叏绗﹀悎姘存枃瑙勫緥</span>锛屾暟鎹川閲忓彲闈?
+                    </div>
+                </div>
+            </div>
+            <div class="conclusion-tag tag-2">
+                <div class="tag-icon">
+                    <i class="fa fa-bolt"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">鐢靛鐜?- 楂橀敯閰哥洂鎸囨暟</div>
+                    <div class="tag-value">
+                        <span class="corr-value strong-positive">0.56</span> 寮烘鐩稿叧<br/>
+                        鏈夋満姹℃煋涓庣瀛愭薄鏌?span class="tag-highlight">楂樺害鍚屾簮</span>
+                    </div>
+                </div>
+            </div>
+            <div class="conclusion-tag tag-3">
+                <div class="tag-icon">
+                    <i class="fa fa-flask"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">姘ㄦ爱 - 鎬荤７</div>
+                    <div class="tag-value">
+                        <span class="corr-value medium">0.39</span> 涓瓑姝ｇ浉鍏?br/>
+                        姘７姹℃煋闇€<span class="tag-highlight">鍗忓悓绠℃帶</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 涓讳綋鍐呭鍖?-->
+        <div class="content-area">
+            <!-- 宸︿晶锛氱浉鍏虫€х儹鍔涘浘 -->
+            <div class="chart-card">
+                <div class="corner-decoration corner-tl"></div>
+                <div class="corner-decoration corner-tr"></div>
+                <div class="corner-decoration corner-bl"></div>
+                <div class="corner-decoration corner-br"></div>
+                
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fa fa-th"></i>
+                        鍏ㄦ寚鏍囩浉鍏虫€х儹鍔涘浘
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="corr-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: linear-gradient(90deg, #3b82f6, #fff);"></div>
+                                <span style="color: #3b82f6;">璐熺浉鍏?/span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: linear-gradient(90deg, #fff, #ef4444);"></div>
+                                <span style="color: #ef4444;">姝ｇ浉鍏?/span>
+                            </div>
+                            <div class="legend-item">
+                                <i class="fa fa-square-o" style="color: #f59e0b;"></i>
+                                <span style="color: #f59e0b;">寮虹浉鍏?|r|&gt;0.5)</span>
+                            </div>
+                        </div>
+                        <div class="card-subtitle">鐐瑰嚮鍗曞厓鏍兼煡鐪嬭鎯?/div>
+                    </div>
+                </div>
+                <div class="chart-container" id="heatmapChart"></div>
+                
+                <!-- 璇︽儏闈㈡澘 -->
+                <div class="detail-panel" id="detailPanel">
+                    <div class="detail-header">
+                        <div class="detail-title" id="detailTitle">鎸囨爣鐩稿叧鎬ц鎯?/div>
+                        <button class="detail-close" onclick="closeDetail()">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="detail-content">
+                        <div class="scatter-container" id="scatterChart"></div>
+                        <div class="interpretation">
+                            <div class="interp-item">
+                                <div class="interp-title"><i class="fa fa-line-chart" style="color: #0ea5e9; margin-right: 5px;"></i>鐩稿叧鎬у垎鏋?/div>
+                                <div class="interp-text" id="corrAnalysis">--</div>
+                            </div>
+                            <div class="interp-item">
+                                <div class="interp-title"><i class="fa fa-water" style="color: #22c55e; margin-right: 5px;"></i>姘存枃/鐜瑙ｈ</div>
+                                <div class="interp-text" id="envInterpretation">--</div>
+                            </div>
+                            <div class="interp-item">
+                                <div class="interp-title"><i class="fa fa-lightbulb-o" style="color: #f59e0b; margin-right: 5px;"></i>搴旂敤寤鸿</div>
+                                <div class="interp-text" id="applicationAdvice">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 鍙充晶锛氳緟鍔╁垎鏋愬尯 -->
+            <div class="right-panel">
+                <!-- 鎸囨爣鍒嗙被绛涢€?-->
+                <div class="chart-card">
+                    <div class="corner-decoration corner-tl"></div>
+                    <div class="corner-decoration corner-tr"></div>
+                    <div class="corner-decoration corner-bl"></div>
+                    <div class="corner-decoration corner-br"></div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-tags"></i>
+                            鎸囨爣鍒嗙被绛涢€?
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="category-tags">
+                            <button class="category-tag active" data-category="all" onclick="filterCategory('all')">
+                                <i class="fa fa-th-large"></i> 鍏ㄩ儴
+                            </button>
+                            <button class="category-tag" data-category="physical" onclick="filterCategory('physical')">
+                                <i class="fa fa-thermometer"></i> 鐗╃悊鐢熸€佺被
+                            </button>
+                            <button class="category-tag" data-category="nutrient" onclick="filterCategory('nutrient')">
+                                <i class="fa fa-flask"></i> 钀ュ吇鐩愮被
+                            </button>
+                            <button class="category-tag" data-category="pollution" onclick="filterCategory('pollution')">
+                                <i class="fa fa-warning"></i> 姹℃煋绫?
+                            </button>
+                        </div>
+                        <div style="margin-top: 10px; padding: 10px; background: rgba(14, 165, 233, 0.05); border-radius: 8px; font-size: 11px; color: #64748b; line-height: 1.6;" id="categoryDesc">
+                            鏄剧ず鍏ㄩ儴9椤规寚鏍囩殑鐩稿叧鎬у垎鏋?
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 妯″瀷鐗瑰緛绛涢€夊缓璁?-->
+                <div class="chart-card">
+                    <div class="corner-decoration corner-tl"></div>
+                    <div class="corner-decoration corner-tr"></div>
+                    <div class="corner-decoration corner-bl"></div>
+                    <div class="corner-decoration corner-br"></div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-magic"></i>
+                            LSTM妯″瀷鐗瑰緛寤鸿
+                        </div>
+                    </div>
+                    <div class="chart-container" id="featureContainer">
+                        <div class="feature-list">
+                            <div class="feature-item core">
+                                <div class="feature-title">
+                                    <i class="fa fa-star" style="color: #22c55e;"></i>
+                                    鏍稿績鐗瑰緛
+                                </div>
+                                <div class="feature-desc">涓庡鎸囨爣鐩稿叧锛屼俊鎭噺澶э紝蹇呴』淇濈暀</div>
+                                <div class="feature-tags">
+                                    <span class="feature-tag tag-core">姘存俯</span>
+                                    <span class="feature-tag tag-core">婧惰В姘?/span>
+                                    <span class="feature-tag tag-core">鐢靛鐜?/span>
+                                </div>
+                            </div>
+                            <div class="feature-item pollution">
+                                <div class="feature-title">
+                                    <i class="fa fa-warning" style="color: #f59e0b;"></i>
+                                    姹℃煋鐗瑰緛
+                                </div>
+                                <div class="feature-desc">姹℃煋鎸囨爣锛屽弽鏄犳按璐ㄧ姸鍐?/div>
+                                <div class="feature-tags">
+                                    <span class="feature-tag tag-pollution">姘ㄦ爱</span>
+                                    <span class="feature-tag tag-pollution">鎬荤７</span>
+                                    <span class="feature-tag tag-pollution">楂橀敯閰哥洂鎸囨暟</span>
+                                </div>
+                            </div>
+                            <div class="feature-item auxiliary">
+                                <div class="feature-title">
+                                    <i class="fa fa-plus-circle" style="color: #0ea5e9;"></i>
+                                    杈呭姪鐗瑰緛
+                                </div>
+                                <div class="feature-desc">杈呭姪鍒ゆ柇锛屽彲閫傚綋绮剧畝</div>
+                                <div class="feature-tags">
+                                    <span class="feature-tag tag-auxiliary">PH</span>
+                                    <span class="feature-tag tag-auxiliary">娴婂害</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="redundant-alert" id="redundantAlert">
+                            <div class="redundant-title">
+                                <i class="fa fa-exclamation-triangle"></i>
+                                鍐椾綑鐗瑰緛寤鸿鍓旈櫎
+                            </div>
+                            <div id="redundantList">
+                                <!-- 鍔ㄦ€佺敓鎴?-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 鍚屾簮姹℃煋绠℃帶娓呭崟 -->
+                <div class="chart-card">
+                    <div class="corner-decoration corner-tl"></div>
+                    <div class="corner-decoration corner-tr"></div>
+                    <div class="corner-decoration corner-bl"></div>
+                    <div class="corner-decoration corner-br"></div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-list-check"></i>
+                            鍚屾簮姹℃煋绠℃帶娓呭崟
+                        </div>
+                    </div>
+                    <div class="chart-container" id="controlContainer">
+                        <div class="control-list">
+                            <div class="control-item">
+                                <div class="control-header">
+                                    <div class="control-type">鏈夋満姹℃煋鍚屾簮</div>
+                                    <div class="control-corr">r=0.56</div>
+                                </div>
+                                <div class="control-indicators">鐢靛鐜?脳 楂橀敯閰哥洂鎸囨暟</div>
+                                <div class="control-suggestion">
+                                    鏈夋満姹℃煋涓庣瀛愭薄鏌撳悓婧愶紝寤鸿鍗忓悓鐩戞祴锛岄噸鐐瑰叧娉ㄥ伐涓氬簾姘存帓鏀?
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <div class="control-header">
+                                    <div class="control-type">钀ュ吇鐩愭薄鏌撳悓婧?/div>
+                                    <div class="control-corr">r=0.55</div>
+                                </div>
+                                <div class="control-indicators">姘ㄦ爱 脳 鎬荤７ 脳 鎬绘爱</div>
+                                <div class="control-suggestion">
+                                    姘７姹℃煋楂樺害鐩稿叧锛岄渶鍗忓悓绠℃帶锛岄噸鐐规帶鍒跺啘涓氶潰婧愭薄鏌?
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <div class="control-header">
+                                    <div class="control-type">鐗╃悊鐢熸€佸叧鑱?/div>
+                                    <div class="control-corr">r=-0.58</div>
+                                </div>
+                                <div class="control-indicators">姘存俯 脳 婧惰В姘?/div>
+                                <div class="control-suggestion">
+                                    姘存俯-婧惰В姘ц礋鐩稿叧绗﹀悎鑷劧瑙勫緥锛岄噸鐐瑰叧娉ㄥ瀛ｄ綆姘ф椂娈?
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API鍩虹URL
+        const API_BASE = (() => {
+            if (window.location.protocol === 'file:') {
+                return 'http://127.0.0.1:5001/api';
+            }
+            return `${window.location.origin}/api`;
+        })();
+        
+        let charts = {};
+        let correlationData = null;
+        let rawData = [];
+        
+        // 鎸囨爣鍒嗙被
+        const categoryMap = {
+            'physical': ['姘存俯', '婧惰В姘?, 'PH'],
+            'nutrient': ['姘ㄦ爱', '鎬荤７', '鎬绘爱'],
+            'pollution': ['鐢靛鐜?, '娴婂害', '楂橀敯閰哥洂鎸囨暟']
+        };
+        
+        // 鎸囨爣鑻辨枃鍚嶆槧灏勶紙鐢ㄤ簬鏄剧ず锛?
+        const indicatorNames = ['姘存俯', 'PH', '婧惰В姘?, '鐢靛鐜?, '娴婂害', '楂橀敯閰哥洂鎸囨暟', '姘ㄦ爱', '鎬荤７', '鎬绘爱'];
+        
+        // 鍒濆鍖?        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadRealData();
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            window.addEventListener('resize', function() {
+                Object.values(charts).forEach(chart => chart && chart.resize());
+            });
+        });
+        
+        // 鏇存柊鏃堕棿
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeStr;
+        }
+        
+        // 杩斿洖澶у睆
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+        
+        // 鍒濆鍖栧浘琛?
+        function initCharts() {
+            charts.heatmap = echarts.init(document.getElementById('heatmapChart'));
+        }
+        
+        // 鍔犺浇鐪熷疄鏁版嵁
+        async function loadRealData() {
+            try {
+                showLoading();
+                console.log('[DEBUG] Loading correlation data from:', API_BASE);
+                
+                const response = await fetch(`${API_BASE}/dashboard/correlation-heatmap`);
+                const result = await response.json();
+                
+                console.log('[DEBUG] Correlation response:', result);
+                
+                if (result.success && result.data && result.data.values && result.data.values.length > 0) {
+                    correlationData = result.data;
+                    rawData = result.data.values;
+                    
+                    renderHeatmap();
+                    updateFeatureRecommendations();
+                    updateControlList();
+                    
+                    if (result.data.message) {
+                        showToast(result.data.message);
+                    }
+                } else {
+                    const message = (result.data && result.data.message) || result.error || '鏆傛棤鐪熷疄鐩稿叧鎬ф暟鎹?;
+                    console.warn('[DEBUG] No valid correlation data:', message);
+                    renderNoDataState(message);
+                    showToast(message);
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('[DEBUG] Error loading data:', error);
+                renderNoDataState('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炵浉鍏虫€ф暟鎹?);
+                showToast('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炵浉鍏虫€ф暟鎹?);
+                hideLoading();
+            }
+        }
+
+        function makePairKey(indicator1, indicator2) {
+            return [indicator1, indicator2].sort().join(' | ');
+        }
+
+        function getPairSampleCount(indicator1, indicator2) {
+            if (!correlationData || !correlationData.pair_sample_counts) return 0;
+            return correlationData.pair_sample_counts[makePairKey(indicator1, indicator2)] || 0;
+        }
+
+        function getPairScatterSamples(indicator1, indicator2) {
+            if (!correlationData || !correlationData.scatter_samples) return [];
+            return correlationData.scatter_samples[makePairKey(indicator1, indicator2)] || [];
+        }
+
+        function renderHeatmapEmpty(message) {
+            charts.heatmap.clear();
+            charts.heatmap.setOption({
+                backgroundColor: 'transparent',
+                graphic: {
+                    type: 'text',
+                    left: 'center',
+                    top: 'middle',
+                    style: {
+                        text: message,
+                        fill: '#94a3b8',
+                        font: '14px "Microsoft YaHei"',
+                        textAlign: 'center'
+                    }
+                }
+            }, true);
+        }
+
+        function renderFeatureTags(selector, features, className, emptyLabel) {
+            const container = document.querySelector(selector);
+            if (!container) return;
+            if (features && features.length > 0) {
+                container.innerHTML = features.map(item => `<span class="feature-tag ${className}">${item}</span>`).join('');
+            } else {
+                container.innerHTML = `<span class="feature-tag ${className}">${emptyLabel}</span>`;
+            }
+        }
+
+        function generateCorrelationInterpretation(indicator1, indicator2, correlation, sampleCount) {
+            const absCorr = Math.abs(correlation);
+            const strength = absCorr >= 0.7 ? '寮? : absCorr >= 0.4 ? '涓瓑' : '寮?;
+            const direction = correlation > 0 ? '姝ｇ浉鍏? : '璐熺浉鍏?;
+            return {
+                analysis: `${indicator1} 涓?${indicator2} 鍩轰簬 ${sampleCount} 缁勭湡瀹為厤瀵规牱鏈憟${strength}${direction}锛坮=${correlation}锛塦,
+                environment: correlation > 0
+                    ? '涓ら」鎸囨爣閫氬父鍚屾鍙樺寲锛屽缓璁粨鍚堟帓鏀捐繃绋嬨€佸鑺傚洜绱犲拰涓婁笅娓告壈鍔ㄥ叡鍚屽垎鏋?
+                    : '涓ら」鎸囨爣鍦ㄧ湡瀹炴牱鏈腑瀛樺湪鍙嶅悜鑱斿姩锛屽缓璁噸鐐规帓鏌ユ俯搴︺€佹按鍔ㄥ姏鎴栨不鐞嗘帾鏂藉甫鏉ョ殑鑰﹀悎褰卞搷',
+                application: absCorr >= 0.5
+                    ? '寤鸿灏嗚繖涓ら」鎸囨爣绾冲叆鑱斿姩鐩戞祴娓呭崟锛屼綔涓哄悓婧愭尝鍔ㄦ垨娌荤悊鎴愭晥澶嶆牳鐨勯噸瑕佸弬鑰?
+                    : '寤鸿鎸佺画绉疮鏍锋湰骞剁粨鍚堢珯鐐广€佹椂娈靛拰姹℃煋绫诲瀷鍋氬垎缁勫鏍革紝閬垮厤鍗曟鐩稿叧鎬ц鍋剁劧娉㈠姩鏀惧ぇ'
+            };
+        }
+
+        function renderNoDataState(message) {
+            correlationData = {
+                indicators: indicatorNames,
+                values: [],
+                feature_recommendations: {
+                    core_features: [],
+                    pollution_features: [],
+                    auxiliary_features: [],
+                    redundant_pairs: []
+                },
+                pollution_control: {},
+                pair_sample_counts: {},
+                scatter_samples: {}
+            };
+            rawData = [];
+            renderHeatmapEmpty(message);
+            updateFeatureRecommendations();
+            updateControlList();
+            closeDetail();
+        }
+        
+        // 娓叉煋鐑姏鍥?
+        function renderHeatmap(categoryFilter = 'all') {
+            if (!correlationData) return;
+            
+            let indicators = correlationData.indicators;
+            let values = correlationData.values;
+            
+            // 濡傛灉鏈夎繃婊わ紝閲嶆柊缁勭粐鏁版嵁
+            if (categoryFilter !== 'all' && categoryMap[categoryFilter]) {
+                const filteredIndicators = categoryMap[categoryFilter];
+                const indices = filteredIndicators.map(name => indicators.indexOf(name)).filter(i => i >= 0);
+                
+                indicators = filteredIndicators;
+                values = [];
+                for (let i of indices) {
+                    for (let j of indices) {
+                        const origValue = rawData.find(v => v[0] === i && v[1] === j);
+                        if (origValue) {
+                            values.push([indices.indexOf(i), indices.indexOf(j), origValue[2]]);
+                        }
+                    }
+                }
+            }
+            
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    position: 'top',
+                    formatter: function(params) {
+                        const val = params.data[2];
+                        const currentIndicator1 = indicators[params.data[0]];
+                        const currentIndicator2 = indicators[params.data[1]];
+                        const sampleCount = getPairSampleCount(currentIndicator1, currentIndicator2);
+                        const strength = Math.abs(val) > 0.5 ? '寮? : Math.abs(val) > 0.3 ? '涓瓑' : '寮?;
+                        const direction = val > 0 ? '姝? : '璐?;
+                        return `<div style="font-weight:bold">${currentIndicator1} 脳 ${currentIndicator2}</div>
+                                <div>鐩稿叧绯绘暟: <b style="color:${val > 0 ? '#ef4444' : '#3b82f6'}">${val}</b></div>
+                                <div>鐩稿叧寮哄害: ${strength}${direction}鐩稿叧</div>
+                                <div>閰嶅鏍锋湰: ${sampleCount}</div>
+                                <div style="color:#64748b;font-size:12px;margin-top:5px">鐐瑰嚮鏌ョ湅璇︽儏</div>`;
+                    }
+                },
+                grid: {
+                    top: '10%',
+                    left: '15%',
+                    right: '10%',
+                    bottom: '15%'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: indicators,
+                    splitArea: { show: true },
+                    axisLabel: {
+                        color: '#e2e8f0',
+                        fontSize: 11,
+                        rotate: 45
+                    },
+                    axisLine: { show: false }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: indicators,
+                    splitArea: { show: true },
+                    axisLabel: {
+                        color: '#e2e8f0',
+                        fontSize: 11
+                    },
+                    axisLine: { show: false }
+                },
+                visualMap: {
+                    min: -1,
+                    max: 1,
+                    calculable: true,
+                    orient: 'horizontal',
+                    left: 'center',
+                    bottom: '0%',
+                    itemWidth: 15,
+                    itemHeight: 100,
+                    inRange: {
+                        color: ['#3b82f6', '#ffffff', '#ef4444']
+                    },
+                    textStyle: { color: '#94a3b8', fontSize: 10 }
+                },
+                series: [{
+                    name: '鐩稿叧鎬?,
+                    type: 'heatmap',
+                    data: values,
+                    label: {
+                        show: true,
+                        color: function(params) {
+                            const val = params.data[2];
+                            return Math.abs(val) > 0.5 ? '#fff' : '#1e293b';
+                        },
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                        formatter: function(params) {
+                            return params.data[2].toFixed(2);
+                        }
+                    },
+                    itemStyle: {
+                        borderColor: function(params) {
+                            const val = params.data[2];
+                            // 寮虹浉鍏冲崟鍏冩牸楂樹寒杈规
+                            return Math.abs(val) > 0.5 ? '#f59e0b' : 'transparent';
+                        },
+                        borderWidth: function(params) {
+                            const val = params.data[2];
+                            return Math.abs(val) > 0.5 ? 2 : 0;
+                        }
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+            };
+            
+            charts.heatmap.setOption(option, true);
+            
+            // 鐐瑰嚮浜嬩欢
+            charts.heatmap.off('click');
+            charts.heatmap.on('click', function(params) {
+                const i = params.data[0];
+                const j = params.data[1];
+                const val = params.data[2];
+                
+                showDetail(indicators[i], indicators[j], val);
+            });
+        }
+        
+        // 鏄剧ず璇︽儏
+        function showDetail(indicator1, indicator2, correlation) {
+            if (indicator1 === indicator2) return;
+            
+            const panel = document.getElementById('detailPanel');
+            const title = document.getElementById('detailTitle');
+            const sampleCount = getPairSampleCount(indicator1, indicator2);
+            
+            title.innerHTML = `${indicator1} 脳 ${indicator2} <span style="color:${correlation > 0 ? '#ef4444' : '#3b82f6'};margin-left:10px">r=${correlation}</span><span style="color:#94a3b8;margin-left:10px">n=${sampleCount}</span>`;
+            
+            const interp = generateCorrelationInterpretation(indicator1, indicator2, correlation, sampleCount);
+            
+            document.getElementById('corrAnalysis').textContent = interp.analysis;
+            document.getElementById('envInterpretation').textContent = interp.environment;
+            document.getElementById('applicationAdvice').textContent = interp.application;
+            
+            panel.classList.add('active');
+            
+            // 娓叉煋鏁ｇ偣鍥?
+            setTimeout(() => renderScatterChart(indicator1, indicator2, correlation), 100);
+            
+            // 婊氬姩鍒拌鎯呴潰鏉?
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // 鍏抽棴璇︽儏
+        function closeDetail() {
+            document.getElementById('detailPanel').classList.remove('active');
+        }
+        
+        // 娓叉煋鏁ｇ偣鍥?
+        function renderScatterChart(indicator1, indicator2, correlation) {
+            const chartDom = document.getElementById('scatterChart');
+            if (!chartDom) return;
+            
+            if (charts.scatter) {
+                charts.scatter.dispose();
+            }
+            charts.scatter = echarts.init(chartDom);
+            
+            const scatterData = getPairScatterSamples(indicator1, indicator2);
+            if (!scatterData.length) {
+                charts.scatter.setOption({
+                    backgroundColor: 'transparent',
+                    graphic: {
+                        type: 'text',
+                        left: 'center',
+                        top: 'middle',
+                        style: {
+                            text: '鏆傛棤鐪熷疄閰嶅鏁ｇ偣鏍锋湰',
+                            fill: '#94a3b8',
+                            font: '14px "Microsoft YaHei"',
+                            textAlign: 'center'
+                        }
+                    }
+                }, true);
+                return;
+            }
+
+            const xValues = scatterData.map(item => item[0]);
+            const yValues = scatterData.map(item => item[1]);
+            const meanX = xValues.reduce((sum, value) => sum + value, 0) / xValues.length;
+            const meanY = yValues.reduce((sum, value) => sum + value, 0) / yValues.length;
+            let numerator = 0;
+            let denominator = 0;
+            xValues.forEach((value, index) => {
+                numerator += (value - meanX) * (yValues[index] - meanY);
+                denominator += (value - meanX) * (value - meanX);
+            });
+
+            let trendLine = [];
+            if (denominator > 0) {
+                const slope = numerator / denominator;
+                const intercept = meanY - slope * meanX;
+                const minX = Math.min(...xValues);
+                const maxX = Math.max(...xValues);
+                trendLine = [
+                    [minX, slope * minX + intercept],
+                    [maxX, slope * maxX + intercept]
+                ];
+            }
+            
+            const option = {
+                backgroundColor: 'transparent',
+                grid: { top: 30, left: 50, right: 20, bottom: 40 },
+                xAxis: {
+                    type: 'value',
+                    name: indicator1,
+                    nameLocation: 'middle',
+                    nameGap: 25,
+                    nameTextStyle: { color: '#94a3b8', fontSize: 11 },
+                    axisLabel: { color: '#64748b', fontSize: 9 },
+                    splitLine: { lineStyle: { color: 'rgba(148,163,184,0.1)' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: indicator2,
+                    nameLocation: 'middle',
+                    nameGap: 35,
+                    nameTextStyle: { color: '#94a3b8', fontSize: 11 },
+                    axisLabel: { color: '#64748b', fontSize: 9 },
+                    splitLine: { lineStyle: { color: 'rgba(148,163,184,0.1)' } }
+                },
+                series: [{
+                    type: 'scatter',
+                    data: scatterData,
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: correlation > 0 ? 'rgba(239,68,68,0.6)' : 'rgba(59,130,246,0.6)',
+                        borderColor: correlation > 0 ? '#ef4444' : '#3b82f6',
+                        borderWidth: 1
+                    }
+                }, {
+                    type: 'line',
+                    data: trendLine,
+                    smooth: false,
+                    symbol: 'none',
+                    lineStyle: {
+                        color: correlation > 0 ? '#ef4444' : '#3b82f6',
+                        width: 2,
+                        type: 'dashed'
+                    }
+                }]
+            };
+            
+            charts.scatter.setOption(option);
+        }
+        
+        // 绛涢€夊垎绫?
+        function filterCategory(category) {
+            // 鏇存柊鎸夐挳鐘舵€?
+            document.querySelectorAll('.category-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            // 鏇存柊鎻忚堪
+            const descMap = {
+                'all': '鏄剧ず鍏ㄩ儴9椤规寚鏍囩殑鐩稿叧鎬у垎鏋?,
+                'physical': '鐗╃悊鐢熸€佺被鎸囨爣锛氭按娓┿€佹憾瑙ｆ哀銆丳H',
+                'nutrient': '钀ュ吇鐩愮被鎸囨爣锛氭皑姘€佹€荤７銆佹€绘爱',
+                'pollution': '姹℃煋绫绘寚鏍囷細鐢靛鐜囥€佹祳搴︺€侀珮閿伴吀鐩愭寚鏁?
+            };
+            document.getElementById('categoryDesc').textContent = descMap[category];
+            
+            // 閲嶆柊娓叉煋鐑姏鍥?
+            renderHeatmap(category);
+            
+            // 鍏抽棴璇︽儏闈㈡澘
+            closeDetail();
+        }
+        
+        // 鏇存柊鐗瑰緛鎺ㄨ崘
+        function updateFeatureRecommendations() {
+            if (!correlationData || !correlationData.feature_recommendations) return;
+            
+            const rec = correlationData.feature_recommendations;
+            const redundantList = document.getElementById('redundantList');
+            renderFeatureTags('.feature-item.core .feature-tags', rec.core_features, 'tag-core', '鏆傛棤鐪熷疄鎺ㄨ崘');
+            renderFeatureTags('.feature-item.pollution .feature-tags', rec.pollution_features, 'tag-pollution', '鏆傛棤鐪熷疄鎺ㄨ崘');
+            renderFeatureTags('.feature-item.auxiliary .feature-tags', rec.auxiliary_features, 'tag-auxiliary', '鏆傛棤鐪熷疄鎺ㄨ崘');
+            
+            if (rec.redundant_pairs && rec.redundant_pairs.length > 0) {
+                redundantList.innerHTML = rec.redundant_pairs.map(pair => `
+                    <div class="redundant-item">
+                        <b>淇濈暀 ${pair.keep}</b>锛屽墧闄?${pair.remove}<br/>
+                        <span style="color:#64748b">鍘熷洜锛?{pair.reason}</span>
+                    </div>
+                `).join('');
+            } else {
+                redundantList.innerHTML = '<div class="redundant-item">鏆傛棤鍐椾綑鐗瑰緛寤鸿</div>';
+            }
+        }
+        
+        // 鏇存柊绠℃帶娓呭崟
+        function updateControlList() {
+            const pc = correlationData.pollution_control;
+            const container = document.getElementById('controlContainer');
+            if (!pc || Object.keys(pc).length === 0) {
+                container.innerHTML = `
+                    <div class="control-list">
+                        <div class="control-item">
+                            <div class="control-header">
+                                <div class="control-type">鏆傛棤鐪熷疄鑱斿姩鍏崇郴</div>
+                            </div>
+                            <div class="control-suggestion">褰撳墠鏁版嵁搴撴牱鏈笉瓒充互鐢熸垚鑱斿姩绠℃帶寤鸿</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div class="control-list">';
+            
+            Object.entries(pc).forEach(([key, item]) => {
+                html += `
+                    <div class="control-item">
+                        <div class="control-header">
+                            <div class="control-type">${item.title || (key === 'organic_pollution' ? '鏈夋満姹℃煋鍚屾簮' : key === 'nutrient_pollution' ? '钀ュ吇鐩愭薄鏌撳悓婧? : '鐗╃悊鐢熸€佸叧鑱?)}</div>
+                            <div class="control-corr">r=${item.correlation}</div>
+                        </div>
+                        <div class="control-indicators">${item.indicators.join(' 脳 ')}</div>
+                        <div class="control-suggestion" style="margin-bottom:6px;color:#64748b">閰嶅鏍锋湰: ${item.sample_count || 0}</div>
+                        <div class="control-suggestion">${item.suggestion}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // 鏄剧ず鍔犺浇鐘舵€?        function showLoading() {
+            document.body.style.cursor = 'wait';
+        }
+        
+        // 闅愯棌鍔犺浇鐘舵€?
+        function hideLoading() {
+            document.body.style.cursor = 'default';
+        }
+        
+        // Toast鎻愮ず
+        function showToast(message) {
+            const existing = document.querySelector('.toast-message');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 80px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: linear-gradient(135deg, rgba(14, 165, 233, 0.9), rgba(34, 197, 94, 0.9));
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    z-index: 10000;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                ">${message}</div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
+

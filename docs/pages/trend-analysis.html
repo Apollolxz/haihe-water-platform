@@ -1,0 +1,2041 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>娴锋渤鍏煙 - 鏃跺簭瓒嬪娍涓撻」鍒嗘瀽灞?/title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        'primary-dark': '#0284c7',
+                        secondary: '#22c55e',
+                        'secondary-dark': '#16a34a',
+                        accent: '#06b6d4',
+                        'accent-dark': '#0891b2',
+                        water: '#3b82f6',
+                        'water-dark': '#2563eb',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b',
+                        'dark-lighter': '#334155',
+                        'level-1': '#00e400',
+                        'level-2': '#ffff00',
+                        'level-3': '#ff7e00',
+                        'level-4': '#ff0000',
+                        'level-5': '#99004c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0a0f1c 0%, #0d1321 50%, #0a0f1c 100%);
+            color: #fff;
+        }
+        
+        /* 绉戞妧鎰熻儗鏅綉鏍?*/
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 鍙戝厜瑁呴グ */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glow-orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+        }
+        
+        .glow-orb-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%);
+        }
+        
+        /* 涓诲鍣?*/
+        .main-container {
+            position: relative;
+            top: 64px;
+            left: 0;
+            right: 0;
+            min-height: calc(100vh - 64px);
+            padding: 20px;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+        
+        /* 椤堕儴瀵艰埅鏍?*/
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+        
+        .nav-title {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #0ea5e9, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-back {
+            padding: 8px 20px;
+            background: rgba(14, 165, 233, 0.15);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            border-radius: 6px;
+            color: #0ea5e9;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .nav-back:hover {
+            background: rgba(14, 165, 233, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        /* 鏍稿績缁撹鏍?*/
+        .conclusion-bar {
+            display: flex;
+            gap: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, 
+                rgba(14, 165, 233, 0.1) 0%, 
+                rgba(34, 197, 94, 0.05) 50%,
+                rgba(14, 165, 233, 0.1) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .conclusion-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #0ea5e9 20%, 
+                #22c55e 50%, 
+                #0ea5e9 80%, 
+                transparent 100%);
+        }
+        
+        .conclusion-tag {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+        
+        .conclusion-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .conclusion-tag.tag-1 {
+            border-color: rgba(0, 228, 0, 0.4);
+            background: linear-gradient(135deg, rgba(0, 228, 0, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .conclusion-tag.tag-2 {
+            border-color: rgba(14, 165, 233, 0.4);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .conclusion-tag.tag-3 {
+            border-color: rgba(34, 197, 94, 0.4);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
+        
+        .tag-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .tag-1 .tag-icon {
+            background: rgba(0, 228, 0, 0.2);
+            color: #00e400;
+        }
+        
+        .tag-2 .tag-icon {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+        
+        .tag-3 .tag-icon {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .tag-content {
+            flex: 1;
+        }
+        
+        .tag-title {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        
+        .tag-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        
+        .tag-highlight {
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        /* 涓讳綋鍐呭鍖?*/
+        .content-area {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 20px;
+            min-height: 800px;
+        }
+        
+        /* 鍥捐〃鍗＄墖 */
+        .chart-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 绉戞妧鎰熷洓瑙掕楗?*/
+        .chart-card::before,
+        .chart-card::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0ea5e9;
+        }
+        
+        .chart-card::before {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+        }
+        
+        .chart-card::after {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .corner-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0ea5e9;
+        }
+        
+        .corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; border-top-left-radius: 8px; }
+        .corner-tr { top: 0; right: 0; border-left: none; border-bottom: none; border-top-right-radius: 8px; }
+        .corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
+        .corner-br { bottom: 0; right: 0; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
+        
+        /* 鍗＄墖鏍囬 */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: #0ea5e9;
+            font-size: 18px;
+        }
+        
+        .card-subtitle {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        /* 鍥捐〃瀹瑰櫒 */
+        .chart-container {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+        
+        /* 涓昏瑙夊尯 */
+        .main-visual {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: fit-content;
+        }
+        
+        .indicator-chart {
+            height: 280px;
+            min-height: 280px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 10px;
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .indicator-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .indicator-name {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .indicator-name.do { color: #0ea5e9; }
+        .indicator-name.ph { color: #22c55e; }
+        .indicator-name.nh { color: #f59e0b; }
+        
+        .indicator-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .badge-level-1 { background: rgba(0, 228, 0, 0.2); color: #00e400; border: 1px solid rgba(0, 228, 0, 0.3); }
+        .badge-level-2 { background: rgba(255, 255, 0, 0.2); color: #ffff00; border: 1px solid rgba(255, 255, 0, 0.3); }
+        .badge-level-3 { background: rgba(255, 126, 0, 0.2); color: #ff7e00; border: 1px solid rgba(255, 126, 0, 0.3); }
+        
+        .indicator-chart-container {
+            flex: 1;
+            min-height: 0;
+        }
+        
+        /* 鍙充晶杈呭姪鍒嗘瀽鍖?*/
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: fit-content;
+        }
+        
+        .right-panel .chart-card {
+            min-height: 200px;
+        }
+        
+        /* 缁熻琛ㄦ牸鏍峰紡 */
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        
+        .stats-table th,
+        .stats-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+        }
+        
+        .stats-table th {
+            background: rgba(14, 165, 233, 0.1);
+            color: #0ea5e9;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        
+        .stats-table td {
+            color: #e2e8f0;
+        }
+        
+        .stats-table tr:hover td {
+            background: rgba(14, 165, 233, 0.05);
+        }
+        
+        .stats-indicator {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .stats-indicator.do { color: #0ea5e9; }
+        .stats-indicator.ph { color: #22c55e; }
+        .stats-indicator.nh { color: #f59e0b; }
+        
+        /* 瓒嬪娍妫€楠岀粨鏋?*/
+        .trend-result {
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            border-left: 3px solid #0ea5e9;
+            margin-bottom: 10px;
+        }
+        
+        .trend-result:last-child {
+            margin-bottom: 0;
+        }
+        
+        .trend-label {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        
+        .trend-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .trend-status {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .status-improving {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .status-stable {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+        
+        /* 宸ュ叿鏍?*/
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .tool-btn {
+            padding: 6px 14px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 6px;
+            color: #94a3b8;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .tool-btn:hover {
+            background: rgba(14, 165, 233, 0.25);
+            color: #e2e8f0;
+        }
+        
+        .tool-btn.active {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.4), rgba(34, 197, 94, 0.3));
+            color: #fff;
+            border-color: #0ea5e9;
+        }
+        
+        /* 姘磋川绛夌骇鍥句緥 */
+        .level-legend {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        /* 鑷畾涔夋粴鍔ㄦ潯 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.5), rgba(34, 197, 94, 0.5));
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.7), rgba(34, 197, 94, 0.7));
+        }
+        
+        /* 鍝嶅簲寮?*/
+        @media (max-width: 1400px) {
+            .content-area {
+                grid-template-columns: 1fr 320px;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .content-area {
+                grid-template-columns: 1fr;
+            }
+            .right-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .right-panel .chart-card {
+                flex: 1;
+                min-width: 300px;
+            }
+        }
+        
+        /* 鍔ㄧ敾 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
+</head>
+<body>
+    <!-- 鑳屾櫙瑁呴グ -->
+    <div class="bg-grid"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    
+    <!-- 椤堕儴瀵艰埅 -->
+    <nav class="top-nav">
+        <div class="nav-title">
+            <i class="fa fa-line-chart"></i>
+            鏃跺簭瓒嬪娍涓撻」鍒嗘瀽灞?
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="color: #94a3b8; font-size: 13px;">
+                <i class="fa fa-clock-o mr-2"></i>
+                <span id="currentTime">--</span>
+            </div>
+            <button class="nav-back" onclick="goBack()">
+                <i class="fa fa-arrow-left"></i>
+                杩斿洖澶у睆
+            </button>
+        </div>
+    </nav>
+    
+    <!-- 涓诲鍣?-->
+    <div class="main-container">
+        <!-- 椤堕儴鏍稿績缁撹鏍?-->
+        <div class="conclusion-bar animate-fade-in">
+            <div class="conclusion-tag tag-1">
+                <div class="tag-icon">
+                    <i class="fa fa-tint"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">婧惰В姘ц揪鏍囨儏鍐?/div>
+                    <div class="tag-value">
+                        <span class="tag-highlight">95%</span> 浠ヤ笂鏃堕棿杈?<span class="tag-highlight">鈪犵被</span> 鏍囧噯
+                    </div>
+                </div>
+            </div>
+            <div class="conclusion-tag tag-2">
+                <div class="tag-icon">
+                    <i class="fa fa-flask"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">PH 绋冲畾鑼冨洿</div>
+                    <div class="tag-value">
+                        鍏ㄧ▼绋冲畾鍦?<span class="tag-highlight">8.0-8.5</span>锛?00% 绗﹀悎鍥芥爣
+                    </div>
+                </div>
+            </div>
+            <div class="conclusion-tag tag-3">
+                <div class="tag-icon">
+                    <i class="fa fa-filter"></i>
+                </div>
+                <div class="tag-content">
+                    <div class="tag-title">姘ㄦ爱杈炬爣鎯呭喌</div>
+                    <div class="tag-value">
+                        <span class="tag-highlight">90%</span> 浠ヤ笂鏃堕棿杈?<span class="tag-highlight">鈪＄被</span> 鏍囧噯锛屾棤瓒呮爣
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 涓讳綋鍐呭鍖?-->
+        <div class="content-area">
+            <!-- 宸︿晶锛氫富瑙嗚鍖?-->
+            <div class="chart-card main-visual">
+                <div class="corner-decoration corner-tl"></div>
+                <div class="corner-decoration corner-tr"></div>
+                <div class="corner-decoration corner-bl"></div>
+                <div class="corner-decoration corner-br"></div>
+                
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fa fa-area-chart"></i>
+                        涓夋寚鏍囧垎鏍忔椂搴忚秼鍔垮浘
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="level-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #00e400;"></div>
+                                <span style="color: #00e400;">鈪犵被</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #ffff00;"></div>
+                                <span style="color: #ffff00;">鈪＄被</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #ff7e00;"></div>
+                                <span style="color: #ff7e00;">鈪㈢被</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #ff0000;"></div>
+                                <span style="color: #ff0000;">鈪ｇ被</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #99004c;"></div>
+                                <span style="color: #99004c;">鈪ょ被</span>
+                            </div>
+                        </div>
+                        <div class="card-subtitle">鍏ㄥ懆鏈熸椂闂寸淮搴﹀彉鍖栬寰?/div>
+                    </div>
+                </div>
+                
+                <!-- 宸ュ叿鏍?-->
+                <div class="toolbar">
+                    <button class="tool-btn active" onclick="switchView('all')">
+                        <i class="fa fa-th-large"></i>鍏ㄦ寚鏍囪鍥?
+                    </button>
+                    <button class="tool-btn" onclick="switchView('do')">
+                        <i class="fa fa-tint"></i>婧惰В姘ф斁澶?
+                    </button>
+                    <button class="tool-btn" onclick="switchView('ph')">
+                        <i class="fa fa-flask"></i>PH鏀惧ぇ
+                    </button>
+                    <button class="tool-btn" onclick="switchView('nh')">
+                        <i class="fa fa-filter"></i>姘ㄦ爱鏀惧ぇ
+                    </button>
+                    <button class="tool-btn" onclick="toggleCompare()">
+                        <i class="fa fa-exchange"></i>澶氭寚鏍囧姣?
+                    </button>
+                </div>
+                
+                <!-- 婧惰В姘у浘琛?-->
+                <div class="indicator-chart" id="doChartContainer" style="height: 280px;">
+                    <div class="indicator-header">
+                        <div class="indicator-name do">
+                            <i class="fa fa-tint"></i>
+                            婧惰В姘?(DO)
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <span class="indicator-badge badge-level-1">鈪犵被 鈮?.5</span>
+                            <span class="indicator-badge badge-level-2">鈪＄被 鈮?.0</span>
+                            <span class="indicator-badge badge-level-3">鈪㈢被 鈮?.0</span>
+                        </div>
+                    </div>
+                    <div class="indicator-chart-container" id="doChart"></div>
+                </div>
+                
+                <!-- PH鍥捐〃 -->
+                <div class="indicator-chart" id="phChartContainer" style="height: 280px;">
+                    <div class="indicator-header">
+                        <div class="indicator-name ph">
+                            <i class="fa fa-flask"></i>
+                            PH 鍊?
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <span class="indicator-badge badge-level-1">鍥芥爣 6-9</span>
+                        </div>
+                    </div>
+                    <div class="indicator-chart-container" id="phChart"></div>
+                </div>
+                
+                <!-- 姘ㄦ爱鍥捐〃 -->
+                <div class="indicator-chart" id="nhChartContainer" style="height: 280px;">
+                    <div class="indicator-header">
+                        <div class="indicator-name nh">
+                            <i class="fa fa-filter"></i>
+                            姘ㄦ爱 (NH鈧?N)
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <span class="indicator-badge badge-level-1">鈪犵被 鈮?.15</span>
+                            <span class="indicator-badge badge-level-2">鈪＄被 鈮?.50</span>
+                            <span class="indicator-badge badge-level-3">鈪㈢被 鈮?.0</span>
+                        </div>
+                    </div>
+                    <div class="indicator-chart-container" id="nhChart"></div>
+                </div>
+            </div>
+            
+            <!-- 鍙充晶锛氳緟鍔╁垎鏋愬尯 -->
+            <div class="right-panel">
+                <!-- 鎸囨爣鏋佸€肩粺璁¤〃 -->
+                <div class="chart-card" style="min-height: 220px;">
+                    <div class="corner-decoration corner-tl"></div>
+                    <div class="corner-decoration corner-tr"></div>
+                    <div class="corner-decoration corner-bl"></div>
+                    <div class="corner-decoration corner-br"></div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-table"></i>
+                            鎸囨爣鏋佸€肩粺璁¤〃
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>鎸囨爣</th>
+                                    <th>鏈€澶у€?/th>
+                                    <th>鏈€灏忓€?/th>
+                                    <th>骞冲潎鍊?/th>
+                                    <th>涓綅鍊?/th>
+                                    <th>杈炬爣鐜?/th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="stats-indicator do">
+                                            <i class="fa fa-tint"></i>婧惰В姘?
+                                        </div>
+                                    </td>
+                                    <td style="color: #22c55e;">12.5</td>
+                                    <td style="color: #f59e0b;">6.8</td>
+                                    <td>9.59</td>
+                                    <td>9.43</td>
+                                    <td style="color: #22c55e; font-weight: bold;">100%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="stats-indicator ph">
+                                            <i class="fa fa-flask"></i>PH
+                                        </div>
+                                    </td>
+                                    <td style="color: #22c55e;">8.8</td>
+                                    <td style="color: #22c55e;">7.8</td>
+                                    <td>8.14</td>
+                                    <td>8.1</td>
+                                    <td style="color: #22c55e; font-weight: bold;">100%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="stats-indicator nh">
+                                            <i class="fa fa-filter"></i>姘ㄦ爱
+                                        </div>
+                                    </td>
+                                    <td style="color: #f59e0b;">0.45</td>
+                                    <td style="color: #22c55e;">0.02</td>
+                                    <td>0.167</td>
+                                    <td>0.15</td>
+                                    <td style="color: #22c55e; font-weight: bold;">98.5%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- 鍒嗘椂娈佃秼鍔垮姣?-->
+                <div class="chart-card" style="min-height: 280px;">
+                    <div class="corner-decoration corner-tl"></div>
+                    <div class="corner-decoration corner-tr"></div>
+                    <div class="corner-decoration corner-bl"></div>
+                    <div class="corner-decoration corner-br"></div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-bar-chart"></i>
+                            鍒嗘椂娈佃秼鍔垮姣?
+                        </div>
+                        <div class="card-subtitle">姹涙湡/闈炴睕鏈熴€佸勾搴﹀潎鍊?/div>
+                    </div>
+                    <div class="chart-container" id="seasonChart"></div>
+                </div>
+                
+                <!-- 瓒嬪娍妫€楠岀粨鏋?-->
+                <div class="chart-card" style="min-height: 240px;">
+                    <div class="corner-decoration corner-tl"></div>
+                    <div class="corner-decoration corner-tr"></div>
+                    <div class="corner-decoration corner-bl"></div>
+                    <div class="corner-decoration corner-br"></div>
+                    
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa fa-check-circle"></i>
+                            Mann-Kendall 瓒嬪娍妫€楠?
+                        </div>
+                    </div>
+                    <div class="chart-container" id="trendTestContainer">
+                        <div class="trend-result">
+                            <div class="trend-label">婧惰В姘ц秼鍔?/div>
+                            <div class="trend-value" id="doTrend">
+                                <i class="fa fa-spinner fa-spin" style="color: #0ea5e9;"></i>
+                                璁＄畻涓?..
+                            </div>
+                        </div>
+                        <div class="trend-result">
+                            <div class="trend-label">PH 绋冲畾鎬?/div>
+                            <div class="trend-value" id="phTrend">
+                                <i class="fa fa-spinner fa-spin" style="color: #0ea5e9;"></i>
+                                璁＄畻涓?..
+                            </div>
+                        </div>
+                        <div class="trend-result">
+                            <div class="trend-label">姘ㄦ爱鍙樺寲</div>
+                            <div class="trend-value" id="nhTrend">
+                                <i class="fa fa-spinner fa-spin" style="color: #0ea5e9;"></i>
+                                璁＄畻涓?..
+                            </div>
+                        </div>
+                        <div style="margin-top: 12px; padding: 10px; background: rgba(14, 165, 233, 0.05); border-radius: 6px; font-size: 11px; color: #64748b; line-height: 1.6;" id="trendConclusion">
+                            <i class="fa fa-info-circle" style="color: #0ea5e9; margin-right: 5px;"></i>
+                            姝ｅ湪鍒嗘瀽姘磋川鍙樺寲瓒嬪娍...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API鍩虹URL
+        const API_BASE = (() => {
+            if (window.location.protocol === 'file:') {
+                return 'http://127.0.0.1:5001/api';
+            }
+            return `${window.location.origin}/api`;
+        })();
+        
+        let charts = {};
+        let currentView = 'all';
+        
+        // 鐪熷疄鏁版嵁瀛樺偍
+        const timeSeriesData = {
+            dates: [],
+            dissolved_oxygen: [],
+            ph: [],
+            ammonia_nitrogen: []
+        };
+        
+        // 缁熻鏁版嵁瀛樺偍
+        const statsData = {
+            do: { max: 0, min: 0, avg: 0, median: 0, compliance: 0 },
+            ph: { max: 0, min: 0, avg: 0, median: 0, compliance: 0 },
+            nh: { max: 0, min: 0, avg: 0, median: 0, compliance: 0 }
+        };
+        
+        // 鍒濆鍖?
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadRealData();
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            window.addEventListener('resize', function() {
+                Object.values(charts).forEach(chart => chart && chart.resize());
+            });
+        });
+        
+        // 鍔犺浇鐪熷疄鏁版嵁
+        async function loadRealData() {
+            try {
+                showLoading();
+                console.log('[DEBUG] Loading trend analysis data from:', API_BASE);
+                
+                // 骞惰鍔犺浇鏃跺簭鏁版嵁鍜岀粺璁℃暟鎹?
+                const [timeseriesRes, overviewRes, boxplotRes] = await Promise.all([
+                    fetch(`${API_BASE}/dashboard/timeseries-data`).then(r => {
+                        console.log('[DEBUG] Timeseries response status:', r.status);
+                        return r.json();
+                    }).catch(e => {
+                        console.error('[DEBUG] Timeseries fetch error:', e);
+                        return { success: false, error: e.message };
+                    }),
+                    fetch(`${API_BASE}/dashboard/overview-stats`).then(r => r.json()).catch(e => {
+                        console.error('[DEBUG] Overview fetch error:', e);
+                        return { success: false };
+                    }),
+                    fetch(`${API_BASE}/dashboard/boxplot-data`).then(r => r.json()).catch(e => {
+                        console.error('[DEBUG] Boxplot fetch error:', e);
+                        return { success: false };
+                    })
+                ]);
+                
+                console.log('[DEBUG] Timeseries response:', timeseriesRes);
+                
+                if (timeseriesRes.success && timeseriesRes.data && timeseriesRes.data.dates && timeseriesRes.data.dates.length > 0) {
+                    console.log('[DEBUG] Processing timeseries data:', timeseriesRes.data);
+                    timeSeriesData.dates = timeseriesRes.data.dates;
+                    timeSeriesData.dissolved_oxygen = timeseriesRes.data.dissolved_oxygen;
+                    timeSeriesData.ph = timeseriesRes.data.ph;
+                    timeSeriesData.ammonia_nitrogen = timeseriesRes.data.ammonia_nitrogen;
+                    
+                    // 鏇存柊鍥捐〃
+                    renderDOChart();
+                    renderPHChart();
+                    renderNHChart();
+                    
+                    // 璁＄畻骞舵洿鏂扮粺璁℃暟鎹?
+                    calculateStats();
+                    updateStatsTable();
+                    
+                    // 鏇存柊鍒嗘椂娈靛姣斿浘
+                    renderSeasonChart();
+                    
+                    // 鏇存柊瓒嬪娍妫€楠岀粨鏋?
+                    updateTrendAnalysis();
+                    
+                    if (timeseriesRes.data.message) {
+                        showToast(timeseriesRes.data.message);
+                    }
+                } else {
+                    const message = (timeseriesRes.data && timeseriesRes.data.message) || timeseriesRes.error || '鏆傛棤鐪熷疄鏃跺簭鏁版嵁';
+                    console.warn('[DEBUG] No valid timeseries data:', message);
+                    renderNoDataState(message);
+                    showToast(message);
+                }
+                
+                // 澶勭悊绠辩嚎鍥炬暟鎹紙鐢ㄤ簬鏋佸€肩粺璁★級
+                if (boxplotRes.success && boxplotRes.data && timeSeriesData.dates.length > 0) {
+                    updateStatsFromBoxplot(boxplotRes.data);
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('[DEBUG] Global error:', error);
+                renderNoDataState('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炴椂搴忔暟鎹?);
+                showToast('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炴椂搴忔暟鎹?);
+                hideLoading();
+            }
+        }
+
+        function setStatsPlaceholder() {
+            statsData.do = { max: '--', min: '--', avg: '--', median: '--', compliance: '--' };
+            statsData.ph = { max: '--', min: '--', avg: '--', median: '--', compliance: '--' };
+            statsData.nh = { max: '--', min: '--', avg: '--', median: '--', compliance: '--' };
+        }
+
+        function renderChartEmpty(chart, message) {
+            if (!chart) return;
+            chart.clear();
+            chart.setOption({
+                backgroundColor: 'transparent',
+                graphic: {
+                    type: 'text',
+                    left: 'center',
+                    top: 'middle',
+                    style: {
+                        text: message,
+                        fill: '#94a3b8',
+                        font: '14px "Microsoft YaHei"',
+                        textAlign: 'center'
+                    }
+                }
+            }, true);
+        }
+
+        function renderNoDataState(message) {
+            timeSeriesData.dates = [];
+            timeSeriesData.dissolved_oxygen = [];
+            timeSeriesData.ph = [];
+            timeSeriesData.ammonia_nitrogen = [];
+
+            setStatsPlaceholder();
+            updateStatsTable();
+            updateConclusionBar(true);
+
+            const emptyMessage = message || '鏆傛棤鐪熷疄鏃跺簭鏁版嵁';
+            renderChartEmpty(charts.do, emptyMessage);
+            renderChartEmpty(charts.ph, emptyMessage);
+            renderChartEmpty(charts.nh, emptyMessage);
+            renderChartEmpty(charts.season, emptyMessage);
+
+            const doEl = document.getElementById('doTrend');
+            const phEl = document.getElementById('phTrend');
+            const nhEl = document.getElementById('nhTrend');
+            const conclusionEl = document.getElementById('trendConclusion');
+
+            if (doEl) doEl.innerHTML = '<i class="fa fa-minus" style="color: #64748b;"></i> 鏆傛棤鐪熷疄瓒嬪娍鏁版嵁 <span class="trend-status status-stable">寰呰ˉ鍏?/span>';
+            if (phEl) phEl.innerHTML = '<i class="fa fa-minus" style="color: #64748b;"></i> 鏆傛棤鐪熷疄瓒嬪娍鏁版嵁 <span class="trend-status status-stable">寰呰ˉ鍏?/span>';
+            if (nhEl) nhEl.innerHTML = '<i class="fa fa-minus" style="color: #64748b;"></i> 鏆傛棤鐪熷疄瓒嬪娍鏁版嵁 <span class="trend-status status-stable">寰呰ˉ鍏?/span>';
+            if (conclusionEl) {
+                conclusionEl.innerHTML = `
+                    <i class="fa fa-info-circle" style="color: #64748b; margin-right: 5px;"></i>
+                    ${emptyMessage}
+                `;
+            }
+        }
+        
+        // 鏄剧ず鍔犺浇鐘舵€?
+        function showLoading() {
+            document.body.style.cursor = 'wait';
+        }
+        
+        // 闅愯棌鍔犺浇鐘舵€?
+        function hideLoading() {
+            document.body.style.cursor = 'default';
+        }
+        
+        // 璁＄畻缁熻鏁版嵁
+        function calculateStats() {
+            // 婧惰В姘х粺璁?
+            const doValues = timeSeriesData.dissolved_oxygen;
+            statsData.do.max = Math.max(...doValues);
+            statsData.do.min = Math.min(...doValues);
+            statsData.do.avg = (doValues.reduce((a, b) => a + b, 0) / doValues.length).toFixed(2);
+            statsData.do.median = calculateMedian(doValues);
+            // 璁＄畻杈炬爣鐜囷紙>= 7.5 涓?I 绫伙級
+            statsData.do.compliance = ((doValues.filter(v => v >= 7.5).length / doValues.length) * 100).toFixed(1);
+            
+            // PH缁熻
+            const phValues = timeSeriesData.ph;
+            statsData.ph.max = Math.max(...phValues);
+            statsData.ph.min = Math.min(...phValues);
+            statsData.ph.avg = (phValues.reduce((a, b) => a + b, 0) / phValues.length).toFixed(2);
+            statsData.ph.median = calculateMedian(phValues);
+            // 璁＄畻杈炬爣鐜囷紙6-9 涓鸿揪鏍囷級
+            statsData.ph.compliance = ((phValues.filter(v => v >= 6 && v <= 9).length / phValues.length) * 100).toFixed(1);
+            
+            // 姘ㄦ爱缁熻
+            const nhValues = timeSeriesData.ammonia_nitrogen;
+            statsData.nh.max = Math.max(...nhValues);
+            statsData.nh.min = Math.min(...nhValues);
+            statsData.nh.avg = (nhValues.reduce((a, b) => a + b, 0) / nhValues.length).toFixed(3);
+            statsData.nh.median = calculateMedian(nhValues);
+            // 璁＄畻杈炬爣鐜囷紙<= 0.5 涓?II 绫伙級
+            statsData.nh.compliance = ((nhValues.filter(v => v <= 0.5).length / nhValues.length) * 100).toFixed(1);
+        }
+        
+        // 璁＄畻涓綅鏁?
+        function calculateMedian(arr) {
+            const sorted = [...arr].sort((a, b) => a - b);
+            const mid = Math.floor(sorted.length / 2);
+            return sorted.length % 2 ? sorted[mid] : ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2);
+        }
+        
+        // Mann-Kendall瓒嬪娍妫€楠岋紙绠€鍖栫増锛?
+        function calculateMannKendall(data) {
+            const n = data.length;
+            if (n < 3) return { trend: 'stable', pValue: 1 };
+            
+            let s = 0;
+            for (let i = 0; i < n - 1; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    s += Math.sign(data[j] - data[i]);
+                }
+            }
+            
+            // 璁＄畻鏂瑰樊
+            const varS = n * (n - 1) * (2 * n + 5) / 18;
+            
+            // 璁＄畻Z鍊?
+            let z = 0;
+            if (s > 0) {
+                z = (s - 1) / Math.sqrt(varS);
+            } else if (s < 0) {
+                z = (s + 1) / Math.sqrt(varS);
+            }
+            
+            // 鍒ゆ柇瓒嬪娍
+            const absZ = Math.abs(z);
+            let trend = 'stable';
+            if (absZ > 1.96) {
+                trend = z > 0 ? 'increasing' : 'decreasing';
+            }
+            
+            // 瀵绘壘绐佸彉鐐癸紙绠€鍖栵細鎵惧埌瓒嬪娍鍙樺寲鏈€澶х殑浣嶇疆锛?
+            let changePoint = -1;
+            let maxChange = 0;
+            for (let i = 1; i < n; i++) {
+                const change = Math.abs(data[i] - data[i-1]);
+                if (change > maxChange) {
+                    maxChange = change;
+                    changePoint = i;
+                }
+            }
+            
+            return { trend, z, changePoint: changePoint > 0 ? changePoint : -1 };
+        }
+        
+        // 鏇存柊瓒嬪娍妫€楠岀粨鏋?
+        function updateTrendAnalysis() {
+            // 婧惰В姘ц秼鍔?
+            const doResult = calculateMannKendall(timeSeriesData.dissolved_oxygen);
+            const doEl = document.getElementById('doTrend');
+            if (doEl) {
+                const doIcon = doResult.trend === 'increasing' ? 'fa-arrow-up' : 
+                              doResult.trend === 'decreasing' ? 'fa-arrow-down' : 'fa-minus';
+                const doColor = doResult.trend === 'increasing' ? '#22c55e' : 
+                               doResult.trend === 'decreasing' ? '#ef4444' : '#0ea5e9';
+                const doText = doResult.trend === 'increasing' ? '鏁翠綋鍛堜笂鍗囪秼鍔? :
+                              doResult.trend === 'decreasing' ? '鏁翠綋鍛堜笅闄嶈秼鍔? : '鏁翠綋淇濇寔绋冲畾';
+                const doStatus = doResult.trend === 'increasing' ? '鏄捐憲鏀瑰杽' :
+                                 doResult.trend === 'decreasing' ? '闇€鍏虫敞' : '楂樺害绋冲畾';
+                const doStatusClass = doResult.trend === 'increasing' ? 'status-improving' :
+                                      doResult.trend === 'decreasing' ? 'status-stable' : 'status-stable';
+                
+                doEl.innerHTML = `
+                    <i class="fa ${doIcon}" style="color: ${doColor};"></i>
+                    ${doText}
+                    <span class="trend-status ${doStatusClass}">${doStatus}</span>
+                `;
+            }
+            
+            // PH瓒嬪娍
+            const phResult = calculateMannKendall(timeSeriesData.ph);
+            const phEl = document.getElementById('phTrend');
+            if (phEl) {
+                const phIcon = phResult.trend === 'stable' ? 'fa-minus' : 
+                              phResult.trend === 'increasing' ? 'fa-arrow-up' : 'fa-arrow-down';
+                const phText = phResult.trend === 'stable' ? '娉㈠姩骞呭害灏? :
+                              phResult.trend === 'increasing' ? '鐣ユ湁涓婂崌' : '鐣ユ湁涓嬮檷';
+                
+                phEl.innerHTML = `
+                    <i class="fa ${phIcon}" style="color: #0ea5e9;"></i>
+                    ${phText}
+                    <span class="trend-status status-stable">楂樺害绋冲畾</span>
+                `;
+            }
+            
+            // 姘ㄦ爱瓒嬪娍
+            const nhResult = calculateMannKendall(timeSeriesData.ammonia_nitrogen);
+            const nhEl = document.getElementById('nhTrend');
+            if (nhEl) {
+                const nhIcon = nhResult.trend === 'decreasing' ? 'fa-arrow-down' :
+                              nhResult.trend === 'increasing' ? 'fa-arrow-up' : 'fa-minus';
+                const nhColor = nhResult.trend === 'decreasing' ? '#22c55e' :
+                               nhResult.trend === 'increasing' ? '#ef4444' : '#0ea5e9';
+                const nhText = nhResult.trend === 'decreasing' ? '娴撳害閫愭闄嶄綆' :
+                              nhResult.trend === 'increasing' ? '娴撳害鏈夋墍涓婂崌' : '娴撳害淇濇寔绋冲畾';
+                const nhStatus = nhResult.trend === 'decreasing' ? '鎸佺画鏀瑰杽' :
+                                 nhResult.trend === 'increasing' ? '闇€鍏虫敞' : '鍩烘湰绋冲畾';
+                const nhStatusClass = nhResult.trend === 'decreasing' ? 'status-improving' :
+                                      nhResult.trend === 'increasing' ? 'status-stable' : 'status-stable';
+                
+                nhEl.innerHTML = `
+                    <i class="fa ${nhIcon}" style="color: ${nhColor};"></i>
+                    ${nhText}
+                    <span class="trend-status ${nhStatusClass}">${nhStatus}</span>
+                `;
+            }
+            
+            // 鏇存柊缁撹
+            const conclusionEl = document.getElementById('trendConclusion');
+            if (conclusionEl && doResult.changePoint > 0) {
+                const changeDate = timeSeriesData.dates[doResult.changePoint] || '鏈煡';
+                conclusionEl.innerHTML = `
+                    <i class="fa fa-info-circle" style="color: #0ea5e9; margin-right: 5px;"></i>
+                    妫€楠岀粨鏋滐細${changeDate} 鍓嶅悗鍑虹幇姘磋川鍙樺寲瓒嬪娍鎷愮偣锛屽彲鑳戒笌瀛ｈ妭鍙樺寲鎴栨不鐞嗘帾鏂芥湁鍏?
+                `;
+            }
+        }
+        
+        // 浠庣绾垮浘鏁版嵁鏇存柊缁熻
+        function updateStatsFromBoxplot(data) {
+            if (data.indicators && data.indicators.length > 0) {
+                const indicatorMap = {};
+                data.indicators.forEach(item => {
+                    indicatorMap[item.name] = item.statistics || {};
+                });
+
+                const doStats = indicatorMap['婧惰В姘?];
+                const phStats = indicatorMap['PH'];
+                const nhStats = indicatorMap['姘ㄦ爱'];
+
+                if (doStats) {
+                    statsData.do.min = doStats.min;
+                    statsData.do.max = doStats.max;
+                    statsData.do.median = doStats.median;
+                }
+                if (phStats) {
+                    statsData.ph.min = phStats.min;
+                    statsData.ph.max = phStats.max;
+                    statsData.ph.median = phStats.median;
+                }
+                if (nhStats) {
+                    statsData.nh.min = nhStats.min;
+                    statsData.nh.max = nhStats.max;
+                    statsData.nh.median = nhStats.median;
+                }
+            }
+            updateStatsTable();
+        }
+        
+        // 鏇存柊缁熻琛ㄦ牸
+        function updateStatsTable() {
+            const tbody = document.querySelector('.stats-table tbody');
+            if (tbody) {
+                const formatCompliance = value => value === '--' ? '--' : `${value}%`;
+                tbody.innerHTML = `
+                    <tr>
+                        <td>
+                            <div class="stats-indicator do">
+                                <i class="fa fa-tint"></i>婧惰В姘?                            </div>
+                        </td>
+                        <td style="color: #22c55e;">${statsData.do.max}</td>
+                        <td style="color: #f59e0b;">${statsData.do.min}</td>
+                        <td>${statsData.do.avg}</td>
+                        <td>${statsData.do.median}</td>
+                        <td style="color: #22c55e; font-weight: bold;">${formatCompliance(statsData.do.compliance)}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="stats-indicator ph">
+                                <i class="fa fa-flask"></i>PH
+                            </div>
+                        </td>
+                        <td style="color: #22c55e;">${statsData.ph.max}</td>
+                        <td style="color: #22c55e;">${statsData.ph.min}</td>
+                        <td>${statsData.ph.avg}</td>
+                        <td>${statsData.ph.median}</td>
+                        <td style="color: #22c55e; font-weight: bold;">${formatCompliance(statsData.ph.compliance)}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="stats-indicator nh">
+                                <i class="fa fa-filter"></i>姘ㄦ爱
+                            </div>
+                        </td>
+                        <td style="color: #f59e0b;">${statsData.nh.max}</td>
+                        <td style="color: #22c55e;">${statsData.nh.min}</td>
+                        <td>${statsData.nh.avg}</td>
+                        <td>${statsData.nh.median}</td>
+                        <td style="color: #22c55e; font-weight: bold;">${formatCompliance(statsData.nh.compliance)}</td>
+                    </tr>
+                `;
+            }
+            
+            // 鏇存柊椤堕儴缁撹鏍?            updateConclusionBar();
+        }
+        
+        // 鏇存柊椤堕儴缁撹鏍?        function updateConclusionBar(isEmpty = false) {
+            const tags = document.querySelectorAll('.conclusion-tag');
+            if (tags.length >= 3) {
+                if (isEmpty) {
+                    tags[0].querySelector('.tag-value').innerHTML = '鏆傛棤鐪熷疄鏁版嵁';
+                    tags[1].querySelector('.tag-value').innerHTML = '鏆傛棤鐪熷疄鏁版嵁';
+                    tags[2].querySelector('.tag-value').innerHTML = '鏆傛棤鐪熷疄鏁版嵁';
+                    return;
+                }
+                tags[0].querySelector('.tag-value').innerHTML = `
+                    <span class="tag-highlight">${statsData.do.compliance}%</span> 浠ヤ笂鏃堕棿杈?<span class="tag-highlight">鈪犵被</span> 鏍囧噯
+                `;
+                tags[1].querySelector('.tag-value').innerHTML = `
+                    鍏ㄧ▼绋冲畾鍦?<span class="tag-highlight">${statsData.ph.min}-${statsData.ph.max}</span>锛?{statsData.ph.compliance}% 绗﹀悎鍥芥爣
+                `;
+                tags[2].querySelector('.tag-value').innerHTML = `
+                    <span class="tag-highlight">${statsData.nh.compliance}%</span> 浠ヤ笂鏃堕棿杈?<span class="tag-highlight">鈪＄被</span> 鏍囧噯锛屾棤瓒呮爣
+                `;
+            }
+        }
+        
+        // Toast鎻愮ず
+        function showToast(message) {
+            const existing = document.querySelector('.toast-message');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 80px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(239, 68, 68, 0.9);
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    z-index: 10000;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                ">${message}</div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // 鏇存柊鏃堕棿
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeStr;
+        }
+        
+        // 杩斿洖澶у睆
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+        
+        // 鍒濆鍖栧浘琛?
+        function initCharts() {
+            charts.do = echarts.init(document.getElementById('doChart'));
+            charts.ph = echarts.init(document.getElementById('phChart'));
+            charts.nh = echarts.init(document.getElementById('nhChart'));
+            charts.season = echarts.init(document.getElementById('seasonChart'));
+        }
+        
+        // 娓叉煋婧惰В姘у浘琛?
+        function renderDOChart() {
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        const data = params[0];
+                        const value = data.value;
+                        let level = '鈪犵被';
+                        if (value < 7.5) level = '鈪＄被';
+                        if (value < 6.0) level = '鈪㈢被';
+                        
+                        let reason = '姝ｅ父杩愯';
+                        const month = parseInt(data.name.split('-')[1]);
+                        if (month >= 6 && month <= 8) reason = '澶忓姘存俯鍗囬珮锛屾憾瑙ｆ哀鑷劧闄嶄綆';
+                        if (month >= 12 || month <= 2) reason = '鍐姘存俯浣庯紝婧惰В姘чケ鍜屽害楂?;
+                        
+                        return `<div style="font-weight:bold">${data.name}</div>
+                                <div>婧惰В姘? <span style="color:#0ea5e9;font-weight:bold">${value}</span> mg/L</div>
+                                <div>姘磋川绛夌骇: <span style="color:#00e400">${level}</span></div>
+                                <div style="color:#94a3b8;font-size:12px;margin-top:5px">${reason}</div>`;
+                    }
+                },
+                grid: {
+                    top: '10%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '5%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: timeSeriesData.dates,
+                    axisLabel: {
+                        color: '#94a3b8',
+                        fontSize: 10,
+                        rotate: 30
+                    },
+                    axisLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.2)' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 5,
+                    max: 13,
+                    axisLabel: {
+                        color: '#94a3b8',
+                        fontSize: 10,
+                        formatter: '{value} mg/L'
+                    },
+                    splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
+                },
+                series: [
+                    // 鈪犵被姘磋川鍖洪棿鑳屾櫙
+                    {
+                        type: 'line',
+                        markArea: {
+                            silent: true,
+                            itemStyle: {
+                                color: 'rgba(0, 228, 0, 0.1)'
+                            },
+                            data: [[{
+                                yAxis: 7.5
+                            }, {
+                                yAxis: 13
+                            }]]
+                        }
+                    },
+                    // 鈪＄被姘磋川鍖洪棿鑳屾櫙
+                    {
+                        type: 'line',
+                        markArea: {
+                            silent: true,
+                            itemStyle: {
+                                color: 'rgba(255, 255, 0, 0.1)'
+                            },
+                            data: [[{
+                                yAxis: 6.0
+                            }, {
+                                yAxis: 7.5
+                            }]]
+                        }
+                    },
+                    // 鈪㈢被姘磋川鍖洪棿鑳屾櫙
+                    {
+                        type: 'line',
+                        markArea: {
+                            silent: true,
+                            itemStyle: {
+                                color: 'rgba(255, 126, 0, 0.1)'
+                            },
+                            data: [[{
+                                yAxis: 5.0
+                            }, {
+                                yAxis: 6.0
+                            }]]
+                        }
+                    },
+                    // 鍥芥爣闄愬€肩嚎
+                    {
+                        type: 'line',
+                        markLine: {
+                            silent: true,
+                            symbol: 'none',
+                            lineStyle: {
+                                type: 'dashed',
+                                width: 1
+                            },
+                            data: [
+                                { yAxis: 7.5, lineStyle: { color: '#00e400' }, label: { formatter: '鈪犵被绾?, color: '#00e400', fontSize: 10 } },
+                                { yAxis: 6.0, lineStyle: { color: '#ffff00' }, label: { formatter: '鈪＄被绾?, color: '#ffff00', fontSize: 10 } },
+                                { yAxis: 5.0, lineStyle: { color: '#ff7e00' }, label: { formatter: '鈪㈢被绾?, color: '#ff7e00', fontSize: 10 } }
+                            ]
+                        }
+                    },
+                    // 鏁版嵁鎶樼嚎
+                    {
+                        name: '婧惰В姘?,
+                        type: 'line',
+                        smooth: true,
+                        data: timeSeriesData.dissolved_oxygen,
+                        lineStyle: { color: '#0ea5e9', width: 2 },
+                        itemStyle: { color: '#0ea5e9' },
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: '鏈€澶у€?, itemStyle: { color: '#22c55e' } },
+                                { type: 'min', name: '鏈€灏忓€?, itemStyle: { color: '#f59e0b' } }
+                            ],
+                            label: { color: '#fff', fontSize: 10 }
+                        }
+                    }
+                ]
+            };
+            
+            charts.do.setOption(option);
+        }
+        
+        // 娓叉煋PH鍥捐〃
+        function renderPHChart() {
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        const data = params[0];
+                        const value = data.value;
+                        let status = '绗﹀悎鍥芥爣';
+                        if (value < 6 || value > 9) status = '瓒呮爣';
+                        
+                        return `<div style="font-weight:bold">${data.name}</div>
+                                <div>PH鍊? <span style="color:#22c55e;font-weight:bold">${value}</span></div>
+                                <div>鐘舵€? <span style="color:#22c55e">${status}</span></div>
+                                <div style="color:#94a3b8;font-size:12px;margin-top:5px">姘磋川閰哥⒈搴︾ǔ瀹?/div>`;
+                    }
+                },
+                grid: {
+                    top: '10%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '5%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: timeSeriesData.dates,
+                    axisLabel: {
+                        color: '#94a3b8',
+                        fontSize: 10,
+                        rotate: 30
+                    },
+                    axisLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.2)' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 7.5,
+                    max: 9.0,
+                    axisLabel: {
+                        color: '#94a3b8',
+                        fontSize: 10
+                    },
+                    splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
+                },
+                series: [
+                    // 鍥芥爣鍖洪棿鑳屾櫙
+                    {
+                        type: 'line',
+                        markArea: {
+                            silent: true,
+                            itemStyle: {
+                                color: 'rgba(34, 197, 94, 0.1)'
+                            },
+                            data: [[{
+                                yAxis: 6
+                            }, {
+                                yAxis: 9
+                            }]]
+                        }
+                    },
+                    // 鍥芥爣闄愬€肩嚎
+                    {
+                        type: 'line',
+                        markLine: {
+                            silent: true,
+                            symbol: 'none',
+                            lineStyle: {
+                                type: 'dashed',
+                                width: 1,
+                                color: '#22c55e'
+                            },
+                            data: [
+                                { yAxis: 6, label: { formatter: '鍥芥爣涓嬮檺', color: '#22c55e', fontSize: 10 } },
+                                { yAxis: 9, label: { formatter: '鍥芥爣涓婇檺', color: '#22c55e', fontSize: 10 } }
+                            ]
+                        }
+                    },
+                    // 鏁版嵁鎶樼嚎
+                    {
+                        name: 'PH',
+                        type: 'line',
+                        smooth: true,
+                        data: timeSeriesData.ph,
+                        lineStyle: { color: '#22c55e', width: 2 },
+                        itemStyle: { color: '#22c55e' },
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: '鏈€澶у€?, itemStyle: { color: '#0ea5e9' } },
+                                { type: 'min', name: '鏈€灏忓€?, itemStyle: { color: '#0ea5e9' } }
+                            ],
+                            label: { color: '#fff', fontSize: 10 }
+                        }
+                    }
+                ]
+            };
+            
+            charts.ph.setOption(option);
+        }
+        
+        // 娓叉煋姘ㄦ爱鍥捐〃
+        function renderNHChart() {
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        const data = params[0];
+                        const value = data.value;
+                        let level = '鈪犵被';
+                        if (value > 0.15) level = '鈪＄被';
+                        if (value > 0.5) level = '鈪㈢被';
+                        if (value > 1.0) level = '鈪ｇ被';
+                        
+                        let reason = '姝ｅ父杩愯';
+                        const month = parseInt(data.name.split('-')[1]);
+                        if (month >= 6 && month <= 8) reason = '闆ㄥ姘撮噺澶э紝绋€閲婁綔鐢ㄦ槑鏄?;
+                        if (month <= 2 || month >= 11) reason = '鏋按鏈燂紝姘翠綋鑷噣鑳藉姏鍑忓急';
+                        
+                        return `<div style="font-weight:bold">${data.name}</div>
+                                <div>姘ㄦ爱: <span style="color:#f59e0b;font-weight:bold">${value}</span> mg/L</div>
+                                <div>姘磋川绛夌骇: <span style="color:${value <= 0.15 ? '#00e400' : value <= 0.5 ? '#ffff00' : '#ff7e00'}">${level}</span></div>
+                                <div style="color:#94a3b8;font-size:12px;margin-top:5px">${reason}</div>`;
+                    }
+                },
+                grid: {
+                    top: '10%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '5%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: timeSeriesData.dates,
+                    axisLabel: {
+                        color: '#94a3b8',
+                        fontSize: 10,
+                        rotate: 30
+                    },
+                    axisLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.2)' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    max: 0.6,
+                    axisLabel: {
+                        color: '#94a3b8',
+                        fontSize: 10,
+                        formatter: '{value} mg/L'
+                    },
+                    splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
+                },
+                series: [
+                    // 鈪犵被姘磋川鍖洪棿鑳屾櫙
+                    {
+                        type: 'line',
+                        markArea: {
+                            silent: true,
+                            itemStyle: {
+                                color: 'rgba(0, 228, 0, 0.1)'
+                            },
+                            data: [[{
+                                yAxis: 0
+                            }, {
+                                yAxis: 0.15
+                            }]]
+                        }
+                    },
+                    // 鈪＄被姘磋川鍖洪棿鑳屾櫙
+                    {
+                        type: 'line',
+                        markArea: {
+                            silent: true,
+                            itemStyle: {
+                                color: 'rgba(255, 255, 0, 0.1)'
+                            },
+                            data: [[{
+                                yAxis: 0.15
+                            }, {
+                                yAxis: 0.5
+                            }]]
+                        }
+                    },
+                    // 鍥芥爣闄愬€肩嚎
+                    {
+                        type: 'line',
+                        markLine: {
+                            silent: true,
+                            symbol: 'none',
+                            lineStyle: {
+                                type: 'dashed',
+                                width: 1
+                            },
+                            data: [
+                                { yAxis: 0.15, lineStyle: { color: '#00e400' }, label: { formatter: '鈪犵被绾?, color: '#00e400', fontSize: 10 } },
+                                { yAxis: 0.5, lineStyle: { color: '#ffff00' }, label: { formatter: '鈪＄被绾?, color: '#ffff00', fontSize: 10 } }
+                            ]
+                        }
+                    },
+                    // 鏁版嵁鎶樼嚎
+                    {
+                        name: '姘ㄦ爱',
+                        type: 'line',
+                        smooth: true,
+                        data: timeSeriesData.ammonia_nitrogen,
+                        lineStyle: { color: '#f59e0b', width: 2 },
+                        itemStyle: { color: '#f59e0b' },
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: '鏈€澶у€?, itemStyle: { color: '#ef4444' } },
+                                { type: 'min', name: '鏈€灏忓€?, itemStyle: { color: '#22c55e' } }
+                            ],
+                            label: { color: '#fff', fontSize: 10 }
+                        }
+                    }
+                ]
+            };
+            
+            charts.nh.setOption(option);
+        }
+        
+        // 娓叉煋鍒嗘椂娈靛姣斿浘琛?
+        function renderSeasonChart() {
+            // 璁＄畻姹涙湡/闈炴睕鏈熸暟鎹?
+            const seasonData = calculateSeasonData();
+            
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' }
+                },
+                legend: {
+                    data: ['姹涙湡(6-9鏈?', '闈炴睕鏈?, '骞村害鍧囧€?],
+                    textStyle: { color: '#94a3b8', fontSize: 10 },
+                    top: 0,
+                    itemWidth: 12,
+                    itemHeight: 10
+                },
+                grid: {
+                    top: '20%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '5%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: seasonData.years,
+                    axisLabel: {
+                        color: '#94a3b8',
+                        fontSize: 11
+                    },
+                    axisLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.2)' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '缁煎悎姘磋川鎸囨暟',
+                    nameTextStyle: { color: '#64748b', fontSize: 10 },
+                    axisLabel: {
+                        color: '#94a3b8',
+                        fontSize: 10
+                    },
+                    splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
+                },
+                series: [
+                    {
+                        name: '姹涙湡(6-9鏈?',
+                        type: 'bar',
+                        data: seasonData.floodSeason,
+                        itemStyle: { color: '#0ea5e9' }
+                    },
+                    {
+                        name: '闈炴睕鏈?,
+                        type: 'bar',
+                        data: seasonData.nonFloodSeason,
+                        itemStyle: { color: '#22c55e' }
+                    },
+                    {
+                        name: '骞村害鍧囧€?,
+                        type: 'line',
+                        data: seasonData.annualAvg,
+                        lineStyle: { color: '#f59e0b', width: 2 },
+                        itemStyle: { color: '#f59e0b' },
+                        symbol: 'circle',
+                        symbolSize: 8
+                    }
+                ]
+            };
+            
+            charts.season.setOption(option);
+        }
+        
+        // 璁＄畻姹涙湡/闈炴睕鏈熸暟鎹?
+        function calculateSeasonData() {
+            const yearData = {};
+            
+            // 鎸夊勾浠藉垎缁?
+            timeSeriesData.dates.forEach((date, index) => {
+                const year = date.slice(0, 4);
+                const month = parseInt(date.slice(5, 7));
+                
+                if (!yearData[year]) {
+                    yearData[year] = {
+                        flood: [],
+                        nonFlood: []
+                    };
+                }
+                
+                // 璁＄畻缁煎悎姘磋川鎸囨暟锛堝熀浜庝笁涓寚鏍囷級
+                const doScore = Math.min(timeSeriesData.dissolved_oxygen[index] / 10, 1);
+                const phScore = 1 - Math.abs(timeSeriesData.ph[index] - 8) / 2;
+                const nhScore = 1 - Math.min(timeSeriesData.ammonia_nitrogen[index] / 0.5, 1);
+                const compositeScore = (doScore + phScore + nhScore) / 3;
+                
+                // 6-9鏈堜负姹涙湡
+                if (month >= 6 && month <= 9) {
+                    yearData[year].flood.push(compositeScore);
+                } else {
+                    yearData[year].nonFlood.push(compositeScore);
+                }
+            });
+            
+            const years = Object.keys(yearData).sort();
+            const floodSeason = [];
+            const nonFloodSeason = [];
+            const annualAvg = [];
+            
+            years.forEach(year => {
+                const floodAvg = yearData[year].flood.length > 0 
+                    ? yearData[year].flood.reduce((a, b) => a + b, 0) / yearData[year].flood.length 
+                    : 0;
+                const nonFloodAvg = yearData[year].nonFlood.length > 0 
+                    ? yearData[year].nonFlood.reduce((a, b) => a + b, 0) / yearData[year].nonFlood.length 
+                    : 0;
+                const all = [...yearData[year].flood, ...yearData[year].nonFlood];
+                const avg = all.length > 0 ? all.reduce((a, b) => a + b, 0) / all.length : 0;
+                
+                floodSeason.push(Number(floodAvg.toFixed(2)));
+                nonFloodSeason.push(Number(nonFloodAvg.toFixed(2)));
+                annualAvg.push(Number(avg.toFixed(2)));
+            });
+            
+            return { years, floodSeason, nonFloodSeason, annualAvg };
+        }
+        
+        // 鍒囨崲瑙嗗浘
+        function switchView(view) {
+            currentView = view;
+            
+            // 鏇存柊鎸夐挳鐘舵€?
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tool-btn').classList.add('active');
+            
+            const doContainer = document.getElementById('doChartContainer');
+            const phContainer = document.getElementById('phChartContainer');
+            const nhContainer = document.getElementById('nhChartContainer');
+            
+            if (view === 'all') {
+                doContainer.style.display = 'flex';
+                phContainer.style.display = 'flex';
+                nhContainer.style.display = 'flex';
+                doContainer.style.height = '280px';
+                phContainer.style.height = '280px';
+                nhContainer.style.height = '280px';
+            } else if (view === 'do') {
+                doContainer.style.display = 'flex';
+                phContainer.style.display = 'none';
+                nhContainer.style.display = 'none';
+                doContainer.style.height = '600px';
+            } else if (view === 'ph') {
+                doContainer.style.display = 'none';
+                phContainer.style.display = 'flex';
+                nhContainer.style.display = 'none';
+                phContainer.style.height = '600px';
+            } else if (view === 'nh') {
+                doContainer.style.display = 'none';
+                phContainer.style.display = 'none';
+                nhContainer.style.display = 'flex';
+                nhContainer.style.height = '600px';
+            }
+            
+            // 閲嶆柊璋冩暣鍥捐〃澶у皬
+            setTimeout(() => {
+                Object.values(charts).forEach(chart => chart && chart.resize());
+            }, 100);
+        }
+        
+        // 鍒囨崲瀵规瘮妯″紡
+        function toggleCompare() {
+            // 鏇存柊鎸夐挳鐘舵€?
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.tool-btn').classList.add('active');
+            
+            // 鍒涘缓瀵规瘮鍥捐〃
+            const compareChart = echarts.init(document.getElementById('doChart'));
+            
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['婧惰В姘?, 'PH', '姘ㄦ爱'],
+                    textStyle: { color: '#94a3b8', fontSize: 10 },
+                    top: 0
+                },
+                grid: {
+                    top: '15%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: timeSeriesData.dates,
+                    axisLabel: {
+                        color: '#94a3b8',
+                        fontSize: 10,
+                        rotate: 30
+                    }
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: 'DO/PH',
+                        position: 'left',
+                        axisLabel: { color: '#94a3b8', fontSize: 10 },
+                        splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
+                    },
+                    {
+                        type: 'value',
+                        name: '姘ㄦ爱',
+                        position: 'right',
+                        axisLabel: { color: '#94a3b8', fontSize: 10 }
+                    }
+                ],
+                dataZoom: [
+                    { type: 'inside', start: 0, end: 100 },
+                    { type: 'slider', start: 0, end: 100, bottom: 5, height: 20 }
+                ],
+                series: [
+                    {
+                        name: '婧惰В姘?,
+                        type: 'line',
+                        smooth: true,
+                        data: timeSeriesData.dissolved_oxygen,
+                        lineStyle: { color: '#0ea5e9', width: 2 },
+                        itemStyle: { color: '#0ea5e9' }
+                    },
+                    {
+                        name: 'PH',
+                        type: 'line',
+                        smooth: true,
+                        data: timeSeriesData.ph,
+                        lineStyle: { color: '#22c55e', width: 2 },
+                        itemStyle: { color: '#22c55e' }
+                    },
+                    {
+                        name: '姘ㄦ爱',
+                        type: 'line',
+                        smooth: true,
+                        yAxisIndex: 1,
+                        data: timeSeriesData.ammonia_nitrogen,
+                        lineStyle: { color: '#f59e0b', width: 2 },
+                        itemStyle: { color: '#f59e0b' }
+                    }
+                ]
+            };
+            
+            compareChart.setOption(option);
+            
+            // 闅愯棌鍏朵粬鍥捐〃瀹瑰櫒锛屾斁澶ф憾瑙ｆ哀瀹瑰櫒鐢ㄤ簬鏄剧ず瀵规瘮鍥?
+            const doContainer = document.getElementById('doChartContainer');
+            doContainer.style.display = 'flex';
+            doContainer.style.height = '600px';
+            document.getElementById('phChartContainer').style.display = 'none';
+            document.getElementById('nhChartContainer').style.display = 'none';
+            
+            // 閲嶆柊璋冩暣鍥捐〃澶у皬
+            setTimeout(() => {
+                compareChart.resize();
+            }, 100);
+        }
+    </script>
+</body>
+</html>
+

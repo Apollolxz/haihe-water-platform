@@ -9,14 +9,15 @@ import pandas as pd
 import pymysql
 from dotenv import load_dotenv
 
-load_dotenv()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
 
 DB_HOST = os.getenv('MYSQL_HOST', 'localhost')
 DB_PORT = int(os.getenv('MYSQL_PORT', '3306'))
 DB_USER = os.getenv('MYSQL_USER', 'root')
 DB_PASSWORD = os.getenv('MYSQL_PASSWORD', '')
 NEW_DB = 'haihe_river_basin'
-DATA_DIR = r'D:\haihe\shuju预测\批量处理结果'
+DATA_DIR = os.getenv('SANDBOX_DATA_ROOT', r'D:\haihe\shuju预测\批量处理结果')
 
 PROVINCE_MAP = {
     '北京': '北京市',
