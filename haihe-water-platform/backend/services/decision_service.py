@@ -59,7 +59,7 @@ NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "12345678")
 NEO4J_DATABASE = (os.getenv("NEO4J_DATABASE", "") or "").strip() or None
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "").strip()
-DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-chat").strip() or "deepseek-chat"
+DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash").strip() or "deepseek-v4-flash"
 DEEPSEEK_API_URL = os.getenv(
     "DEEPSEEK_API_URL",
     "https://api.deepseek.com/chat/completions",

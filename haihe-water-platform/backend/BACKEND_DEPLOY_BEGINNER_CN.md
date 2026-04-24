@@ -140,7 +140,7 @@ NEO4J_PASSWORD=
 NEO4J_DATABASE=
 
 DEEPSEEK_API_KEY=
-DEEPSEEK_MODEL=deepseek-chat
+DEEPSEEK_MODEL=deepseek-v4-flash
 DEEPSEEK_API_URL=https://api.deepseek.com/chat/completions
 
 FLASK_HOST=0.0.0.0
@@ -248,7 +248,7 @@ NEO4J_DATABASE=neo4j
 这个项目聊天接口依赖：
 
 - `DEEPSEEK_API_KEY`
-- `DEEPSEEK_MODEL`：先填 `deepseek-chat`
+- `DEEPSEEK_MODEL`：先填 `deepseek-v4-flash`
 - `DEEPSEEK_API_URL`：填 `https://api.deepseek.com/chat/completions`
 
 如果不填：

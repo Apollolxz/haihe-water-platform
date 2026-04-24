@@ -17,7 +17,7 @@ chat_bp = Blueprint('chat', __name__)
 
 # DeepSeek API配置
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
-DEEPSEEK_MODEL = os.getenv('DEEPSEEK_MODEL', 'deepseek-chat')
+DEEPSEEK_MODEL = os.getenv('DEEPSEEK_MODEL', 'deepseek-v4-flash')
 DEEPSEEK_API_URL = os.getenv('DEEPSEEK_API_URL', 'https://api.deepseek.com/chat/completions')
 
 @chat_bp.route('/test-deepseek', methods=['POST'])
