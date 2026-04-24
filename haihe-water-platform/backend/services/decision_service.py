@@ -443,8 +443,10 @@ class DecisionService:
         lines = []
         if network:
             preview = "；".join(
-                f"{item['upstream_province']}{item['upstream_station']} -> {item['target_station']}"
-                f"{f'（{item['river']}）' if item.get('river') else ''}"
+                (
+                    f"{item['upstream_province']}{item['upstream_station']} -> {item['target_station']}"
+                    + (f"（{item['river']}）" if item.get("river") else "")
+                )
                 for item in network[:4]
             )
             lines.append(f"上游链路共识别 {len(network)} 条，示例：{preview}。")
