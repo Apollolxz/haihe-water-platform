@@ -73,6 +73,26 @@ def _get_db():
     return WaterQuality.get_db()
 
 
+@lru_cache(maxsize=16)
+def _table_columns(table_name):
+    conn = _get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT COLUMN_NAME
+                FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = %s
+            """, (table_name,))
+            return {row['COLUMN_NAME'] for row in cursor.fetchall()}
+    finally:
+        conn.close()
+
+
+def _table_has_column(table_name, column_name):
+    return column_name in _table_columns(table_name)
+
+
 def _normalize_provinces(raw_value):
     if not raw_value or raw_value == 'all':
         return list(SIX_PROVINCES)
@@ -137,6 +157,8 @@ def _series_digits(field):
 
 
 def _query_daily_series(cursor, provinces, field, table, date_col, group_model=False):
+    if not _table_has_column(table, field):
+        return []
     clause, params = _in_clause('region_name' if table == 'fact_water_quality_predict' else 'region_name', provinces)
     select_model = 'model_type,' if group_model else ''
     group_model_sql = 'model_type,' if group_model else ''
@@ -213,29 +235,45 @@ def _line_panel(cursor, provinces, indicator, time_mode, days, model_mode):
 
 
 def _spatial_panel(cursor, indicator):
+    predict_has_field = _table_has_column('fact_water_quality_predict', indicator['field'])
+    history_has_field = _table_has_column('fact_water_quality_history', indicator['field'])
+
     cursor.execute("SELECT MAX(DATE(predict_time)) AS max_date FROM fact_water_quality_predict")
-    latest_date = cursor.fetchone()['max_date']
+    predict_max_date = cursor.fetchone()['max_date']
+    cursor.execute("SELECT MAX(DATE(monitor_time)) AS max_date FROM fact_water_quality_history")
+    history_max_date = cursor.fetchone()['max_date']
+
+    latest_date = predict_max_date or history_max_date
+    if not predict_has_field and history_max_date is not None:
+        latest_date = history_max_date
+    if not history_has_field and predict_max_date is not None:
+        latest_date = predict_max_date
 
     clause, params = _in_clause('region_name', SIX_PROVINCES)
-    cursor.execute(f"""
-        SELECT model_type, region_name, AVG({indicator['field']}) AS value
-        FROM fact_water_quality_predict
-        WHERE {clause}
-          AND DATE(predict_time) = %s
-          AND {indicator['field']} IS NOT NULL
-        GROUP BY model_type, region_name
-    """, params + [latest_date])
-    prediction_rows = cursor.fetchall()
+    prediction_rows = []
+    history_rows = []
 
-    cursor.execute(f"""
-        SELECT region_name, AVG({indicator['field']}) AS value
-        FROM fact_water_quality_history
-        WHERE {clause}
-          AND DATE(monitor_time) = %s
-          AND {indicator['field']} IS NOT NULL
-        GROUP BY region_name
-    """, params + [latest_date])
-    history_rows = cursor.fetchall()
+    if predict_has_field and latest_date is not None:
+        cursor.execute(f"""
+            SELECT model_type, region_name, AVG({indicator['field']}) AS value
+            FROM fact_water_quality_predict
+            WHERE {clause}
+              AND DATE(predict_time) = %s
+              AND {indicator['field']} IS NOT NULL
+            GROUP BY model_type, region_name
+        """, params + [latest_date])
+        prediction_rows = cursor.fetchall()
+
+    if history_has_field and latest_date is not None:
+        cursor.execute(f"""
+            SELECT region_name, AVG({indicator['field']}) AS value
+            FROM fact_water_quality_history
+            WHERE {clause}
+              AND DATE(monitor_time) = %s
+              AND {indicator['field']} IS NOT NULL
+            GROUP BY region_name
+        """, params + [latest_date])
+        history_rows = cursor.fetchall()
 
     history_map = {row['region_name']: _to_number(row['value'], _series_digits(indicator['field'])) for row in history_rows}
     model_map = defaultdict(dict)
@@ -303,6 +341,8 @@ def _spatial_panel(cursor, indicator):
 
 
 def _prediction_cv(cursor, province, model_type, field, time_mode, days):
+    if not _table_has_column('fact_water_quality_predict', field):
+        return None
     cursor.execute(f"""
         SELECT DATE(predict_time) AS date, AVG({field}) AS value
         FROM fact_water_quality_predict

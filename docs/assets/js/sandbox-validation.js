@@ -20,6 +20,20 @@ const COLORS = {
     featureSecondary: '#9cd9ff',
 };
 
+function getApiRoot() {
+    if (window.HAIHE_RUNTIME?.apiBaseUrl) {
+        return String(window.HAIHE_RUNTIME.apiBaseUrl).replace(/\/+$/, '');
+    }
+    return API_ROOT;
+}
+
+function getApiBase() {
+    if (window.HAIHE_RUNTIME?.resolveApi) {
+        return window.HAIHE_RUNTIME.resolveApi('/api');
+    }
+    return `${getApiRoot()}/api`;
+}
+
 const state = {
     payload: null,
     controls: {
@@ -290,7 +304,7 @@ function buildOverviewUrl() {
     params.set('model_mode', state.selections.modelMode);
     params.set('radar_province', state.selections.radarProvince);
     params.set('days', String(state.selections.days || DEFAULT_DAYS));
-    return `${API_BASE}/dashboard/validation-overview?${params.toString()}`;
+    return `${getApiBase()}/dashboard/validation-overview?${params.toString()}`;
 }
 
 function syncSelections(selection) {
@@ -982,7 +996,7 @@ async function generateDecision(forceRefresh) {
     renderDecisionPanel();
 
     try {
-        const response = await fetch(`${API_BASE}/decision/generate`, {
+        const response = await fetch(`${getApiBase()}/decision/generate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1421,7 +1435,7 @@ function absoluteUrl(path) {
     if (/^https?:\/\//.test(path)) {
         return path;
     }
-    return new URL(path, API_ROOT).toString();
+    return new URL(path, getApiRoot()).toString();
 }
 
 function resizeCharts() {
