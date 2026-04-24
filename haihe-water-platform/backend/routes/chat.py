@@ -10,14 +10,15 @@ import os
 from dotenv import load_dotenv
 
 # 加载环境变量
-load_dotenv(override=True)
+load_dotenv(override=False)
 
 # 创建蓝图
 chat_bp = Blueprint('chat', __name__)
 
 # DeepSeek API配置
 DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
-DEEPSEEK_API_URL = os.getenv('DEEPSEEK_API_URL', 'https://api.deepseek.com/v1/chat/completions')
+DEEPSEEK_MODEL = os.getenv('DEEPSEEK_MODEL', 'deepseek-chat')
+DEEPSEEK_API_URL = os.getenv('DEEPSEEK_API_URL', 'https://api.deepseek.com/chat/completions')
 
 @chat_bp.route('/test-deepseek', methods=['POST'])
 def test_deepseek():
@@ -116,7 +117,7 @@ def call_deepseek_api(question):
         }
         
         data = {
-            'model': 'deepseek-chat',
+            'model': DEEPSEEK_MODEL,
             'messages': [
                 {
                     'role': 'system',
@@ -235,7 +236,7 @@ def sandbox_decision():
             'Authorization': f'Bearer {DEEPSEEK_API_KEY}'
         }
         payload = {
-            'model': 'deepseek-chat',
+            'model': DEEPSEEK_MODEL,
             'messages': [
                 {'role': 'system', 'content': system_prompt},
                 {'role': 'user', 'content': user_content}

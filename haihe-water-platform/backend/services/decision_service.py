@@ -21,7 +21,7 @@ import requests
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
 
-load_dotenv(override=True)
+load_dotenv(override=False)
 
 PROMPT_VERSION = "decision-v20260421"
 DEFAULT_MODEL_TYPE = "LSTM"
@@ -48,7 +48,7 @@ MYSQL_CONFIG = {
     "port": int(os.getenv("MYSQL_PORT", "3306")),
     "user": os.getenv("MYSQL_USER", "root"),
     "password": os.getenv("MYSQL_PASSWORD", "123456"),
-    "database": "haihe_river_basin",
+    "database": os.getenv("MYSQL_DATABASE", "haihe_river_basin"),
     "charset": "utf8mb4",
     "cursorclass": pymysql.cursors.DictCursor,
 }
@@ -59,9 +59,10 @@ NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "12345678")
 NEO4J_DATABASE = (os.getenv("NEO4J_DATABASE", "") or "").strip() or None
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "").strip()
+DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-chat").strip() or "deepseek-chat"
 DEEPSEEK_API_URL = os.getenv(
     "DEEPSEEK_API_URL",
-    "https://api.deepseek.com/v1/chat/completions",
+    "https://api.deepseek.com/chat/completions",
 )
 
 
@@ -576,7 +577,7 @@ class DecisionService:
         if not DEEPSEEK_API_KEY:
             return self._render_fallback_report(context), "fallback"
         payload = {
-            "model": "deepseek-chat",
+            "model": DEEPSEEK_MODEL,
             "temperature": 0.3,
             "messages": [
                 {"role": "system", "content": "你是严谨的水环境治理分析助手。"},

@@ -14,7 +14,7 @@ from neo4j import GraphDatabase
 from dotenv import load_dotenv
 from decimal import Decimal
 
-load_dotenv(override=True)
+load_dotenv(override=False)
 
 # Neo4j 配置
 NEO4J_URI = os.getenv('NEO4J_URI', 'bolt://localhost:7687')
@@ -27,7 +27,7 @@ MYSQL_HOST = os.getenv('MYSQL_HOST', 'localhost')
 MYSQL_PORT = int(os.getenv('MYSQL_PORT', '3306'))
 MYSQL_USER = os.getenv('MYSQL_USER', 'root')
 MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD', '123456')
-MYSQL_DATABASE = 'haihe_river_basin'
+MYSQL_DATABASE = os.getenv('MYSQL_DATABASE', 'haihe_river_basin')
 
 # GB 3838-2002 III类标准限值
 STANDARD_LIMITS = {
