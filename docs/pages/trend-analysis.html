@@ -1,12 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>娴锋渤鍏煙 - 鏃跺簭瓒嬪娍涓撻」鍒嗘瀽灞?/title>
+    <title>海河六域 - 时序趋势专项分析屏</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -50,7 +52,7 @@
             color: #fff;
         }
         
-        /* 绉戞妧鎰熻儗鏅綉鏍?*/
+        /* 科技感背景网格 */
         .bg-grid {
             position: fixed;
             top: 0;
@@ -65,7 +67,7 @@
             z-index: 0;
         }
         
-        /* 鍙戝厜瑁呴グ */
+        /* 发光装饰 */
         .glow-orb {
             position: fixed;
             border-radius: 50%;
@@ -90,7 +92,7 @@
             background: radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%);
         }
         
-        /* 涓诲鍣?*/
+        /* 主容器 */
         .main-container {
             position: relative;
             top: 64px;
@@ -105,7 +107,7 @@
             padding-bottom: 40px;
         }
         
-        /* 椤堕儴瀵艰埅鏍?*/
+        /* 顶部导航栏 */
         .top-nav {
             position: fixed;
             top: 0;
@@ -152,7 +154,7 @@
             transform: translateY(-1px);
         }
         
-        /* 鏍稿績缁撹鏍?*/
+        /* 核心结论栏 */
         .conclusion-bar {
             display: flex;
             gap: 20px;
@@ -260,7 +262,7 @@
             font-weight: bold;
         }
         
-        /* 涓讳綋鍐呭鍖?*/
+        /* 主体内容区 */
         .content-area {
             display: grid;
             grid-template-columns: 1fr 360px;
@@ -268,7 +270,7 @@
             min-height: 800px;
         }
         
-        /* 鍥捐〃鍗＄墖 */
+        /* 图表卡片 */
         .chart-card {
             background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
             border: 1px solid rgba(14, 165, 233, 0.2);
@@ -280,7 +282,7 @@
             flex-direction: column;
         }
         
-        /* 绉戞妧鎰熷洓瑙掕楗?*/
+        /* 科技感四角装饰 */
         .chart-card::before,
         .chart-card::after {
             content: '';
@@ -318,7 +320,7 @@
         .corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
         .corner-br { bottom: 0; right: 0; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
         
-        /* 鍗＄墖鏍囬 */
+        /* 卡片标题 */
         .card-header {
             display: flex;
             align-items: center;
@@ -348,14 +350,14 @@
             color: #64748b;
         }
         
-        /* 鍥捐〃瀹瑰櫒 */
+        /* 图表容器 */
         .chart-container {
             flex: 1;
             min-height: 0;
             position: relative;
         }
         
-        /* 涓昏瑙夊尯 */
+        /* 主视觉区 */
         .main-visual {
             display: flex;
             flex-direction: column;
@@ -409,7 +411,7 @@
             min-height: 0;
         }
         
-        /* 鍙充晶杈呭姪鍒嗘瀽鍖?*/
+        /* 右侧辅助分析区 */
         .right-panel {
             display: flex;
             flex-direction: column;
@@ -421,7 +423,7 @@
             min-height: 200px;
         }
         
-        /* 缁熻琛ㄦ牸鏍峰紡 */
+        /* 统计表格样式 */
         .stats-table {
             width: 100%;
             border-collapse: collapse;
@@ -461,7 +463,7 @@
         .stats-indicator.ph { color: #22c55e; }
         .stats-indicator.nh { color: #f59e0b; }
         
-        /* 瓒嬪娍妫€楠岀粨鏋?*/
+        /* 趋势检验结果 */
         .trend-result {
             padding: 12px;
             background: rgba(15, 23, 42, 0.5);
@@ -505,7 +507,7 @@
             color: #0ea5e9;
         }
         
-        /* 宸ュ叿鏍?*/
+        /* 工具栏 */
         .toolbar {
             display: flex;
             gap: 10px;
@@ -540,7 +542,7 @@
             border-color: #0ea5e9;
         }
         
-        /* 姘磋川绛夌骇鍥句緥 */
+        /* 水质等级图例 */
         .level-legend {
             display: flex;
             gap: 15px;
@@ -563,7 +565,7 @@
             border-radius: 2px;
         }
         
-        /* 鑷畾涔夋粴鍔ㄦ潯 */
+        /* 自定义滚动条 */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -583,7 +585,7 @@
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.7), rgba(34, 197, 94, 0.7));
         }
         
-        /* 鍝嶅簲寮?*/
+        /* 响应式 */
         @media (max-width: 1400px) {
             .content-area {
                 grid-template-columns: 1fr 320px;
@@ -604,7 +606,7 @@
             }
         }
         
-        /* 鍔ㄧ敾 */
+        /* 动画 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -614,20 +616,18 @@
             animation: fadeIn 0.5s ease-out;
         }
     </style>
-    <script src="../config/site.config.js"></script>
-    <script src="../config/runtime-config.js"></script>
 </head>
 <body>
-    <!-- 鑳屾櫙瑁呴グ -->
+    <!-- 背景装饰 -->
     <div class="bg-grid"></div>
     <div class="glow-orb glow-orb-1"></div>
     <div class="glow-orb glow-orb-2"></div>
     
-    <!-- 椤堕儴瀵艰埅 -->
+    <!-- 顶部导航 -->
     <nav class="top-nav">
         <div class="nav-title">
             <i class="fa fa-line-chart"></i>
-            鏃跺簭瓒嬪娍涓撻」鍒嗘瀽灞?
+            时序趋势专项分析屏
         </div>
         <div style="display: flex; align-items: center; gap: 20px;">
             <div style="color: #94a3b8; font-size: 13px;">
@@ -636,23 +636,23 @@
             </div>
             <button class="nav-back" onclick="goBack()">
                 <i class="fa fa-arrow-left"></i>
-                杩斿洖澶у睆
+                返回大屏
             </button>
         </div>
     </nav>
     
-    <!-- 涓诲鍣?-->
+    <!-- 主容器 -->
     <div class="main-container">
-        <!-- 椤堕儴鏍稿績缁撹鏍?-->
+        <!-- 顶部核心结论栏 -->
         <div class="conclusion-bar animate-fade-in">
             <div class="conclusion-tag tag-1">
                 <div class="tag-icon">
                     <i class="fa fa-tint"></i>
                 </div>
                 <div class="tag-content">
-                    <div class="tag-title">婧惰В姘ц揪鏍囨儏鍐?/div>
+                    <div class="tag-title">溶解氧达标情况</div>
                     <div class="tag-value">
-                        <span class="tag-highlight">95%</span> 浠ヤ笂鏃堕棿杈?<span class="tag-highlight">鈪犵被</span> 鏍囧噯
+                        <span class="tag-highlight">95%</span> 以上时间达 <span class="tag-highlight">Ⅰ类</span> 标准
                     </div>
                 </div>
             </div>
@@ -661,9 +661,9 @@
                     <i class="fa fa-flask"></i>
                 </div>
                 <div class="tag-content">
-                    <div class="tag-title">PH 绋冲畾鑼冨洿</div>
+                    <div class="tag-title">PH 稳定范围</div>
                     <div class="tag-value">
-                        鍏ㄧ▼绋冲畾鍦?<span class="tag-highlight">8.0-8.5</span>锛?00% 绗﹀悎鍥芥爣
+                        全程稳定在 <span class="tag-highlight">8.0-8.5</span>，100% 符合国标
                     </div>
                 </div>
             </div>
@@ -672,17 +672,17 @@
                     <i class="fa fa-filter"></i>
                 </div>
                 <div class="tag-content">
-                    <div class="tag-title">姘ㄦ爱杈炬爣鎯呭喌</div>
+                    <div class="tag-title">氨氮达标情况</div>
                     <div class="tag-value">
-                        <span class="tag-highlight">90%</span> 浠ヤ笂鏃堕棿杈?<span class="tag-highlight">鈪＄被</span> 鏍囧噯锛屾棤瓒呮爣
+                        <span class="tag-highlight">90%</span> 以上时间达 <span class="tag-highlight">Ⅱ类</span> 标准，无超标
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- 涓讳綋鍐呭鍖?-->
+        <!-- 主体内容区 -->
         <div class="content-area">
-            <!-- 宸︿晶锛氫富瑙嗚鍖?-->
+            <!-- 左侧：主视觉区 -->
             <div class="chart-card main-visual">
                 <div class="corner-decoration corner-tl"></div>
                 <div class="corner-decoration corner-tr"></div>
@@ -692,104 +692,104 @@
                 <div class="card-header">
                     <div class="card-title">
                         <i class="fa fa-area-chart"></i>
-                        涓夋寚鏍囧垎鏍忔椂搴忚秼鍔垮浘
+                        三指标分栏时序趋势图
                     </div>
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div class="level-legend">
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #00e400;"></div>
-                                <span style="color: #00e400;">鈪犵被</span>
+                                <span style="color: #00e400;">Ⅰ类</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #ffff00;"></div>
-                                <span style="color: #ffff00;">鈪＄被</span>
+                                <span style="color: #ffff00;">Ⅱ类</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #ff7e00;"></div>
-                                <span style="color: #ff7e00;">鈪㈢被</span>
+                                <span style="color: #ff7e00;">Ⅲ类</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #ff0000;"></div>
-                                <span style="color: #ff0000;">鈪ｇ被</span>
+                                <span style="color: #ff0000;">Ⅳ类</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #99004c;"></div>
-                                <span style="color: #99004c;">鈪ょ被</span>
+                                <span style="color: #99004c;">Ⅴ类</span>
                             </div>
                         </div>
-                        <div class="card-subtitle">鍏ㄥ懆鏈熸椂闂寸淮搴﹀彉鍖栬寰?/div>
+                        <div class="card-subtitle">全周期时间维度变化规律</div>
                     </div>
                 </div>
                 
-                <!-- 宸ュ叿鏍?-->
+                <!-- 工具栏 -->
                 <div class="toolbar">
                     <button class="tool-btn active" onclick="switchView('all')">
-                        <i class="fa fa-th-large"></i>鍏ㄦ寚鏍囪鍥?
+                        <i class="fa fa-th-large"></i>全指标视图
                     </button>
                     <button class="tool-btn" onclick="switchView('do')">
-                        <i class="fa fa-tint"></i>婧惰В姘ф斁澶?
+                        <i class="fa fa-tint"></i>溶解氧放大
                     </button>
                     <button class="tool-btn" onclick="switchView('ph')">
-                        <i class="fa fa-flask"></i>PH鏀惧ぇ
+                        <i class="fa fa-flask"></i>PH放大
                     </button>
                     <button class="tool-btn" onclick="switchView('nh')">
-                        <i class="fa fa-filter"></i>姘ㄦ爱鏀惧ぇ
+                        <i class="fa fa-filter"></i>氨氮放大
                     </button>
                     <button class="tool-btn" onclick="toggleCompare()">
-                        <i class="fa fa-exchange"></i>澶氭寚鏍囧姣?
+                        <i class="fa fa-exchange"></i>多指标对比
                     </button>
                 </div>
                 
-                <!-- 婧惰В姘у浘琛?-->
+                <!-- 溶解氧图表 -->
                 <div class="indicator-chart" id="doChartContainer" style="height: 280px;">
                     <div class="indicator-header">
                         <div class="indicator-name do">
                             <i class="fa fa-tint"></i>
-                            婧惰В姘?(DO)
+                            溶解氧 (DO)
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <span class="indicator-badge badge-level-1">鈪犵被 鈮?.5</span>
-                            <span class="indicator-badge badge-level-2">鈪＄被 鈮?.0</span>
-                            <span class="indicator-badge badge-level-3">鈪㈢被 鈮?.0</span>
+                            <span class="indicator-badge badge-level-1">Ⅰ类 ≥7.5</span>
+                            <span class="indicator-badge badge-level-2">Ⅱ类 ≥6.0</span>
+                            <span class="indicator-badge badge-level-3">Ⅲ类 ≥5.0</span>
                         </div>
                     </div>
                     <div class="indicator-chart-container" id="doChart"></div>
                 </div>
                 
-                <!-- PH鍥捐〃 -->
+                <!-- PH图表 -->
                 <div class="indicator-chart" id="phChartContainer" style="height: 280px;">
                     <div class="indicator-header">
                         <div class="indicator-name ph">
                             <i class="fa fa-flask"></i>
-                            PH 鍊?
+                            PH 值
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <span class="indicator-badge badge-level-1">鍥芥爣 6-9</span>
+                            <span class="indicator-badge badge-level-1">国标 6-9</span>
                         </div>
                     </div>
                     <div class="indicator-chart-container" id="phChart"></div>
                 </div>
                 
-                <!-- 姘ㄦ爱鍥捐〃 -->
+                <!-- 氨氮图表 -->
                 <div class="indicator-chart" id="nhChartContainer" style="height: 280px;">
                     <div class="indicator-header">
                         <div class="indicator-name nh">
                             <i class="fa fa-filter"></i>
-                            姘ㄦ爱 (NH鈧?N)
+                            氨氮 (NH₃-N)
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <span class="indicator-badge badge-level-1">鈪犵被 鈮?.15</span>
-                            <span class="indicator-badge badge-level-2">鈪＄被 鈮?.50</span>
-                            <span class="indicator-badge badge-level-3">鈪㈢被 鈮?.0</span>
+                            <span class="indicator-badge badge-level-1">Ⅰ类 ≤0.15</span>
+                            <span class="indicator-badge badge-level-2">Ⅱ类 ≤0.50</span>
+                            <span class="indicator-badge badge-level-3">Ⅲ类 ≤1.0</span>
                         </div>
                     </div>
                     <div class="indicator-chart-container" id="nhChart"></div>
                 </div>
             </div>
             
-            <!-- 鍙充晶锛氳緟鍔╁垎鏋愬尯 -->
+            <!-- 右侧：辅助分析区 -->
             <div class="right-panel">
-                <!-- 鎸囨爣鏋佸€肩粺璁¤〃 -->
+                <!-- 指标极值统计表 -->
                 <div class="chart-card" style="min-height: 220px;">
                     <div class="corner-decoration corner-tl"></div>
                     <div class="corner-decoration corner-tr"></div>
@@ -799,26 +799,26 @@
                     <div class="card-header">
                         <div class="card-title">
                             <i class="fa fa-table"></i>
-                            鎸囨爣鏋佸€肩粺璁¤〃
+                            指标极值统计表
                         </div>
                     </div>
                     <div class="chart-container">
                         <table class="stats-table">
                             <thead>
                                 <tr>
-                                    <th>鎸囨爣</th>
-                                    <th>鏈€澶у€?/th>
-                                    <th>鏈€灏忓€?/th>
-                                    <th>骞冲潎鍊?/th>
-                                    <th>涓綅鍊?/th>
-                                    <th>杈炬爣鐜?/th>
+                                    <th>指标</th>
+                                    <th>最大值</th>
+                                    <th>最小值</th>
+                                    <th>平均值</th>
+                                    <th>中位值</th>
+                                    <th>达标率</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>
                                         <div class="stats-indicator do">
-                                            <i class="fa fa-tint"></i>婧惰В姘?
+                                            <i class="fa fa-tint"></i>溶解氧
                                         </div>
                                     </td>
                                     <td style="color: #22c55e;">12.5</td>
@@ -842,7 +842,7 @@
                                 <tr>
                                     <td>
                                         <div class="stats-indicator nh">
-                                            <i class="fa fa-filter"></i>姘ㄦ爱
+                                            <i class="fa fa-filter"></i>氨氮
                                         </div>
                                     </td>
                                     <td style="color: #f59e0b;">0.45</td>
@@ -856,7 +856,7 @@
                     </div>
                 </div>
                 
-                <!-- 鍒嗘椂娈佃秼鍔垮姣?-->
+                <!-- 分时段趋势对比 -->
                 <div class="chart-card" style="min-height: 280px;">
                     <div class="corner-decoration corner-tl"></div>
                     <div class="corner-decoration corner-tr"></div>
@@ -866,14 +866,14 @@
                     <div class="card-header">
                         <div class="card-title">
                             <i class="fa fa-bar-chart"></i>
-                            鍒嗘椂娈佃秼鍔垮姣?
+                            分时段趋势对比
                         </div>
-                        <div class="card-subtitle">姹涙湡/闈炴睕鏈熴€佸勾搴﹀潎鍊?/div>
+                        <div class="card-subtitle">汛期/非汛期、年度均值</div>
                     </div>
                     <div class="chart-container" id="seasonChart"></div>
                 </div>
                 
-                <!-- 瓒嬪娍妫€楠岀粨鏋?-->
+                <!-- 趋势检验结果 -->
                 <div class="chart-card" style="min-height: 240px;">
                     <div class="corner-decoration corner-tl"></div>
                     <div class="corner-decoration corner-tr"></div>
@@ -883,34 +883,34 @@
                     <div class="card-header">
                         <div class="card-title">
                             <i class="fa fa-check-circle"></i>
-                            Mann-Kendall 瓒嬪娍妫€楠?
+                            Mann-Kendall 趋势检验
                         </div>
                     </div>
                     <div class="chart-container" id="trendTestContainer">
                         <div class="trend-result">
-                            <div class="trend-label">婧惰В姘ц秼鍔?/div>
+                            <div class="trend-label">溶解氧趋势</div>
                             <div class="trend-value" id="doTrend">
                                 <i class="fa fa-spinner fa-spin" style="color: #0ea5e9;"></i>
-                                璁＄畻涓?..
+                                计算中...
                             </div>
                         </div>
                         <div class="trend-result">
-                            <div class="trend-label">PH 绋冲畾鎬?/div>
+                            <div class="trend-label">PH 稳定性</div>
                             <div class="trend-value" id="phTrend">
                                 <i class="fa fa-spinner fa-spin" style="color: #0ea5e9;"></i>
-                                璁＄畻涓?..
+                                计算中...
                             </div>
                         </div>
                         <div class="trend-result">
-                            <div class="trend-label">姘ㄦ爱鍙樺寲</div>
+                            <div class="trend-label">氨氮变化</div>
                             <div class="trend-value" id="nhTrend">
                                 <i class="fa fa-spinner fa-spin" style="color: #0ea5e9;"></i>
-                                璁＄畻涓?..
+                                计算中...
                             </div>
                         </div>
                         <div style="margin-top: 12px; padding: 10px; background: rgba(14, 165, 233, 0.05); border-radius: 6px; font-size: 11px; color: #64748b; line-height: 1.6;" id="trendConclusion">
                             <i class="fa fa-info-circle" style="color: #0ea5e9; margin-right: 5px;"></i>
-                            姝ｅ湪鍒嗘瀽姘磋川鍙樺寲瓒嬪娍...
+                            正在分析水质变化趋势...
                         </div>
                     </div>
                 </div>
@@ -919,7 +919,7 @@
     </div>
 
     <script>
-        // API鍩虹URL
+        // API基础URL
         const API_BASE = (() => {
             if (window.location.protocol === 'file:') {
                 return 'http://127.0.0.1:5001/api';
@@ -930,7 +930,7 @@
         let charts = {};
         let currentView = 'all';
         
-        // 鐪熷疄鏁版嵁瀛樺偍
+        // 真实数据存储
         const timeSeriesData = {
             dates: [],
             dissolved_oxygen: [],
@@ -938,14 +938,14 @@
             ammonia_nitrogen: []
         };
         
-        // 缁熻鏁版嵁瀛樺偍
+        // 统计数据存储
         const statsData = {
             do: { max: 0, min: 0, avg: 0, median: 0, compliance: 0 },
             ph: { max: 0, min: 0, avg: 0, median: 0, compliance: 0 },
             nh: { max: 0, min: 0, avg: 0, median: 0, compliance: 0 }
         };
         
-        // 鍒濆鍖?
+        // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             initCharts();
             loadRealData();
@@ -957,13 +957,13 @@
             });
         });
         
-        // 鍔犺浇鐪熷疄鏁版嵁
+        // 加载真实数据
         async function loadRealData() {
             try {
                 showLoading();
                 console.log('[DEBUG] Loading trend analysis data from:', API_BASE);
                 
-                // 骞惰鍔犺浇鏃跺簭鏁版嵁鍜岀粺璁℃暟鎹?
+                // 并行加载时序数据和统计数据
                 const [timeseriesRes, overviewRes, boxplotRes] = await Promise.all([
                     fetch(`${API_BASE}/dashboard/timeseries-data`).then(r => {
                         console.log('[DEBUG] Timeseries response status:', r.status);
@@ -991,32 +991,32 @@
                     timeSeriesData.ph = timeseriesRes.data.ph;
                     timeSeriesData.ammonia_nitrogen = timeseriesRes.data.ammonia_nitrogen;
                     
-                    // 鏇存柊鍥捐〃
+                    // 更新图表
                     renderDOChart();
                     renderPHChart();
                     renderNHChart();
                     
-                    // 璁＄畻骞舵洿鏂扮粺璁℃暟鎹?
+                    // 计算并更新统计数据
                     calculateStats();
                     updateStatsTable();
                     
-                    // 鏇存柊鍒嗘椂娈靛姣斿浘
+                    // 更新分时段对比图
                     renderSeasonChart();
                     
-                    // 鏇存柊瓒嬪娍妫€楠岀粨鏋?
+                    // 更新趋势检验结果
                     updateTrendAnalysis();
                     
                     if (timeseriesRes.data.message) {
                         showToast(timeseriesRes.data.message);
                     }
                 } else {
-                    const message = (timeseriesRes.data && timeseriesRes.data.message) || timeseriesRes.error || '鏆傛棤鐪熷疄鏃跺簭鏁版嵁';
+                    const message = (timeseriesRes.data && timeseriesRes.data.message) || timeseriesRes.error || '暂无真实时序数据';
                     console.warn('[DEBUG] No valid timeseries data:', message);
                     renderNoDataState(message);
                     showToast(message);
                 }
                 
-                // 澶勭悊绠辩嚎鍥炬暟鎹紙鐢ㄤ簬鏋佸€肩粺璁★級
+                // 处理箱线图数据（用于极值统计）
                 if (boxplotRes.success && boxplotRes.data && timeSeriesData.dates.length > 0) {
                     updateStatsFromBoxplot(boxplotRes.data);
                 }
@@ -1024,8 +1024,8 @@
                 hideLoading();
             } catch (error) {
                 console.error('[DEBUG] Global error:', error);
-                renderNoDataState('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炴椂搴忔暟鎹?);
-                showToast('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炴椂搴忔暟鎹?);
+                renderNoDataState('数据加载失败，未加载到真实时序数据');
+                showToast('数据加载失败，未加载到真实时序数据');
                 hideLoading();
             }
         }
@@ -1065,7 +1065,7 @@
             updateStatsTable();
             updateConclusionBar(true);
 
-            const emptyMessage = message || '鏆傛棤鐪熷疄鏃跺簭鏁版嵁';
+            const emptyMessage = message || '暂无真实时序数据';
             renderChartEmpty(charts.do, emptyMessage);
             renderChartEmpty(charts.ph, emptyMessage);
             renderChartEmpty(charts.nh, emptyMessage);
@@ -1076,9 +1076,9 @@
             const nhEl = document.getElementById('nhTrend');
             const conclusionEl = document.getElementById('trendConclusion');
 
-            if (doEl) doEl.innerHTML = '<i class="fa fa-minus" style="color: #64748b;"></i> 鏆傛棤鐪熷疄瓒嬪娍鏁版嵁 <span class="trend-status status-stable">寰呰ˉ鍏?/span>';
-            if (phEl) phEl.innerHTML = '<i class="fa fa-minus" style="color: #64748b;"></i> 鏆傛棤鐪熷疄瓒嬪娍鏁版嵁 <span class="trend-status status-stable">寰呰ˉ鍏?/span>';
-            if (nhEl) nhEl.innerHTML = '<i class="fa fa-minus" style="color: #64748b;"></i> 鏆傛棤鐪熷疄瓒嬪娍鏁版嵁 <span class="trend-status status-stable">寰呰ˉ鍏?/span>';
+            if (doEl) doEl.innerHTML = '<i class="fa fa-minus" style="color: #64748b;"></i> 暂无真实趋势数据 <span class="trend-status status-stable">待补充</span>';
+            if (phEl) phEl.innerHTML = '<i class="fa fa-minus" style="color: #64748b;"></i> 暂无真实趋势数据 <span class="trend-status status-stable">待补充</span>';
+            if (nhEl) nhEl.innerHTML = '<i class="fa fa-minus" style="color: #64748b;"></i> 暂无真实趋势数据 <span class="trend-status status-stable">待补充</span>';
             if (conclusionEl) {
                 conclusionEl.innerHTML = `
                     <i class="fa fa-info-circle" style="color: #64748b; margin-right: 5px;"></i>
@@ -1087,54 +1087,54 @@
             }
         }
         
-        // 鏄剧ず鍔犺浇鐘舵€?
+        // 显示加载状态
         function showLoading() {
             document.body.style.cursor = 'wait';
         }
         
-        // 闅愯棌鍔犺浇鐘舵€?
+        // 隐藏加载状态
         function hideLoading() {
             document.body.style.cursor = 'default';
         }
         
-        // 璁＄畻缁熻鏁版嵁
+        // 计算统计数据
         function calculateStats() {
-            // 婧惰В姘х粺璁?
+            // 溶解氧统计
             const doValues = timeSeriesData.dissolved_oxygen;
             statsData.do.max = Math.max(...doValues);
             statsData.do.min = Math.min(...doValues);
             statsData.do.avg = (doValues.reduce((a, b) => a + b, 0) / doValues.length).toFixed(2);
             statsData.do.median = calculateMedian(doValues);
-            // 璁＄畻杈炬爣鐜囷紙>= 7.5 涓?I 绫伙級
+            // 计算达标率（>= 7.5 为 I 类）
             statsData.do.compliance = ((doValues.filter(v => v >= 7.5).length / doValues.length) * 100).toFixed(1);
             
-            // PH缁熻
+            // PH统计
             const phValues = timeSeriesData.ph;
             statsData.ph.max = Math.max(...phValues);
             statsData.ph.min = Math.min(...phValues);
             statsData.ph.avg = (phValues.reduce((a, b) => a + b, 0) / phValues.length).toFixed(2);
             statsData.ph.median = calculateMedian(phValues);
-            // 璁＄畻杈炬爣鐜囷紙6-9 涓鸿揪鏍囷級
+            // 计算达标率（6-9 为达标）
             statsData.ph.compliance = ((phValues.filter(v => v >= 6 && v <= 9).length / phValues.length) * 100).toFixed(1);
             
-            // 姘ㄦ爱缁熻
+            // 氨氮统计
             const nhValues = timeSeriesData.ammonia_nitrogen;
             statsData.nh.max = Math.max(...nhValues);
             statsData.nh.min = Math.min(...nhValues);
             statsData.nh.avg = (nhValues.reduce((a, b) => a + b, 0) / nhValues.length).toFixed(3);
             statsData.nh.median = calculateMedian(nhValues);
-            // 璁＄畻杈炬爣鐜囷紙<= 0.5 涓?II 绫伙級
+            // 计算达标率（<= 0.5 为 II 类）
             statsData.nh.compliance = ((nhValues.filter(v => v <= 0.5).length / nhValues.length) * 100).toFixed(1);
         }
         
-        // 璁＄畻涓綅鏁?
+        // 计算中位数
         function calculateMedian(arr) {
             const sorted = [...arr].sort((a, b) => a - b);
             const mid = Math.floor(sorted.length / 2);
             return sorted.length % 2 ? sorted[mid] : ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2);
         }
         
-        // Mann-Kendall瓒嬪娍妫€楠岋紙绠€鍖栫増锛?
+        // Mann-Kendall趋势检验（简化版）
         function calculateMannKendall(data) {
             const n = data.length;
             if (n < 3) return { trend: 'stable', pValue: 1 };
@@ -1146,10 +1146,10 @@
                 }
             }
             
-            // 璁＄畻鏂瑰樊
+            // 计算方差
             const varS = n * (n - 1) * (2 * n + 5) / 18;
             
-            // 璁＄畻Z鍊?
+            // 计算Z值
             let z = 0;
             if (s > 0) {
                 z = (s - 1) / Math.sqrt(varS);
@@ -1157,14 +1157,14 @@
                 z = (s + 1) / Math.sqrt(varS);
             }
             
-            // 鍒ゆ柇瓒嬪娍
+            // 判断趋势
             const absZ = Math.abs(z);
             let trend = 'stable';
             if (absZ > 1.96) {
                 trend = z > 0 ? 'increasing' : 'decreasing';
             }
             
-            // 瀵绘壘绐佸彉鐐癸紙绠€鍖栵細鎵惧埌瓒嬪娍鍙樺寲鏈€澶х殑浣嶇疆锛?
+            // 寻找突变点（简化：找到趋势变化最大的位置）
             let changePoint = -1;
             let maxChange = 0;
             for (let i = 1; i < n; i++) {
@@ -1178,9 +1178,9 @@
             return { trend, z, changePoint: changePoint > 0 ? changePoint : -1 };
         }
         
-        // 鏇存柊瓒嬪娍妫€楠岀粨鏋?
+        // 更新趋势检验结果
         function updateTrendAnalysis() {
-            // 婧惰В姘ц秼鍔?
+            // 溶解氧趋势
             const doResult = calculateMannKendall(timeSeriesData.dissolved_oxygen);
             const doEl = document.getElementById('doTrend');
             if (doEl) {
@@ -1188,10 +1188,10 @@
                               doResult.trend === 'decreasing' ? 'fa-arrow-down' : 'fa-minus';
                 const doColor = doResult.trend === 'increasing' ? '#22c55e' : 
                                doResult.trend === 'decreasing' ? '#ef4444' : '#0ea5e9';
-                const doText = doResult.trend === 'increasing' ? '鏁翠綋鍛堜笂鍗囪秼鍔? :
-                              doResult.trend === 'decreasing' ? '鏁翠綋鍛堜笅闄嶈秼鍔? : '鏁翠綋淇濇寔绋冲畾';
-                const doStatus = doResult.trend === 'increasing' ? '鏄捐憲鏀瑰杽' :
-                                 doResult.trend === 'decreasing' ? '闇€鍏虫敞' : '楂樺害绋冲畾';
+                const doText = doResult.trend === 'increasing' ? '整体呈上升趋势' :
+                              doResult.trend === 'decreasing' ? '整体呈下降趋势' : '整体保持稳定';
+                const doStatus = doResult.trend === 'increasing' ? '显著改善' :
+                                 doResult.trend === 'decreasing' ? '需关注' : '高度稳定';
                 const doStatusClass = doResult.trend === 'increasing' ? 'status-improving' :
                                       doResult.trend === 'decreasing' ? 'status-stable' : 'status-stable';
                 
@@ -1202,23 +1202,23 @@
                 `;
             }
             
-            // PH瓒嬪娍
+            // PH趋势
             const phResult = calculateMannKendall(timeSeriesData.ph);
             const phEl = document.getElementById('phTrend');
             if (phEl) {
                 const phIcon = phResult.trend === 'stable' ? 'fa-minus' : 
                               phResult.trend === 'increasing' ? 'fa-arrow-up' : 'fa-arrow-down';
-                const phText = phResult.trend === 'stable' ? '娉㈠姩骞呭害灏? :
-                              phResult.trend === 'increasing' ? '鐣ユ湁涓婂崌' : '鐣ユ湁涓嬮檷';
+                const phText = phResult.trend === 'stable' ? '波动幅度小' :
+                              phResult.trend === 'increasing' ? '略有上升' : '略有下降';
                 
                 phEl.innerHTML = `
                     <i class="fa ${phIcon}" style="color: #0ea5e9;"></i>
                     ${phText}
-                    <span class="trend-status status-stable">楂樺害绋冲畾</span>
+                    <span class="trend-status status-stable">高度稳定</span>
                 `;
             }
             
-            // 姘ㄦ爱瓒嬪娍
+            // 氨氮趋势
             const nhResult = calculateMannKendall(timeSeriesData.ammonia_nitrogen);
             const nhEl = document.getElementById('nhTrend');
             if (nhEl) {
@@ -1226,10 +1226,10 @@
                               nhResult.trend === 'increasing' ? 'fa-arrow-up' : 'fa-minus';
                 const nhColor = nhResult.trend === 'decreasing' ? '#22c55e' :
                                nhResult.trend === 'increasing' ? '#ef4444' : '#0ea5e9';
-                const nhText = nhResult.trend === 'decreasing' ? '娴撳害閫愭闄嶄綆' :
-                              nhResult.trend === 'increasing' ? '娴撳害鏈夋墍涓婂崌' : '娴撳害淇濇寔绋冲畾';
-                const nhStatus = nhResult.trend === 'decreasing' ? '鎸佺画鏀瑰杽' :
-                                 nhResult.trend === 'increasing' ? '闇€鍏虫敞' : '鍩烘湰绋冲畾';
+                const nhText = nhResult.trend === 'decreasing' ? '浓度逐步降低' :
+                              nhResult.trend === 'increasing' ? '浓度有所上升' : '浓度保持稳定';
+                const nhStatus = nhResult.trend === 'decreasing' ? '持续改善' :
+                                 nhResult.trend === 'increasing' ? '需关注' : '基本稳定';
                 const nhStatusClass = nhResult.trend === 'decreasing' ? 'status-improving' :
                                       nhResult.trend === 'increasing' ? 'status-stable' : 'status-stable';
                 
@@ -1240,18 +1240,18 @@
                 `;
             }
             
-            // 鏇存柊缁撹
+            // 更新结论
             const conclusionEl = document.getElementById('trendConclusion');
             if (conclusionEl && doResult.changePoint > 0) {
-                const changeDate = timeSeriesData.dates[doResult.changePoint] || '鏈煡';
+                const changeDate = timeSeriesData.dates[doResult.changePoint] || '未知';
                 conclusionEl.innerHTML = `
                     <i class="fa fa-info-circle" style="color: #0ea5e9; margin-right: 5px;"></i>
-                    妫€楠岀粨鏋滐細${changeDate} 鍓嶅悗鍑虹幇姘磋川鍙樺寲瓒嬪娍鎷愮偣锛屽彲鑳戒笌瀛ｈ妭鍙樺寲鎴栨不鐞嗘帾鏂芥湁鍏?
+                    检验结果：${changeDate} 前后出现水质变化趋势拐点，可能与季节变化或治理措施有关
                 `;
             }
         }
         
-        // 浠庣绾垮浘鏁版嵁鏇存柊缁熻
+        // 从箱线图数据更新统计
         function updateStatsFromBoxplot(data) {
             if (data.indicators && data.indicators.length > 0) {
                 const indicatorMap = {};
@@ -1259,9 +1259,9 @@
                     indicatorMap[item.name] = item.statistics || {};
                 });
 
-                const doStats = indicatorMap['婧惰В姘?];
+                const doStats = indicatorMap['溶解氧'];
                 const phStats = indicatorMap['PH'];
-                const nhStats = indicatorMap['姘ㄦ爱'];
+                const nhStats = indicatorMap['氨氮'];
 
                 if (doStats) {
                     statsData.do.min = doStats.min;
@@ -1282,7 +1282,7 @@
             updateStatsTable();
         }
         
-        // 鏇存柊缁熻琛ㄦ牸
+        // 更新统计表格
         function updateStatsTable() {
             const tbody = document.querySelector('.stats-table tbody');
             if (tbody) {
@@ -1291,7 +1291,8 @@
                     <tr>
                         <td>
                             <div class="stats-indicator do">
-                                <i class="fa fa-tint"></i>婧惰В姘?                            </div>
+                                <i class="fa fa-tint"></i>溶解氧
+                            </div>
                         </td>
                         <td style="color: #22c55e;">${statsData.do.max}</td>
                         <td style="color: #f59e0b;">${statsData.do.min}</td>
@@ -1314,7 +1315,7 @@
                     <tr>
                         <td>
                             <div class="stats-indicator nh">
-                                <i class="fa fa-filter"></i>姘ㄦ爱
+                                <i class="fa fa-filter"></i>氨氮
                             </div>
                         </td>
                         <td style="color: #f59e0b;">${statsData.nh.max}</td>
@@ -1326,31 +1327,33 @@
                 `;
             }
             
-            // 鏇存柊椤堕儴缁撹鏍?            updateConclusionBar();
+            // 更新顶部结论栏
+            updateConclusionBar();
         }
         
-        // 鏇存柊椤堕儴缁撹鏍?        function updateConclusionBar(isEmpty = false) {
+        // 更新顶部结论栏
+        function updateConclusionBar(isEmpty = false) {
             const tags = document.querySelectorAll('.conclusion-tag');
             if (tags.length >= 3) {
                 if (isEmpty) {
-                    tags[0].querySelector('.tag-value').innerHTML = '鏆傛棤鐪熷疄鏁版嵁';
-                    tags[1].querySelector('.tag-value').innerHTML = '鏆傛棤鐪熷疄鏁版嵁';
-                    tags[2].querySelector('.tag-value').innerHTML = '鏆傛棤鐪熷疄鏁版嵁';
+                    tags[0].querySelector('.tag-value').innerHTML = '暂无真实数据';
+                    tags[1].querySelector('.tag-value').innerHTML = '暂无真实数据';
+                    tags[2].querySelector('.tag-value').innerHTML = '暂无真实数据';
                     return;
                 }
                 tags[0].querySelector('.tag-value').innerHTML = `
-                    <span class="tag-highlight">${statsData.do.compliance}%</span> 浠ヤ笂鏃堕棿杈?<span class="tag-highlight">鈪犵被</span> 鏍囧噯
+                    <span class="tag-highlight">${statsData.do.compliance}%</span> 以上时间达 <span class="tag-highlight">Ⅰ类</span> 标准
                 `;
                 tags[1].querySelector('.tag-value').innerHTML = `
-                    鍏ㄧ▼绋冲畾鍦?<span class="tag-highlight">${statsData.ph.min}-${statsData.ph.max}</span>锛?{statsData.ph.compliance}% 绗﹀悎鍥芥爣
+                    全程稳定在 <span class="tag-highlight">${statsData.ph.min}-${statsData.ph.max}</span>，${statsData.ph.compliance}% 符合国标
                 `;
                 tags[2].querySelector('.tag-value').innerHTML = `
-                    <span class="tag-highlight">${statsData.nh.compliance}%</span> 浠ヤ笂鏃堕棿杈?<span class="tag-highlight">鈪＄被</span> 鏍囧噯锛屾棤瓒呮爣
+                    <span class="tag-highlight">${statsData.nh.compliance}%</span> 以上时间达 <span class="tag-highlight">Ⅱ类</span> 标准，无超标
                 `;
             }
         }
         
-        // Toast鎻愮ず
+        // Toast提示
         function showToast(message) {
             const existing = document.querySelector('.toast-message');
             if (existing) existing.remove();
@@ -1376,7 +1379,7 @@
             setTimeout(() => toast.remove(), 3000);
         }
         
-        // 鏇存柊鏃堕棿
+        // 更新时间
         function updateTime() {
             const now = new Date();
             const timeStr = now.toLocaleString('zh-CN', {
@@ -1390,12 +1393,12 @@
             document.getElementById('currentTime').textContent = timeStr;
         }
         
-        // 杩斿洖澶у睆
+        // 返回大屏
         function goBack() {
             window.location.href = 'dashboard.html';
         }
         
-        // 鍒濆鍖栧浘琛?
+        // 初始化图表
         function initCharts() {
             charts.do = echarts.init(document.getElementById('doChart'));
             charts.ph = echarts.init(document.getElementById('phChart'));
@@ -1403,7 +1406,7 @@
             charts.season = echarts.init(document.getElementById('seasonChart'));
         }
         
-        // 娓叉煋婧惰В姘у浘琛?
+        // 渲染溶解氧图表
         function renderDOChart() {
             const option = {
                 backgroundColor: 'transparent',
@@ -1412,18 +1415,18 @@
                     formatter: function(params) {
                         const data = params[0];
                         const value = data.value;
-                        let level = '鈪犵被';
-                        if (value < 7.5) level = '鈪＄被';
-                        if (value < 6.0) level = '鈪㈢被';
+                        let level = 'Ⅰ类';
+                        if (value < 7.5) level = 'Ⅱ类';
+                        if (value < 6.0) level = 'Ⅲ类';
                         
-                        let reason = '姝ｅ父杩愯';
+                        let reason = '正常运行';
                         const month = parseInt(data.name.split('-')[1]);
-                        if (month >= 6 && month <= 8) reason = '澶忓姘存俯鍗囬珮锛屾憾瑙ｆ哀鑷劧闄嶄綆';
-                        if (month >= 12 || month <= 2) reason = '鍐姘存俯浣庯紝婧惰В姘чケ鍜屽害楂?;
+                        if (month >= 6 && month <= 8) reason = '夏季水温升高，溶解氧自然降低';
+                        if (month >= 12 || month <= 2) reason = '冬季水温低，溶解氧饱和度高';
                         
                         return `<div style="font-weight:bold">${data.name}</div>
-                                <div>婧惰В姘? <span style="color:#0ea5e9;font-weight:bold">${value}</span> mg/L</div>
-                                <div>姘磋川绛夌骇: <span style="color:#00e400">${level}</span></div>
+                                <div>溶解氧: <span style="color:#0ea5e9;font-weight:bold">${value}</span> mg/L</div>
+                                <div>水质等级: <span style="color:#00e400">${level}</span></div>
                                 <div style="color:#94a3b8;font-size:12px;margin-top:5px">${reason}</div>`;
                     }
                 },
@@ -1457,7 +1460,7 @@
                     splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
                 },
                 series: [
-                    // 鈪犵被姘磋川鍖洪棿鑳屾櫙
+                    // Ⅰ类水质区间背景
                     {
                         type: 'line',
                         markArea: {
@@ -1472,7 +1475,7 @@
                             }]]
                         }
                     },
-                    // 鈪＄被姘磋川鍖洪棿鑳屾櫙
+                    // Ⅱ类水质区间背景
                     {
                         type: 'line',
                         markArea: {
@@ -1487,7 +1490,7 @@
                             }]]
                         }
                     },
-                    // 鈪㈢被姘磋川鍖洪棿鑳屾櫙
+                    // Ⅲ类水质区间背景
                     {
                         type: 'line',
                         markArea: {
@@ -1502,7 +1505,7 @@
                             }]]
                         }
                     },
-                    // 鍥芥爣闄愬€肩嚎
+                    // 国标限值线
                     {
                         type: 'line',
                         markLine: {
@@ -1513,15 +1516,15 @@
                                 width: 1
                             },
                             data: [
-                                { yAxis: 7.5, lineStyle: { color: '#00e400' }, label: { formatter: '鈪犵被绾?, color: '#00e400', fontSize: 10 } },
-                                { yAxis: 6.0, lineStyle: { color: '#ffff00' }, label: { formatter: '鈪＄被绾?, color: '#ffff00', fontSize: 10 } },
-                                { yAxis: 5.0, lineStyle: { color: '#ff7e00' }, label: { formatter: '鈪㈢被绾?, color: '#ff7e00', fontSize: 10 } }
+                                { yAxis: 7.5, lineStyle: { color: '#00e400' }, label: { formatter: 'Ⅰ类线', color: '#00e400', fontSize: 10 } },
+                                { yAxis: 6.0, lineStyle: { color: '#ffff00' }, label: { formatter: 'Ⅱ类线', color: '#ffff00', fontSize: 10 } },
+                                { yAxis: 5.0, lineStyle: { color: '#ff7e00' }, label: { formatter: 'Ⅲ类线', color: '#ff7e00', fontSize: 10 } }
                             ]
                         }
                     },
-                    // 鏁版嵁鎶樼嚎
+                    // 数据折线
                     {
-                        name: '婧惰В姘?,
+                        name: '溶解氧',
                         type: 'line',
                         smooth: true,
                         data: timeSeriesData.dissolved_oxygen,
@@ -1531,8 +1534,8 @@
                         symbolSize: 6,
                         markPoint: {
                             data: [
-                                { type: 'max', name: '鏈€澶у€?, itemStyle: { color: '#22c55e' } },
-                                { type: 'min', name: '鏈€灏忓€?, itemStyle: { color: '#f59e0b' } }
+                                { type: 'max', name: '最大值', itemStyle: { color: '#22c55e' } },
+                                { type: 'min', name: '最小值', itemStyle: { color: '#f59e0b' } }
                             ],
                             label: { color: '#fff', fontSize: 10 }
                         }
@@ -1543,7 +1546,7 @@
             charts.do.setOption(option);
         }
         
-        // 娓叉煋PH鍥捐〃
+        // 渲染PH图表
         function renderPHChart() {
             const option = {
                 backgroundColor: 'transparent',
@@ -1552,13 +1555,13 @@
                     formatter: function(params) {
                         const data = params[0];
                         const value = data.value;
-                        let status = '绗﹀悎鍥芥爣';
-                        if (value < 6 || value > 9) status = '瓒呮爣';
+                        let status = '符合国标';
+                        if (value < 6 || value > 9) status = '超标';
                         
                         return `<div style="font-weight:bold">${data.name}</div>
-                                <div>PH鍊? <span style="color:#22c55e;font-weight:bold">${value}</span></div>
-                                <div>鐘舵€? <span style="color:#22c55e">${status}</span></div>
-                                <div style="color:#94a3b8;font-size:12px;margin-top:5px">姘磋川閰哥⒈搴︾ǔ瀹?/div>`;
+                                <div>PH值: <span style="color:#22c55e;font-weight:bold">${value}</span></div>
+                                <div>状态: <span style="color:#22c55e">${status}</span></div>
+                                <div style="color:#94a3b8;font-size:12px;margin-top:5px">水质酸碱度稳定</div>`;
                     }
                 },
                 grid: {
@@ -1590,7 +1593,7 @@
                     splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
                 },
                 series: [
-                    // 鍥芥爣鍖洪棿鑳屾櫙
+                    // 国标区间背景
                     {
                         type: 'line',
                         markArea: {
@@ -1605,7 +1608,7 @@
                             }]]
                         }
                     },
-                    // 鍥芥爣闄愬€肩嚎
+                    // 国标限值线
                     {
                         type: 'line',
                         markLine: {
@@ -1617,12 +1620,12 @@
                                 color: '#22c55e'
                             },
                             data: [
-                                { yAxis: 6, label: { formatter: '鍥芥爣涓嬮檺', color: '#22c55e', fontSize: 10 } },
-                                { yAxis: 9, label: { formatter: '鍥芥爣涓婇檺', color: '#22c55e', fontSize: 10 } }
+                                { yAxis: 6, label: { formatter: '国标下限', color: '#22c55e', fontSize: 10 } },
+                                { yAxis: 9, label: { formatter: '国标上限', color: '#22c55e', fontSize: 10 } }
                             ]
                         }
                     },
-                    // 鏁版嵁鎶樼嚎
+                    // 数据折线
                     {
                         name: 'PH',
                         type: 'line',
@@ -1634,8 +1637,8 @@
                         symbolSize: 6,
                         markPoint: {
                             data: [
-                                { type: 'max', name: '鏈€澶у€?, itemStyle: { color: '#0ea5e9' } },
-                                { type: 'min', name: '鏈€灏忓€?, itemStyle: { color: '#0ea5e9' } }
+                                { type: 'max', name: '最大值', itemStyle: { color: '#0ea5e9' } },
+                                { type: 'min', name: '最小值', itemStyle: { color: '#0ea5e9' } }
                             ],
                             label: { color: '#fff', fontSize: 10 }
                         }
@@ -1646,7 +1649,7 @@
             charts.ph.setOption(option);
         }
         
-        // 娓叉煋姘ㄦ爱鍥捐〃
+        // 渲染氨氮图表
         function renderNHChart() {
             const option = {
                 backgroundColor: 'transparent',
@@ -1655,19 +1658,19 @@
                     formatter: function(params) {
                         const data = params[0];
                         const value = data.value;
-                        let level = '鈪犵被';
-                        if (value > 0.15) level = '鈪＄被';
-                        if (value > 0.5) level = '鈪㈢被';
-                        if (value > 1.0) level = '鈪ｇ被';
+                        let level = 'Ⅰ类';
+                        if (value > 0.15) level = 'Ⅱ类';
+                        if (value > 0.5) level = 'Ⅲ类';
+                        if (value > 1.0) level = 'Ⅳ类';
                         
-                        let reason = '姝ｅ父杩愯';
+                        let reason = '正常运行';
                         const month = parseInt(data.name.split('-')[1]);
-                        if (month >= 6 && month <= 8) reason = '闆ㄥ姘撮噺澶э紝绋€閲婁綔鐢ㄦ槑鏄?;
-                        if (month <= 2 || month >= 11) reason = '鏋按鏈燂紝姘翠綋鑷噣鑳藉姏鍑忓急';
+                        if (month >= 6 && month <= 8) reason = '雨季水量大，稀释作用明显';
+                        if (month <= 2 || month >= 11) reason = '枯水期，水体自净能力减弱';
                         
                         return `<div style="font-weight:bold">${data.name}</div>
-                                <div>姘ㄦ爱: <span style="color:#f59e0b;font-weight:bold">${value}</span> mg/L</div>
-                                <div>姘磋川绛夌骇: <span style="color:${value <= 0.15 ? '#00e400' : value <= 0.5 ? '#ffff00' : '#ff7e00'}">${level}</span></div>
+                                <div>氨氮: <span style="color:#f59e0b;font-weight:bold">${value}</span> mg/L</div>
+                                <div>水质等级: <span style="color:${value <= 0.15 ? '#00e400' : value <= 0.5 ? '#ffff00' : '#ff7e00'}">${level}</span></div>
                                 <div style="color:#94a3b8;font-size:12px;margin-top:5px">${reason}</div>`;
                     }
                 },
@@ -1700,7 +1703,7 @@
                     splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } }
                 },
                 series: [
-                    // 鈪犵被姘磋川鍖洪棿鑳屾櫙
+                    // Ⅰ类水质区间背景
                     {
                         type: 'line',
                         markArea: {
@@ -1715,7 +1718,7 @@
                             }]]
                         }
                     },
-                    // 鈪＄被姘磋川鍖洪棿鑳屾櫙
+                    // Ⅱ类水质区间背景
                     {
                         type: 'line',
                         markArea: {
@@ -1730,7 +1733,7 @@
                             }]]
                         }
                     },
-                    // 鍥芥爣闄愬€肩嚎
+                    // 国标限值线
                     {
                         type: 'line',
                         markLine: {
@@ -1741,14 +1744,14 @@
                                 width: 1
                             },
                             data: [
-                                { yAxis: 0.15, lineStyle: { color: '#00e400' }, label: { formatter: '鈪犵被绾?, color: '#00e400', fontSize: 10 } },
-                                { yAxis: 0.5, lineStyle: { color: '#ffff00' }, label: { formatter: '鈪＄被绾?, color: '#ffff00', fontSize: 10 } }
+                                { yAxis: 0.15, lineStyle: { color: '#00e400' }, label: { formatter: 'Ⅰ类线', color: '#00e400', fontSize: 10 } },
+                                { yAxis: 0.5, lineStyle: { color: '#ffff00' }, label: { formatter: 'Ⅱ类线', color: '#ffff00', fontSize: 10 } }
                             ]
                         }
                     },
-                    // 鏁版嵁鎶樼嚎
+                    // 数据折线
                     {
-                        name: '姘ㄦ爱',
+                        name: '氨氮',
                         type: 'line',
                         smooth: true,
                         data: timeSeriesData.ammonia_nitrogen,
@@ -1758,8 +1761,8 @@
                         symbolSize: 6,
                         markPoint: {
                             data: [
-                                { type: 'max', name: '鏈€澶у€?, itemStyle: { color: '#ef4444' } },
-                                { type: 'min', name: '鏈€灏忓€?, itemStyle: { color: '#22c55e' } }
+                                { type: 'max', name: '最大值', itemStyle: { color: '#ef4444' } },
+                                { type: 'min', name: '最小值', itemStyle: { color: '#22c55e' } }
                             ],
                             label: { color: '#fff', fontSize: 10 }
                         }
@@ -1770,9 +1773,9 @@
             charts.nh.setOption(option);
         }
         
-        // 娓叉煋鍒嗘椂娈靛姣斿浘琛?
+        // 渲染分时段对比图表
         function renderSeasonChart() {
-            // 璁＄畻姹涙湡/闈炴睕鏈熸暟鎹?
+            // 计算汛期/非汛期数据
             const seasonData = calculateSeasonData();
             
             const option = {
@@ -1782,7 +1785,7 @@
                     axisPointer: { type: 'shadow' }
                 },
                 legend: {
-                    data: ['姹涙湡(6-9鏈?', '闈炴睕鏈?, '骞村害鍧囧€?],
+                    data: ['汛期(6-9月)', '非汛期', '年度均值'],
                     textStyle: { color: '#94a3b8', fontSize: 10 },
                     top: 0,
                     itemWidth: 12,
@@ -1806,7 +1809,7 @@
                 },
                 yAxis: {
                     type: 'value',
-                    name: '缁煎悎姘磋川鎸囨暟',
+                    name: '综合水质指数',
                     nameTextStyle: { color: '#64748b', fontSize: 10 },
                     axisLabel: {
                         color: '#94a3b8',
@@ -1816,19 +1819,19 @@
                 },
                 series: [
                     {
-                        name: '姹涙湡(6-9鏈?',
+                        name: '汛期(6-9月)',
                         type: 'bar',
                         data: seasonData.floodSeason,
                         itemStyle: { color: '#0ea5e9' }
                     },
                     {
-                        name: '闈炴睕鏈?,
+                        name: '非汛期',
                         type: 'bar',
                         data: seasonData.nonFloodSeason,
                         itemStyle: { color: '#22c55e' }
                     },
                     {
-                        name: '骞村害鍧囧€?,
+                        name: '年度均值',
                         type: 'line',
                         data: seasonData.annualAvg,
                         lineStyle: { color: '#f59e0b', width: 2 },
@@ -1842,11 +1845,11 @@
             charts.season.setOption(option);
         }
         
-        // 璁＄畻姹涙湡/闈炴睕鏈熸暟鎹?
+        // 计算汛期/非汛期数据
         function calculateSeasonData() {
             const yearData = {};
             
-            // 鎸夊勾浠藉垎缁?
+            // 按年份分组
             timeSeriesData.dates.forEach((date, index) => {
                 const year = date.slice(0, 4);
                 const month = parseInt(date.slice(5, 7));
@@ -1858,13 +1861,13 @@
                     };
                 }
                 
-                // 璁＄畻缁煎悎姘磋川鎸囨暟锛堝熀浜庝笁涓寚鏍囷級
+                // 计算综合水质指数（基于三个指标）
                 const doScore = Math.min(timeSeriesData.dissolved_oxygen[index] / 10, 1);
                 const phScore = 1 - Math.abs(timeSeriesData.ph[index] - 8) / 2;
                 const nhScore = 1 - Math.min(timeSeriesData.ammonia_nitrogen[index] / 0.5, 1);
                 const compositeScore = (doScore + phScore + nhScore) / 3;
                 
-                // 6-9鏈堜负姹涙湡
+                // 6-9月为汛期
                 if (month >= 6 && month <= 9) {
                     yearData[year].flood.push(compositeScore);
                 } else {
@@ -1895,11 +1898,11 @@
             return { years, floodSeason, nonFloodSeason, annualAvg };
         }
         
-        // 鍒囨崲瑙嗗浘
+        // 切换视图
         function switchView(view) {
             currentView = view;
             
-            // 鏇存柊鎸夐挳鐘舵€?
+            // 更新按钮状态
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
             event.target.closest('.tool-btn').classList.add('active');
             
@@ -1931,19 +1934,19 @@
                 nhContainer.style.height = '600px';
             }
             
-            // 閲嶆柊璋冩暣鍥捐〃澶у皬
+            // 重新调整图表大小
             setTimeout(() => {
                 Object.values(charts).forEach(chart => chart && chart.resize());
             }, 100);
         }
         
-        // 鍒囨崲瀵规瘮妯″紡
+        // 切换对比模式
         function toggleCompare() {
-            // 鏇存柊鎸夐挳鐘舵€?
+            // 更新按钮状态
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
             event.target.closest('.tool-btn').classList.add('active');
             
-            // 鍒涘缓瀵规瘮鍥捐〃
+            // 创建对比图表
             const compareChart = echarts.init(document.getElementById('doChart'));
             
             const option = {
@@ -1952,7 +1955,7 @@
                     trigger: 'axis'
                 },
                 legend: {
-                    data: ['婧惰В姘?, 'PH', '姘ㄦ爱'],
+                    data: ['溶解氧', 'PH', '氨氮'],
                     textStyle: { color: '#94a3b8', fontSize: 10 },
                     top: 0
                 },
@@ -1983,7 +1986,7 @@
                     },
                     {
                         type: 'value',
-                        name: '姘ㄦ爱',
+                        name: '氨氮',
                         position: 'right',
                         axisLabel: { color: '#94a3b8', fontSize: 10 }
                     }
@@ -1994,7 +1997,7 @@
                 ],
                 series: [
                     {
-                        name: '婧惰В姘?,
+                        name: '溶解氧',
                         type: 'line',
                         smooth: true,
                         data: timeSeriesData.dissolved_oxygen,
@@ -2010,7 +2013,7 @@
                         itemStyle: { color: '#22c55e' }
                     },
                     {
-                        name: '姘ㄦ爱',
+                        name: '氨氮',
                         type: 'line',
                         smooth: true,
                         yAxisIndex: 1,
@@ -2023,14 +2026,14 @@
             
             compareChart.setOption(option);
             
-            // 闅愯棌鍏朵粬鍥捐〃瀹瑰櫒锛屾斁澶ф憾瑙ｆ哀瀹瑰櫒鐢ㄤ簬鏄剧ず瀵规瘮鍥?
+            // 隐藏其他图表容器，放大溶解氧容器用于显示对比图
             const doContainer = document.getElementById('doChartContainer');
             doContainer.style.display = 'flex';
             doContainer.style.height = '600px';
             document.getElementById('phChartContainer').style.display = 'none';
             document.getElementById('nhChartContainer').style.display = 'none';
             
-            // 閲嶆柊璋冩暣鍥捐〃澶у皬
+            // 重新调整图表大小
             setTimeout(() => {
                 compareChart.resize();
             }, 100);
@@ -2038,4 +2041,3 @@
     </script>
 </body>
 </html>
-

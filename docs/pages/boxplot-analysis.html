@@ -1,12 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>娴锋渤鍏煙 - 鎸囨爣鍒嗗竷涓庡紓甯搁璀︿笓椤瑰睆</title>
+    <title>海河六域 - 指标分布与异常预警专项屏</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
@@ -95,8 +97,6 @@
         .outlier-value { font-size: 14px; color: #e2e8f0; font-weight: 600; }
         @media (max-width: 1400px) { .content-area { grid-template-columns: 1fr; } }
     </style>
-    <script src="../config/site.config.js"></script>
-    <script src="../config/runtime-config.js"></script>
 </head>
 <body>
     <div class="bg-grid"></div>
@@ -106,7 +106,7 @@
     <nav class="top-nav">
         <div class="nav-title">
             <i class="fa fa-bar-chart"></i>
-            鎸囨爣鍒嗗竷涓庡紓甯搁璀︿笓椤瑰睆
+            指标分布与异常预警专项屏
         </div>
         <div style="display: flex; align-items: center; gap: 20px;">
             <div style="color: #94a3b8; font-size: 13px;">
@@ -115,7 +115,7 @@
             </div>
             <button class="nav-back" onclick="goBack()">
                 <i class="fa fa-arrow-left"></i>
-                杩斿洖澶у睆
+                返回大屏
             </button>
         </div>
     </nav>
@@ -125,15 +125,15 @@
             <div class="conclusion-tag tag-1">
                 <div class="tag-icon"><i class="fa fa-check-circle"></i></div>
                 <div class="tag-content">
-                    <div class="tag-title">涓綅鏁拌揪鏍囨儏鍐?/div>
-                    <div class="tag-value">鎵€鏈夋寚鏍囦腑浣嶆暟鍧?span class="tag-highlight">浼樹簬鍥芥爣鈪＄被鏍囧噯</span>锛屽鏁版帴杩?span class="tag-highlight">鈪犵被</span></div>
+                    <div class="tag-title">中位数达标情况</div>
+                    <div class="tag-value">所有指标中位数均<span class="tag-highlight">优于国标Ⅱ类标准</span>，多数接近<span class="tag-highlight">Ⅰ类</span></div>
                 </div>
             </div>
             <div class="conclusion-tag tag-2">
                 <div class="tag-icon"><i class="fa fa-line-chart"></i></div>
                 <div class="tag-content">
-                    <div class="tag-title">姘磋川绋冲畾鎬?/div>
-                    <div class="tag-value">鎸囨爣绠变綋<span class="tag-highlight">鏋佺獎</span>锛屾尝鍔?span class="tag-highlight">鏋佸皬</span>锛屽紓甯稿€间粎涓哄伓鍙戞壈鍔?/div>
+                    <div class="tag-title">水质稳定性</div>
+                    <div class="tag-value">指标箱体<span class="tag-highlight">极窄</span>，波动<span class="tag-highlight">极小</span>，异常值仅为偶发扰动</div>
                 </div>
             </div>
         </div>
@@ -146,8 +146,8 @@
                 <div class="corner-decoration corner-br"></div>
                 
                 <div class="card-header">
-                    <div class="card-title"><i class="fa fa-bar-chart"></i>鏍稿績鎸囨爣绠辩嚎鍥惧垎甯?/div>
-                    <div class="card-subtitle">鐐瑰嚮寮傚父鍊兼煡鐪嬭鎯?/div>
+                    <div class="card-title"><i class="fa fa-bar-chart"></i>核心指标箱线图分布</div>
+                    <div class="card-subtitle">点击异常值查看详情</div>
                 </div>
                 <div class="chart-container">
                     <div class="boxplot-grid" id="boxplotGrid"></div>
@@ -161,12 +161,12 @@
                     <div class="corner-decoration corner-bl"></div>
                     <div class="corner-decoration corner-br"></div>
                     <div class="card-header">
-                        <div class="card-title"><i class="fa fa-table"></i>鎸囨爣鍒嗗竷缁熻璇︽儏</div>
+                        <div class="card-title"><i class="fa fa-table"></i>指标分布统计详情</div>
                     </div>
                     <div class="chart-container" style="overflow: auto;">
                         <table class="stats-table">
                             <thead>
-                                <tr><th>鎸囨爣</th><th>鏈€灏忓€?/th><th>Q1</th><th>涓綅鏁?/th><th>Q3</th><th>鏈€澶у€?/th><th>IQR</th></tr>
+                                <tr><th>指标</th><th>最小值</th><th>Q1</th><th>中位数</th><th>Q3</th><th>最大值</th><th>IQR</th></tr>
                             </thead>
                             <tbody id="statsTableBody"></tbody>
                         </table>
@@ -179,7 +179,7 @@
                     <div class="corner-decoration corner-bl"></div>
                     <div class="corner-decoration corner-br"></div>
                     <div class="card-header">
-                        <div class="card-title"><i class="fa fa-warning"></i>寮傚父棰勮闃堝€艰缃?/div>
+                        <div class="card-title"><i class="fa fa-warning"></i>异常预警阈值设置</div>
                     </div>
                     <div class="chart-container" id="thresholdContainer" style="overflow: auto;"></div>
                 </div>
@@ -190,12 +190,12 @@
                     <div class="corner-decoration corner-bl"></div>
                     <div class="corner-decoration corner-br"></div>
                     <div class="card-header">
-                        <div class="card-title"><i class="fa fa-star"></i>姘磋川绋冲畾鎬ц瘎鍒?/div>
+                        <div class="card-title"><i class="fa fa-star"></i>水质稳定性评分</div>
                     </div>
                     <div class="chart-container">
                         <div class="stability-overview">
                             <div class="stability-score-large" id="overallStability">--</div>
-                            <div class="stability-label">鍏ㄦ祦鍩熺患鍚堢ǔ瀹氭€ц瘎鍒?/div>
+                            <div class="stability-label">全流域综合稳定性评分</div>
                         </div>
                         <div class="stability-list" id="stabilityList"></div>
                     </div>
@@ -207,7 +207,7 @@
     <div class="outlier-modal" id="outlierModal">
         <div class="outlier-content">
             <div class="outlier-header">
-                <div class="outlier-title" id="outlierModalTitle"><i class="fa fa-exclamation-triangle"></i> 寮傚父鍊艰鎯?/div>
+                <div class="outlier-title" id="outlierModalTitle"><i class="fa fa-exclamation-triangle"></i> 异常值详情</div>
                 <button class="outlier-close" onclick="closeOutlierModal()"><i class="fa fa-times"></i></button>
             </div>
             <div id="outlierDetail"></div>
@@ -223,10 +223,10 @@
         let boxplotData = null;
         
         const indicatorConfig = {
-            '婧惰В姘?: { unit: 'mg/L', level1: 7.5, level2: 6.0, level3: 5.0, higherBetter: true },
-            '姘ㄦ爱': { unit: 'mg/L', level1: 0.15, level2: 0.5, level3: 1.0, higherBetter: false },
-            '鎬荤７': { unit: 'mg/L', level1: 0.02, level2: 0.1, level3: 0.2, higherBetter: false },
-            '楂橀敯閰哥洂鎸囨暟': { unit: 'mg/L', level1: 2.0, level2: 4.0, level3: 6.0, higherBetter: false },
+            '溶解氧': { unit: 'mg/L', level1: 7.5, level2: 6.0, level3: 5.0, higherBetter: true },
+            '氨氮': { unit: 'mg/L', level1: 0.15, level2: 0.5, level3: 1.0, higherBetter: false },
+            '总磷': { unit: 'mg/L', level1: 0.02, level2: 0.1, level3: 0.2, higherBetter: false },
+            '高锰酸盐指数': { unit: 'mg/L', level1: 2.0, level2: 4.0, level3: 6.0, higherBetter: false },
             'PH': { unit: '', min: 6.0, max: 9.0, higherBetter: null }
         };
         
@@ -259,11 +259,11 @@
                         showToast(result.data.message);
                     }
                 } else {
-                    renderEmptyState((result.data && result.data.message) || result.error || '鏆傛棤鐪熷疄绠辩嚎鍒嗘瀽鏁版嵁');
+                    renderEmptyState((result.data && result.data.message) || result.error || '暂无真实箱线分析数据');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                renderEmptyState('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炵绾垮垎鏋愭暟鎹?);
+                renderEmptyState('数据加载失败，未加载到真实箱线分析数据');
             }
         }
 
@@ -294,9 +294,9 @@
                     <div class="boxplot-info">
                         <div class="boxplot-name">${indicator.name}</div>
                         <div class="boxplot-stats">
-                            涓綅鏁? ${indicator.statistics.median}${indicator.unit}<br>
+                            中位数: ${indicator.statistics.median}${indicator.unit}<br>
                             IQR: ${indicator.statistics.iqr}<br>
-                            寮傚父鍊? ${indicator.outlier_count}涓?
+                            异常值: ${indicator.outlier_count}个
                         </div>
                     </div>
                     <div class="boxplot-chart" id="boxplot_${index}"></div>
@@ -323,16 +323,16 @@
             const markLines = [];
             if (config) {
                 if (indicator.name === 'PH') {
-                    markLines.push({ yAxis: config.min, lineStyle: { color: '#ef4444', type: 'dashed' }, label: { formatter: '鍥芥爣涓嬮檺', color: '#ef4444' } });
-                    markLines.push({ yAxis: config.max, lineStyle: { color: '#ef4444', type: 'dashed' }, label: { formatter: '鍥芥爣涓婇檺', color: '#ef4444' } });
+                    markLines.push({ yAxis: config.min, lineStyle: { color: '#ef4444', type: 'dashed' }, label: { formatter: '国标下限', color: '#ef4444' } });
+                    markLines.push({ yAxis: config.max, lineStyle: { color: '#ef4444', type: 'dashed' }, label: { formatter: '国标上限', color: '#ef4444' } });
                 } else if (config.higherBetter) {
-                    markLines.push({ yAxis: config.level1, lineStyle: { color: '#22c55e', type: 'dashed' }, label: { formatter: '鈪犵被', color: '#22c55e' } });
-                    markLines.push({ yAxis: config.level2, lineStyle: { color: '#f59e0b', type: 'dashed' }, label: { formatter: '鈪＄被', color: '#f59e0b' } });
-                    markLines.push({ yAxis: config.level3, lineStyle: { color: '#ef4444', type: 'dashed' }, label: { formatter: '鈪㈢被', color: '#ef4444' } });
+                    markLines.push({ yAxis: config.level1, lineStyle: { color: '#22c55e', type: 'dashed' }, label: { formatter: 'Ⅰ类', color: '#22c55e' } });
+                    markLines.push({ yAxis: config.level2, lineStyle: { color: '#f59e0b', type: 'dashed' }, label: { formatter: 'Ⅱ类', color: '#f59e0b' } });
+                    markLines.push({ yAxis: config.level3, lineStyle: { color: '#ef4444', type: 'dashed' }, label: { formatter: 'Ⅲ类', color: '#ef4444' } });
                 } else {
-                    markLines.push({ yAxis: config.level1, lineStyle: { color: '#22c55e', type: 'dashed' }, label: { formatter: '鈪犵被', color: '#22c55e' } });
-                    markLines.push({ yAxis: config.level2, lineStyle: { color: '#f59e0b', type: 'dashed' }, label: { formatter: '鈪＄被', color: '#f59e0b' } });
-                    markLines.push({ yAxis: config.level3, lineStyle: { color: '#ef4444', type: 'dashed' }, label: { formatter: '鈪㈢被', color: '#ef4444' } });
+                    markLines.push({ yAxis: config.level1, lineStyle: { color: '#22c55e', type: 'dashed' }, label: { formatter: 'Ⅰ类', color: '#22c55e' } });
+                    markLines.push({ yAxis: config.level2, lineStyle: { color: '#f59e0b', type: 'dashed' }, label: { formatter: 'Ⅱ类', color: '#f59e0b' } });
+                    markLines.push({ yAxis: config.level3, lineStyle: { color: '#ef4444', type: 'dashed' }, label: { formatter: 'Ⅲ类', color: '#ef4444' } });
                 }
             }
             
@@ -373,18 +373,18 @@
                 <div class="threshold-item">
                     <div class="threshold-header">
                         <div class="threshold-name">${ind.name} (${ind.unit})</div>
-                        <div class="threshold-range">褰撳墠: ${ind.warning_threshold.lower} - ${ind.warning_threshold.upper}</div>
+                        <div class="threshold-range">当前: ${ind.warning_threshold.lower} - ${ind.warning_threshold.upper}</div>
                     </div>
                     <div class="threshold-inputs">
                         <div class="threshold-input-group">
-                            <div class="threshold-label">棰勮涓嬮檺</div>
+                            <div class="threshold-label">预警下限</div>
                             <input type="number" class="threshold-input" id="th_low_${idx}" value="${ind.warning_threshold.lower}" step="0.01">
                         </div>
                         <div class="threshold-input-group">
-                            <div class="threshold-label">棰勮涓婇檺</div>
+                            <div class="threshold-label">预警上限</div>
                             <input type="number" class="threshold-input" id="th_high_${idx}" value="${ind.warning_threshold.upper}" step="0.01">
                         </div>
-                        <button class="save-btn" onclick="saveThreshold(${idx}, '${ind.name}')">淇濆瓨</button>
+                        <button class="save-btn" onclick="saveThreshold(${idx}, '${ind.name}')">保存</button>
                     </div>
                 </div>
             `).join('');
@@ -393,7 +393,7 @@
         function saveThreshold(index, name) {
             const lower = document.getElementById(`th_low_${index}`).value;
             const upper = document.getElementById(`th_high_${index}`).value;
-            alert(`${name}棰勮闃堝€煎凡淇濆瓨: ${lower} - ${upper}`);
+            alert(`${name}预警阈值已保存: ${lower} - ${upper}`);
         }
         
         function updateStabilityPanel() {
@@ -419,27 +419,27 @@
         
         function showOutlierDetail(indicator, outlier) {
             const modal = document.getElementById('outlierModal');
-            document.getElementById('outlierModalTitle').innerHTML = `<i class="fa fa-exclamation-triangle"></i> ${indicator.name} 寮傚父鍊艰鎯卄;
+            document.getElementById('outlierModalTitle').innerHTML = `<i class="fa fa-exclamation-triangle"></i> ${indicator.name} 异常值详情`;
             
             let analysis = '';
             const config = indicatorConfig[indicator.name];
             if (indicator.name === 'PH') {
-                if (outlier.value < 6) analysis = 'PH鍊煎亸浣庯紝鍙兘鍙楅吀鎬у簾姘存帓鏀炬垨閰搁洦褰卞搷銆?;
-                else if (outlier.value > 9) analysis = 'PH鍊煎亸楂橈紝鍙兘鍙楃⒈鎬у簾姘存帓鏀惧奖鍝嶃€?;
+                if (outlier.value < 6) analysis = 'PH值偏低，可能受酸性废水排放或酸雨影响。';
+                else if (outlier.value > 9) analysis = 'PH值偏高，可能受碱性废水排放影响。';
             } else if (config && !config.higherBetter && outlier.value > config.level3) {
-                analysis = `瓒呰繃鈪㈢被鏍囧噯(${config.level3})锛屽彲鑳藉瓨鍦ㄤ弗閲嶆薄鏌撱€俙;
+                analysis = `超过Ⅲ类标准(${config.level3})，可能存在严重污染。`;
             } else if (config && config.higherBetter && outlier.value < config.level3) {
-                analysis = `浣庝簬鈪㈢被鏍囧噯(${config.level3})锛屾憾瑙ｆ哀涓嶈冻銆俙;
+                analysis = `低于Ⅲ类标准(${config.level3})，溶解氧不足。`;
             }
-            if (!analysis) analysis = '鏁板€煎亸绂绘甯歌寖鍥达紝寤鸿妫€鏌ョ洃娴嬭澶囥€?;
+            if (!analysis) analysis = '数值偏离正常范围，建议检查监测设备。';
             
             document.getElementById('outlierDetail').innerHTML = `
-                <div class="outlier-item"><div class="outlier-label">鎸囨爣娴撳害</div><div class="outlier-value" style="color: #ef4444;">${outlier.value} ${indicator.unit}</div></div>
-                <div class="outlier-item"><div class="outlier-label">鐩戞祴鏃堕棿</div><div class="outlier-value">${outlier.date}</div></div>
-                <div class="outlier-item"><div class="outlier-label">鐩戞祴绔欑偣</div><div class="outlier-value">${outlier.location}</div></div>
-                <div class="outlier-item"><div class="outlier-label">鎵€鍦ㄧ渷浠?/div><div class="outlier-value">${outlier.province}</div></div>
-                ${outlier.exceeded ? `<div class="outlier-item"><div class="outlier-label">瓒呮爣鎯呭喌</div><div class="outlier-value" style="color: #ef4444;">${outlier.exceeded}</div></div>` : ''}
-                <div style="padding: 12px; background: rgba(14, 165, 233, 0.1); border-radius: 8px; margin-top: 10px;"><div style="font-size: 12px; color: #0ea5e9; margin-bottom: 8px; font-weight: 600;"><i class="fa fa-info-circle"></i> 寮傚父鍘熷洜鍒嗘瀽</div><div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">${analysis}</div></div>
+                <div class="outlier-item"><div class="outlier-label">指标浓度</div><div class="outlier-value" style="color: #ef4444;">${outlier.value} ${indicator.unit}</div></div>
+                <div class="outlier-item"><div class="outlier-label">监测时间</div><div class="outlier-value">${outlier.date}</div></div>
+                <div class="outlier-item"><div class="outlier-label">监测站点</div><div class="outlier-value">${outlier.location}</div></div>
+                <div class="outlier-item"><div class="outlier-label">所在省份</div><div class="outlier-value">${outlier.province}</div></div>
+                ${outlier.exceeded ? `<div class="outlier-item"><div class="outlier-label">超标情况</div><div class="outlier-value" style="color: #ef4444;">${outlier.exceeded}</div></div>` : ''}
+                <div style="padding: 12px; background: rgba(14, 165, 233, 0.1); border-radius: 8px; margin-top: 10px;"><div style="font-size: 12px; color: #0ea5e9; margin-bottom: 8px; font-weight: 600;"><i class="fa fa-info-circle"></i> 异常原因分析</div><div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">${analysis}</div></div>
             `;
             modal.classList.add('active');
         }
@@ -470,7 +470,7 @@
             thresholdContainer.innerHTML = `
                 <div class="threshold-item">
                     <div class="threshold-header">
-                        <div class="threshold-name">鐪熷疄闃堝€奸潰鏉?/div>
+                        <div class="threshold-name">真实阈值面板</div>
                         <div class="threshold-range">${message}</div>
                     </div>
                 </div>
@@ -515,4 +515,3 @@
     </script>
 </body>
 </html>
-

@@ -1,7 +1,13 @@
 // 聊天服务，处理与后端的API通信
-const CHAT_TEST_ENDPOINT = window.location.protocol === 'file:'
-    ? 'http://127.0.0.1:5001/api/chat/test-deepseek'
-    : '/api/chat/test-deepseek';
+function getChatTestEndpoint() {
+    if (window.HAIHE_RUNTIME?.resolveApi) {
+        return window.HAIHE_RUNTIME.resolveApi('/api/chat/test-deepseek');
+    }
+    if (window.location.protocol === 'file:') {
+        return 'http://127.0.0.1:5001/api/chat/test-deepseek';
+    }
+    return '/api/chat/test-deepseek';
+}
 
 const chatService = {
     /**
@@ -21,7 +27,7 @@ const chatService = {
                 headers['Authorization'] = `Bearer ${token}`;
             }
 
-            const response = await fetch(CHAT_TEST_ENDPOINT, {
+            const response = await fetch(getChatTestEndpoint(), {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify({ question: message })

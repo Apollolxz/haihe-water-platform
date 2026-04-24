@@ -1,12 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>娴锋渤鍏煙 - 鐪侀檯绌洪棿瀵规瘮涓撻」灞?/title>
+    <title>海河六域 - 省际空间对比专项屏</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -50,7 +52,7 @@
             color: #fff;
         }
         
-        /* 鑷畾涔夋粴鍔ㄦ潯 */
+        /* 自定义滚动条 */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -70,7 +72,7 @@
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.7), rgba(34, 197, 94, 0.7));
         }
         
-        /* 绉戞妧鎰熻儗鏅綉鏍?*/
+        /* 科技感背景网格 */
         .bg-grid {
             position: fixed;
             top: 0;
@@ -85,7 +87,7 @@
             z-index: 0;
         }
         
-        /* 鍙戝厜瑁呴グ */
+        /* 发光装饰 */
         .glow-orb {
             position: fixed;
             border-radius: 50%;
@@ -110,7 +112,7 @@
             background: radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%);
         }
         
-        /* 椤堕儴瀵艰埅 */
+        /* 顶部导航 */
         .top-nav {
             position: fixed;
             top: 0;
@@ -157,7 +159,7 @@
             transform: translateY(-1px);
         }
         
-        /* 涓诲鍣?*/
+        /* 主容器 */
         .main-container {
             position: relative;
             top: 64px;
@@ -172,7 +174,7 @@
             padding-bottom: 40px;
         }
         
-        /* 鏍稿績缁撹鏍?*/
+        /* 核心结论栏 */
         .conclusion-bar {
             display: flex;
             gap: 20px;
@@ -294,7 +296,7 @@
         .rank-3 { background: linear-gradient(135deg, #cd7f32, #b87333); color: #fff; }
         .rank-other { background: rgba(14, 165, 233, 0.3); color: #e2e8f0; }
         
-        /* 涓讳綋鍐呭鍖?*/
+        /* 主体内容区 */
         .content-area {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -302,7 +304,7 @@
             min-height: 600px;
         }
         
-        /* 鍥捐〃鍗＄墖 */
+        /* 图表卡片 */
         .chart-card {
             background: linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
             border: 1px solid rgba(14, 165, 233, 0.2);
@@ -314,7 +316,7 @@
             flex-direction: column;
         }
         
-        /* 绉戞妧鎰熷洓瑙掕楗?*/
+        /* 科技感四角装饰 */
         .chart-card::before,
         .chart-card::after {
             content: '';
@@ -352,7 +354,7 @@
         .corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
         .corner-br { bottom: 0; right: 0; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
         
-        /* 鍗＄墖鏍囬 */
+        /* 卡片标题 */
         .card-header {
             display: flex;
             align-items: center;
@@ -382,14 +384,14 @@
             color: #64748b;
         }
         
-        /* 鍥捐〃瀹瑰櫒 */
+        /* 图表容器 */
         .chart-container {
             flex: 1;
             min-height: 0;
             position: relative;
         }
         
-        /* 搴曢儴鍒嗘瀽鍖?*/
+        /* 底部分析区 */
         .bottom-section {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -397,7 +399,7 @@
             min-height: 400px;
         }
         
-        /* 鎺掑悕琛ㄦ牱寮?*/
+        /* 排名表样式 */
         .ranking-table {
             width: 100%;
             border-collapse: collapse;
@@ -426,18 +428,18 @@
         }
         
         .ranking-table th.sortable::after {
-            content: ' 鈬?;
+            content: ' ⇅';
             color: #64748b;
             font-size: 10px;
         }
         
         .ranking-table th.sort-asc::after {
-            content: ' 鈫?;
+            content: ' ↑';
             color: #22c55e;
         }
         
         .ranking-table th.sort-desc::after {
-            content: ' 鈫?;
+            content: ' ↓';
             color: #22c55e;
         }
         
@@ -468,7 +470,7 @@
             font-weight: bold;
         }
         
-        /* 绠℃帶寤鸿鍗＄墖 */
+        /* 管控建议卡片 */
         .suggestion-card {
             padding: 15px;
             background: rgba(15, 23, 42, 0.5);
@@ -528,7 +530,7 @@
             border: 1px solid rgba(14, 165, 233, 0.3);
         }
         
-        /* 瀵煎嚭鎸夐挳 */
+        /* 导出按钮 */
         .export-btn {
             padding: 8px 16px;
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(34, 197, 94, 0.2));
@@ -548,7 +550,7 @@
             transform: translateY(-1px);
         }
         
-        /* 鍦板浘寮圭獥 */
+        /* 地图弹窗 */
         .map-popup {
             position: absolute;
             background: rgba(15, 23, 42, 0.95);
@@ -688,7 +690,7 @@
             border-radius: 8px;
         }
         
-        /* 鍝嶅簲寮?*/
+        /* 响应式 */
         @media (max-width: 1400px) {
             .content-area {
                 grid-template-columns: 1fr;
@@ -698,7 +700,7 @@
             }
         }
         
-        /* 鍔ㄧ敾 */
+        /* 动画 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -708,7 +710,7 @@
             animation: fadeIn 0.5s ease-out;
         }
         
-        /* 姘磋川绛夌骇鍥句緥 */
+        /* 水质等级图例 */
         .level-legend {
             display: flex;
             gap: 15px;
@@ -731,20 +733,18 @@
             border-radius: 2px;
         }
     </style>
-    <script src="../config/site.config.js"></script>
-    <script src="../config/runtime-config.js"></script>
 </head>
 <body>
-    <!-- 鑳屾櫙瑁呴グ -->
+    <!-- 背景装饰 -->
     <div class="bg-grid"></div>
     <div class="glow-orb glow-orb-1"></div>
     <div class="glow-orb glow-orb-2"></div>
     
-    <!-- 椤堕儴瀵艰埅 -->
+    <!-- 顶部导航 -->
     <nav class="top-nav">
         <div class="nav-title">
             <i class="fa fa-map"></i>
-            鐪侀檯绌洪棿瀵规瘮涓撻」灞?
+            省际空间对比专项屏
         </div>
         <div style="display: flex; align-items: center; gap: 20px;">
             <div style="color: #94a3b8; font-size: 13px;">
@@ -753,23 +753,23 @@
             </div>
             <button class="nav-back" onclick="goBack()">
                 <i class="fa fa-arrow-left"></i>
-                杩斿洖澶у睆
+                返回大屏
             </button>
         </div>
     </nav>
     
-    <!-- 涓诲鍣?-->
+    <!-- 主容器 -->
     <div class="main-container">
-        <!-- 椤堕儴鏍稿績缁撹鏍?-->
+        <!-- 顶部核心结论栏 -->
         <div class="conclusion-bar animate-fade-in">
             <div class="conclusion-tag tag-1">
                 <div class="tag-icon">
                     <i class="fa fa-check-circle"></i>
                 </div>
                 <div class="tag-content">
-                    <div class="tag-title">鍏渷甯傝揪鏍囨鍐?/div>
+                    <div class="tag-title">六省市达标概况</div>
                     <div class="tag-value">
-                        鍏渷甯傛牳蹇冩寚鏍?span class="tag-highlight">鍏ㄩ儴杈炬爣</span>锛屾憾瑙ｆ哀鍏ㄥ煙杈?span class="tag-highlight">鈪犵被</span>鏍囧噯
+                        六省市核心指标<span class="tag-highlight">全部达标</span>，溶解氧全域达<span class="tag-highlight">Ⅰ类</span>标准
                     </div>
                 </div>
             </div>
@@ -778,22 +778,22 @@
                     <i class="fa fa-trophy"></i>
                 </div>
                 <div class="tag-content">
-                    <div class="tag-title">缁煎悎姘磋川鎺掑悕</div>
+                    <div class="tag-title">综合水质排名</div>
                     <div class="tag-value" id="rankingTag">
-                        <span class="rank-item"><span class="rank-number rank-1">1</span>灞变笢鐪?/span>
-                        <span class="rank-item"><span class="rank-number rank-2">2</span>娌冲寳鐪?/span>
-                        <span class="rank-item"><span class="rank-number rank-3">3</span>鍖椾含甯?/span>
-                        <span class="rank-item"><span class="rank-number rank-other">4</span>灞辫タ鐪?/span>
-                        <span class="rank-item"><span class="rank-number rank-other">5</span>娌冲崡鐪?/span>
-                        <span class="rank-item"><span class="rank-number rank-other">6</span>澶╂触甯?/span>
+                        <span class="rank-item"><span class="rank-number rank-1">1</span>山东省</span>
+                        <span class="rank-item"><span class="rank-number rank-2">2</span>河北省</span>
+                        <span class="rank-item"><span class="rank-number rank-3">3</span>北京市</span>
+                        <span class="rank-item"><span class="rank-number rank-other">4</span>山西省</span>
+                        <span class="rank-item"><span class="rank-number rank-other">5</span>河南省</span>
+                        <span class="rank-item"><span class="rank-number rank-other">6</span>天津市</span>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- 涓讳綋鍐呭鍖?-->
+        <!-- 主体内容区 -->
         <div class="content-area">
-            <!-- 宸︿晶锛氬垎缁勬煴鐘跺浘 -->
+            <!-- 左侧：分组柱状图 -->
             <div class="chart-card">
                 <div class="corner-decoration corner-tl"></div>
                 <div class="corner-decoration corner-tr"></div>
@@ -803,30 +803,30 @@
                 <div class="card-header">
                     <div class="card-title">
                         <i class="fa fa-bar-chart"></i>
-                        鍏渷甯傛按璐ㄦ寚鏍囧姣?
+                        六省市水质指标对比
                     </div>
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div class="level-legend">
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #00e400;"></div>
-                                <span style="color: #00e400;">鈪犵被</span>
+                                <span style="color: #00e400;">Ⅰ类</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #ffff00;"></div>
-                                <span style="color: #ffff00;">鈪＄被</span>
+                                <span style="color: #ffff00;">Ⅱ类</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #ff7e00;"></div>
-                                <span style="color: #ff7e00;">鈪㈢被</span>
+                                <span style="color: #ff7e00;">Ⅲ类</span>
                             </div>
                         </div>
-                        <div class="card-subtitle">鐐瑰嚮鏌辩姸鍥炬煡鐪嬪湴鍥捐鎯?/div>
+                        <div class="card-subtitle">点击柱状图查看地图详情</div>
                     </div>
                 </div>
                 <div class="chart-container" id="barChart"></div>
             </div>
             
-            <!-- 鍙充晶锛欸IS鍦板浘 -->
+            <!-- 右侧：GIS地图 -->
             <div class="chart-card" style="position: relative;">
                 <div class="corner-decoration corner-tl"></div>
                 <div class="corner-decoration corner-tr"></div>
@@ -836,13 +836,13 @@
                 <div class="card-header">
                     <div class="card-title">
                         <i class="fa fa-globe"></i>
-                        娲ユ按娴佸煙鐩戞祴绔欑偣鍒嗗竷
+                        津水流域监测站点分布
                     </div>
-                    <div class="card-subtitle">鐐瑰嚮鐪佸競楂樹寒鏌ョ湅璇︽儏</div>
+                    <div class="card-subtitle">点击省市高亮查看详情</div>
                 </div>
                 <div class="chart-container" id="mapChart"></div>
                 
-                <!-- 鍦板浘寮圭獥 -->
+                <!-- 地图弹窗 -->
                 <div class="map-popup" id="mapPopup">
                     <div class="popup-header">
                         <div class="popup-title" id="popupTitle">--</div>
@@ -851,15 +851,15 @@
                         </button>
                     </div>
                     <div class="popup-content" id="popupContent">
-                        <!-- 鍔ㄦ€佸唴瀹?-->
+                        <!-- 动态内容 -->
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- 搴曢儴杈呭姪鍒嗘瀽鍖?-->
+        <!-- 底部辅助分析区 -->
         <div class="bottom-section">
-            <!-- 宸︿晶锛氭帓鍚嶈〃 -->
+            <!-- 左侧：排名表 -->
             <div class="chart-card">
                 <div class="corner-decoration corner-tl"></div>
                 <div class="corner-decoration corner-tr"></div>
@@ -869,34 +869,34 @@
                 <div class="card-header">
                     <div class="card-title">
                         <i class="fa fa-list-ol"></i>
-                        鐪佸競鎸囨爣鎺掑悕琛?
+                        省市指标排名表
                     </div>
                     <button class="export-btn" onclick="exportData()">
                         <i class="fa fa-download"></i>
-                        瀵煎嚭鏁版嵁
+                        导出数据
                     </button>
                 </div>
                 <div class="chart-container" style="overflow: auto;">
                     <table class="ranking-table" id="rankingTable">
                         <thead>
                             <tr>
-                                <th>缁煎悎鎺掑悕</th>
-                                <th>鐪佸競</th>
-                                <th class="sortable" data-sort="do">婧惰В姘?mg/L)</th>
-                                <th class="sortable" data-sort="nh">姘ㄦ爱(mg/L)</th>
-                                <th class="sortable" data-sort="tp">鎬荤７(mg/L)</th>
-                                <th>缁煎悎寰楀垎</th>
-                                <th>姘磋川绛夌骇</th>
+                                <th>综合排名</th>
+                                <th>省市</th>
+                                <th class="sortable" data-sort="do">溶解氧(mg/L)</th>
+                                <th class="sortable" data-sort="nh">氨氮(mg/L)</th>
+                                <th class="sortable" data-sort="tp">总磷(mg/L)</th>
+                                <th>综合得分</th>
+                                <th>水质等级</th>
                             </tr>
                         </thead>
                         <tbody id="rankingTableBody">
-                            <!-- 鍔ㄦ€佺敓鎴?-->
+                            <!-- 动态生成 -->
                         </tbody>
                     </table>
                 </div>
             </div>
             
-            <!-- 鍙充晶锛氱鎺у缓璁?-->
+            <!-- 右侧：管控建议 -->
             <div class="chart-card">
                 <div class="corner-decoration corner-tl"></div>
                 <div class="corner-decoration corner-tr"></div>
@@ -906,18 +906,18 @@
                 <div class="card-header">
                     <div class="card-title">
                         <i class="fa fa-lightbulb-o"></i>
-                        鏍稿績绠℃帶寤鸿
+                        核心管控建议
                     </div>
                 </div>
                 <div class="chart-container" id="suggestionsContainer">
-                    <!-- 鍔ㄦ€佺敓鎴?-->
+                    <!-- 动态生成 -->
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // API鍩虹URL
+        // API基础URL
         const API_BASE = (() => {
             if (window.location.protocol === 'file:') {
                 return 'http://127.0.0.1:5001/api';
@@ -931,7 +931,7 @@
         let sortField = 'score';
         let sortAsc = false;
         
-        // 姘磋川绛夌骇鏍囧噯
+        // 水质等级标准
         const waterQualityStandards = {
             do: { level1: 7.5, level2: 6.0, level3: 5.0 },
             nh: { level1: 0.15, level2: 0.5, level3: 1.0 },
@@ -940,7 +940,7 @@
         
         const provinceTrendCache = {};
         
-        // 鍒濆鍖?
+        // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             initCharts();
             loadRealData();
@@ -953,7 +953,7 @@
             });
         });
         
-        // 鏇存柊鏃堕棿
+        // 更新时间
         function updateTime() {
             const now = new Date();
             const timeStr = now.toLocaleString('zh-CN', {
@@ -967,24 +967,24 @@
             document.getElementById('currentTime').textContent = timeStr;
         }
         
-        // 杩斿洖澶у睆
+        // 返回大屏
         function goBack() {
             window.location.href = 'dashboard.html';
         }
         
-        // 鍒濆鍖栧浘琛?
+        // 初始化图表
         function initCharts() {
             charts.bar = echarts.init(document.getElementById('barChart'));
             charts.map = echarts.init(document.getElementById('mapChart'));
         }
         
-        // 鍔犺浇鐪熷疄鏁版嵁
+        // 加载真实数据
         async function loadRealData() {
             try {
                 showLoading();
                 console.log('[DEBUG] Starting to load data from:', API_BASE);
                 
-                // 骞惰鍔犺浇鏁版嵁
+                // 并行加载数据
                 const [provinceRes, mapRes, overviewRes] = await Promise.all([
                     fetch(`${API_BASE}/dashboard/province-comparison`).then(r => {
                         console.log('[DEBUG] Province comparison response:', r.status);
@@ -1012,7 +1012,7 @@
                 console.log('[DEBUG] Province response:', provinceRes);
                 console.log('[DEBUG] Map response:', mapRes);
                 
-                // 澶勭悊鐪佷唤瀵规瘮鏁版嵁
+                // 处理省份对比数据
                 if (provinceRes.success && provinceRes.data && provinceRes.data.provinces && provinceRes.data.provinces.length > 0) {
                     console.log('[DEBUG] Processing province data:', provinceRes.data);
                     processProvinceData(provinceRes.data);
@@ -1020,7 +1020,7 @@
                     updateRankingTable();
                     updateSuggestions();
                 } else {
-                    const message = (provinceRes.data && provinceRes.data.message) || provinceRes.error || '鏆傛棤鐪熷疄鐪佷唤瀵规瘮鏁版嵁';
+                    const message = (provinceRes.data && provinceRes.data.message) || provinceRes.error || '暂无真实省份对比数据';
                     provinceData = [];
                     console.error('[DEBUG] Province comparison unavailable:', message);
                     renderBarEmptyState(message);
@@ -1029,14 +1029,14 @@
                     showToast(message);
                 }
                 
-                // 澶勭悊鍦板浘鏁版嵁
+                // 处理地图数据
                 if (mapRes.success && mapRes.data && mapRes.data.length > 0) {
                     mapData = mapRes.data;
                     renderMap();
                 } else {
                     console.warn('[DEBUG] Map data unavailable');
                     mapData = [];
-                    renderMapFallback((mapRes.data && mapRes.data.message) || mapRes.error || '鏆傛棤鐪熷疄绔欑偣鍦板浘鏁版嵁');
+                    renderMapFallback((mapRes.data && mapRes.data.message) || mapRes.error || '暂无真实站点地图数据');
                 }
                 
                 hideLoading();
@@ -1044,11 +1044,11 @@
                 console.error('[DEBUG] Global error:', error);
                 provinceData = [];
                 mapData = [];
-                renderBarEmptyState('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炵渷浠藉姣旀暟鎹?);
-                renderMapFallback('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炵珯鐐瑰湴鍥炬暟鎹?);
+                renderBarEmptyState('数据加载失败，未加载到真实省份对比数据');
+                renderMapFallback('数据加载失败，未加载到真实站点地图数据');
                 updateRankingTable();
                 updateSuggestions();
-                showToast('鏁版嵁鍔犺浇澶辫触锛屾湭鍔犺浇鍒扮湡瀹炵渷浠藉姣旀暟鎹?);
+                showToast('数据加载失败，未加载到真实省份对比数据');
                 hideLoading();
             }
         }
@@ -1070,7 +1070,7 @@
         }
 
         function renderBarEmptyState(message) {
-            renderChartEmpty(charts.bar, '鍏渷甯傛按璐ㄥ姣?, message);
+            renderChartEmpty(charts.bar, '六省市水质对比', message);
             closePopup();
         }
 
@@ -1078,10 +1078,10 @@
             const data = provinceData.find(item => item.province === province);
             if (!data) {
                 return {
-                    advantage: '鏆傛棤鐪熷疄璇勪及缁撴灉',
-                    weakness: '鏆傛棤鐪熷疄璇勪及缁撴灉',
-                    priority: '寰呰ˉ鍏?,
-                    tags: ['鏆傛棤鐪熷疄鏁版嵁']
+                    advantage: '暂无真实评估结果',
+                    weakness: '暂无真实评估结果',
+                    priority: '待补充',
+                    tags: ['暂无真实数据']
                 };
             }
 
@@ -1090,20 +1090,20 @@
                 {
                     key: 'do',
                     score: data.do / waterQualityStandards.do.level1,
-                    advantage: `婧惰В姘у潎鍊间负 ${data.do} mg/L锛屾槸褰撳墠鏈€绐佸嚭鐨勪紭鍔挎寚鏍嘸,
-                    weakness: `婧惰В姘ц窛绂烩厾绫荤洰鏍囦粛宸?${(waterQualityStandards.do.level1 - data.do).toFixed(2)} mg/L`
+                    advantage: `溶解氧均值为 ${data.do} mg/L，是当前最突出的优势指标`,
+                    weakness: `溶解氧距离Ⅰ类目标仍差 ${(waterQualityStandards.do.level1 - data.do).toFixed(2)} mg/L`
                 },
                 {
                     key: 'nh',
                     score: waterQualityStandards.nh.level1 / Math.max(data.nh, 0.001),
-                    advantage: `姘ㄦ爱鍧囧€间负 ${data.nh} mg/L锛屾薄鏌撴帶鍒惰〃鐜拌緝濂絗,
-                    weakness: `姘ㄦ爱杈冣厾绫荤洰鏍囬珮鍑?${(data.nh - waterQualityStandards.nh.level1).toFixed(3)} mg/L`
+                    advantage: `氨氮均值为 ${data.nh} mg/L，污染控制表现较好`,
+                    weakness: `氨氮较Ⅰ类目标高出 ${(data.nh - waterQualityStandards.nh.level1).toFixed(3)} mg/L`
                 },
                 {
                     key: 'tp',
                     score: waterQualityStandards.tp.level1 / Math.max(data.tp, 0.001),
-                    advantage: `鎬荤７鍧囧€间负 ${data.tp} mg/L锛岃惀鍏荤洂鎺у埗鐩稿绋冲畾`,
-                    weakness: `鎬荤７杈冣厾绫荤洰鏍囬珮鍑?${(data.tp - waterQualityStandards.tp.level1).toFixed(3)} mg/L`
+                    advantage: `总磷均值为 ${data.tp} mg/L，营养盐控制相对稳定`,
+                    weakness: `总磷较Ⅰ类目标高出 ${(data.tp - waterQualityStandards.tp.level1).toFixed(3)} mg/L`
                 }
             ];
 
@@ -1111,54 +1111,54 @@
             const bestMetric = sortedByStrength[0];
             const weakestMetric = sortedByStrength[sortedByStrength.length - 1];
 
-            let priority = '鎻愬崌';
-            if (rank <= 2 && data.level === '鈪犵被') {
-                priority = '缁存寔';
-            } else if (rank >= Math.max(4, provinceData.length - 1) || data.level === '鈪㈢被') {
-                priority = '閲嶇偣鏁存不';
+            let priority = '提升';
+            if (rank <= 2 && data.level === 'Ⅰ类') {
+                priority = '维持';
+            } else if (rank >= Math.max(4, provinceData.length - 1) || data.level === 'Ⅲ类') {
+                priority = '重点整治';
             }
 
             const tags = [];
-            if (bestMetric.key === 'do') tags.push('婧惰В姘т紭鍔?);
-            if (bestMetric.key === 'nh') tags.push('姘ㄦ爱绋虫帶');
-            if (bestMetric.key === 'tp') tags.push('鎬荤７绋虫帶');
-            if (weakestMetric.key === 'do' && data.do < waterQualityStandards.do.level1) tags.push('琛ユ哀鎻愬崌');
-            if (weakestMetric.key === 'nh' && data.nh > waterQualityStandards.nh.level1) tags.push('姘ㄦ爱鍓婂噺');
-            if (weakestMetric.key === 'tp' && data.tp > waterQualityStandards.tp.level1) tags.push('鎬荤７娌荤悊');
-            tags.push(rank <= 3 ? '淇濇寔浼樺娍' : '鎸佺画浼樺寲');
+            if (bestMetric.key === 'do') tags.push('溶解氧优势');
+            if (bestMetric.key === 'nh') tags.push('氨氮稳控');
+            if (bestMetric.key === 'tp') tags.push('总磷稳控');
+            if (weakestMetric.key === 'do' && data.do < waterQualityStandards.do.level1) tags.push('补氧提升');
+            if (weakestMetric.key === 'nh' && data.nh > waterQualityStandards.nh.level1) tags.push('氨氮削减');
+            if (weakestMetric.key === 'tp' && data.tp > waterQualityStandards.tp.level1) tags.push('总磷治理');
+            tags.push(rank <= 3 ? '保持优势' : '持续优化');
 
             return {
                 advantage: bestMetric.advantage,
-                weakness: weakestMetric.score >= 1 ? '鍚勬牳蹇冩寚鏍囨暣浣撶ǔ瀹氾紝寤鸿淇濇寔鐜版湁娌荤悊鑺傚' : weakestMetric.weakness,
+                weakness: weakestMetric.score >= 1 ? '各核心指标整体稳定，建议保持现有治理节奏' : weakestMetric.weakness,
                 priority,
                 tags
             };
         }
         
-        // 澶勭悊鐪佷唤鏁版嵁
+        // 处理省份数据
         function processProvinceData(data) {
             provinceData = data.provinces.map((province, index) => {
                 const do_value = Number(data.dissolved_oxygen[index] ?? 0);
                 const nh_value = Number(data.ammonia_nitrogen[index] ?? 0);
                 const tp_value = Number(data.total_phosphorus[index] ?? 0);
                 
-                // 璁＄畻缁煎悎寰楀垎锛堟弧鍒?00锛?
-                // DO: 婊″垎30鍒嗭紙>=7.5寰?0鍒嗭級
-                // NH: 婊″垎40鍒嗭紙<=0.15寰?0鍒嗭級
-                // TP: 婊″垎30鍒嗭紙<=0.02寰?0鍒嗭級
+                // 计算综合得分（满分100）
+                // DO: 满分30分（>=7.5得30分）
+                // NH: 满分40分（<=0.15得40分）
+                // TP: 满分30分（<=0.02得30分）
                 const do_score = Math.min(30, (do_value / 7.5) * 30);
                 const nh_score = nh_value <= 0.15 ? 40 : Math.max(0, 40 - (nh_value - 0.15) * 20);
                 const tp_score = tp_value <= 0.02 ? 30 : Math.max(0, 30 - (tp_value - 0.02) * 100);
                 const total_score = do_score + nh_score + tp_score;
                 
-                // 鍒ゆ柇姘磋川绛夌骇
-                let level = '鈪㈢被';
+                // 判断水质等级
+                let level = 'Ⅲ类';
                 let levelClass = 'level-3';
                 if (do_value >= 7.5 && nh_value <= 0.15 && tp_value <= 0.02) {
-                    level = '鈪犵被';
+                    level = 'Ⅰ类';
                     levelClass = 'level-1';
                 } else if (do_value >= 6.0 && nh_value <= 0.5 && tp_value <= 0.1) {
-                    level = '鈪＄被';
+                    level = 'Ⅱ类';
                     levelClass = 'level-2';
                 }
                 
@@ -1173,13 +1173,13 @@
                 };
             });
             
-            // 鎸夌患鍚堝緱鍒嗘帓搴?
+            // 按综合得分排序
             provinceData.sort((a, b) => b.score - a.score);
         }
         
-        // 娓叉煋鏌辩姸鍥?
+        // 渲染柱状图
         function renderBarChart() {
-            const provinces = provinceData.map(d => d.province.replace('鐪?, '').replace('甯?, ''));
+            const provinces = provinceData.map(d => d.province.replace('省', '').replace('市', ''));
             const doData = provinceData.map(d => ({
                 value: d.do,
                 itemStyle: { color: d.do >= 7.5 ? '#00e400' : d.do >= 6.0 ? '#ffff00' : '#ff7e00' }
@@ -1207,15 +1207,15 @@
                             const value = p.value;
                             let level = '';
                             let diff = '';
-                            if (indicator === '婧惰В姘?) {
-                                level = value >= 7.5 ? '鈪犵被' : value >= 6.0 ? '鈪＄被' : '鈪㈢被';
-                                diff = value >= 7.5 ? '杈炬爣' : `璺濃厾绫诲樊${(7.5 - value).toFixed(2)}`;
-                            } else if (indicator === '姘ㄦ爱') {
-                                level = value <= 0.15 ? '鈪犵被' : value <= 0.5 ? '鈪＄被' : '鈪㈢被';
-                                diff = value <= 0.15 ? '杈炬爣' : `璺濃厾绫诲樊${(value - 0.15).toFixed(3)}`;
+                            if (indicator === '溶解氧') {
+                                level = value >= 7.5 ? 'Ⅰ类' : value >= 6.0 ? 'Ⅱ类' : 'Ⅲ类';
+                                diff = value >= 7.5 ? '达标' : `距Ⅰ类差${(7.5 - value).toFixed(2)}`;
+                            } else if (indicator === '氨氮') {
+                                level = value <= 0.15 ? 'Ⅰ类' : value <= 0.5 ? 'Ⅱ类' : 'Ⅲ类';
+                                diff = value <= 0.15 ? '达标' : `距Ⅰ类差${(value - 0.15).toFixed(3)}`;
                             } else {
-                                level = value <= 0.02 ? '鈪犵被' : value <= 0.1 ? '鈪＄被' : '鈪㈢被';
-                                diff = value <= 0.02 ? '杈炬爣' : `璺濃厾绫诲樊${(value - 0.02).toFixed(3)}`;
+                                level = value <= 0.02 ? 'Ⅰ类' : value <= 0.1 ? 'Ⅱ类' : 'Ⅲ类';
+                                diff = value <= 0.02 ? '达标' : `距Ⅰ类差${(value - 0.02).toFixed(3)}`;
                             }
                             html += `<div style="display:flex;align-items:center;gap:8px;margin:3px 0">
                                 <span style="display:inline-block;width:10px;height:10px;background:${p.color};border-radius:2px"></span>
@@ -1226,7 +1226,7 @@
                     }
                 },
                 legend: {
-                    data: ['婧惰В姘?, '姘ㄦ爱', '鎬荤７'],
+                    data: ['溶解氧', '氨氮', '总磷'],
                     textStyle: { color: '#94a3b8', fontSize: 12 },
                     top: 0
                 },
@@ -1250,7 +1250,7 @@
                 yAxis: [
                     {
                         type: 'value',
-                        name: '婧惰В姘?mg/L)',
+                        name: '溶解氧(mg/L)',
                         position: 'left',
                         axisLabel: { color: '#94a3b8', fontSize: 11 },
                         splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.1)' } },
@@ -1258,7 +1258,7 @@
                     },
                     {
                         type: 'value',
-                        name: '姘ㄦ爱/鎬荤７(mg/L)',
+                        name: '氨氮/总磷(mg/L)',
                         position: 'right',
                         axisLabel: { color: '#94a3b8', fontSize: 11 },
                         nameTextStyle: { color: '#f59e0b' }
@@ -1266,7 +1266,7 @@
                 ],
                 series: [
                     {
-                        name: '婧惰В姘?,
+                        name: '溶解氧',
                         type: 'bar',
                         data: doData,
                         barWidth: '20%',
@@ -1279,7 +1279,7 @@
                         }
                     },
                     {
-                        name: '姘ㄦ爱',
+                        name: '氨氮',
                         type: 'bar',
                         yAxisIndex: 1,
                         data: nhData,
@@ -1293,7 +1293,7 @@
                         }
                     },
                     {
-                        name: '鎬荤７',
+                        name: '总磷',
                         type: 'bar',
                         yAxisIndex: 1,
                         data: tpData,
@@ -1311,7 +1311,7 @@
             
             charts.bar.setOption(option);
             
-            // 鐐瑰嚮浜嬩欢
+            // 点击事件
             charts.bar.on('click', function(params) {
                 const index = params.dataIndex;
                 const province = provinceData[index].province;
@@ -1320,15 +1320,15 @@
             });
         }
         
-        // 娓叉煋鍦板浘
+        // 渲染地图
         function renderMap() {
             fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
                 .then(res => res.json())
                 .then(geoJson => {
                     echarts.registerMap('china', geoJson);
                     
-                    // 楂樹寒鍏渷甯?
-                    const highlightProvinces = ['鍖椾含甯?, '澶╂触甯?, '娌冲寳鐪?, '灞辫タ鐪?, '灞变笢鐪?, '娌冲崡鐪?];
+                    // 高亮六省市
+                    const highlightProvinces = ['北京市', '天津市', '河北省', '山西省', '山东省', '河南省'];
                     
                     const option = {
                         backgroundColor: 'transparent',
@@ -1337,13 +1337,13 @@
                             formatter: function(params) {
                                 if (params.dataType === 'geo') {
                                     return highlightProvinces.includes(params.name) ? 
-                                        `<b>${params.name}</b><br/>鐐瑰嚮鏌ョ湅璇︽儏` : params.name;
+                                        `<b>${params.name}</b><br/>点击查看详情` : params.name;
                                 }
                                 const d = params.data;
                                 return `<div style="font-weight:bold">${d.name}</div>
-                                        <div>婧惰В姘? ${d.dissolved_oxygen} mg/L</div>
-                                        <div>姘ㄦ爱: ${d.ammonia_nitrogen} mg/L</div>
-                                        <div>绛夌骇: ${d.level}</div>`;
+                                        <div>溶解氧: ${d.dissolved_oxygen} mg/L</div>
+                                        <div>氨氮: ${d.ammonia_nitrogen} mg/L</div>
+                                        <div>等级: ${d.level}</div>`;
                             }
                         },
                         geo: {
@@ -1409,7 +1409,7 @@
                     
                     charts.map.setOption(option);
                     
-                    // 鍦板浘鐐瑰嚮浜嬩欢
+                    // 地图点击事件
                     charts.map.on('click', function(params) {
                         if (highlightProvinces.includes(params.name)) {
                             showProvincePopup(params.name);
@@ -1418,18 +1418,18 @@
                 })
                 .catch(err => {
                     console.error('[DEBUG] Map load failed:', err);
-                    renderMapFallback('鍦板浘搴曞浘鍔犺浇澶辫触锛屾殏鏃犳硶灞曠ず鐪熷疄绔欑偣鍒嗗竷');
+                    renderMapFallback('地图底图加载失败，暂无法展示真实站点分布');
                 });
         }
         
-        // 鍦板浘鍔犺浇澶辫触鏃剁殑鍥為€€鏄剧ず
-        function renderMapFallback(message = '鏆傛棤鐪熷疄绔欑偣鍦板浘鏁版嵁') {
+        // 地图加载失败时的回退显示
+        function renderMapFallback(message = '暂无真实站点地图数据') {
             console.log('[DEBUG] Rendering map empty state');
             charts.map.clear();
             charts.map.setOption({
                 backgroundColor: 'transparent',
                 title: {
-                    text: '鍏渷甯傜洃娴嬬珯鐐瑰垎甯?,
+                    text: '六省市监测站点分布',
                     subtext: message,
                     left: 'center',
                     top: 'center',
@@ -1439,16 +1439,16 @@
             }, true);
         }
         
-        // 鑱氱劍鍦板浘鍒版寚瀹氱渷浠?
+        // 聚焦地图到指定省份
         function focusMapOnProvince(province) {
-            // 鍦板浘鑱氱劍閫昏緫
+            // 地图聚焦逻辑
             const provinceCenters = {
-                '鍖椾含甯?: [116.4, 39.9],
-                '澶╂触甯?: [117.2, 39.1],
-                '娌冲寳鐪?: [114.5, 38.0],
-                '灞辫タ鐪?: [112.5, 37.9],
-                '灞变笢鐪?: [117.0, 36.7],
-                '娌冲崡鐪?: [113.6, 34.8]
+                '北京市': [116.4, 39.9],
+                '天津市': [117.2, 39.1],
+                '河北省': [114.5, 38.0],
+                '山西省': [112.5, 37.9],
+                '山东省': [117.0, 36.7],
+                '河南省': [113.6, 34.8]
             };
             
             const center = provinceCenters[province];
@@ -1462,7 +1462,7 @@
             }
         }
         
-        // 鏄剧ず鐪佷唤寮圭獥
+        // 显示省份弹窗
         function showProvincePopup(province) {
             const data = provinceData.find(d => d.province === province);
             if (!data) return;
@@ -1480,55 +1480,55 @@
                 <div class="indicator-row">
                     <div class="indicator-info">
                         <div class="indicator-icon do"><i class="fa fa-tint"></i></div>
-                        <div class="indicator-name-popup">婧惰В姘?/div>
+                        <div class="indicator-name-popup">溶解氧</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px">
                         <div class="indicator-value" style="color:#0ea5e9">${data.do}</div>
                         <div class="indicator-level ${data.do >= 7.5 ? 'level-1' : data.do >= 6.0 ? 'level-2' : 'level-3'}">
-                            ${data.do >= 7.5 ? '鈪犵被' : data.do >= 6.0 ? '鈪＄被' : '鈪㈢被'}
+                            ${data.do >= 7.5 ? 'Ⅰ类' : data.do >= 6.0 ? 'Ⅱ类' : 'Ⅲ类'}
                         </div>
                     </div>
                 </div>
                 <div class="indicator-row">
                     <div class="indicator-info">
                         <div class="indicator-icon nh"><i class="fa fa-filter"></i></div>
-                        <div class="indicator-name-popup">姘ㄦ爱</div>
+                        <div class="indicator-name-popup">氨氮</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px">
                         <div class="indicator-value" style="color:#f59e0b">${data.nh}</div>
                         <div class="indicator-level ${data.nh <= 0.15 ? 'level-1' : data.nh <= 0.5 ? 'level-2' : 'level-3'}">
-                            ${data.nh <= 0.15 ? '鈪犵被' : data.nh <= 0.5 ? '鈪＄被' : '鈪㈢被'}
+                            ${data.nh <= 0.15 ? 'Ⅰ类' : data.nh <= 0.5 ? 'Ⅱ类' : 'Ⅲ类'}
                         </div>
                     </div>
                 </div>
                 <div class="indicator-row">
                     <div class="indicator-info">
                         <div class="indicator-icon tp"><i class="fa fa-flask"></i></div>
-                        <div class="indicator-name-popup">鎬荤７</div>
+                        <div class="indicator-name-popup">总磷</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px">
                         <div class="indicator-value" style="color:#8b5cf6">${data.tp}</div>
                         <div class="indicator-level ${data.tp <= 0.02 ? 'level-1' : data.tp <= 0.1 ? 'level-2' : 'level-3'}">
-                            ${data.tp <= 0.02 ? '鈪犵被' : data.tp <= 0.1 ? '鈪＄被' : '鈪㈢被'}
+                            ${data.tp <= 0.02 ? 'Ⅰ类' : data.tp <= 0.1 ? 'Ⅱ类' : 'Ⅲ类'}
                         </div>
                     </div>
                 </div>
                 <div class="rank-info">
                     <div class="rank-box">
-                        <div class="rank-label">缁煎悎鎺掑悕</div>
-                        <div class="rank-value">绗?{rank}鍚?/div>
+                        <div class="rank-label">综合排名</div>
+                        <div class="rank-value">第${rank}名</div>
                     </div>
                     <div class="rank-box">
-                        <div class="rank-label">缁煎悎寰楀垎</div>
+                        <div class="rank-label">综合得分</div>
                         <div class="rank-value">${data.score.toFixed(1)}</div>
                     </div>
                 </div>
                 <div style="margin-top:10px;padding:10px;background:rgba(14,165,233,0.1);border-radius:8px">
-                    <div style="font-size:12px;color:#94a3b8;margin-bottom:5px"><i class="fa fa-star" style="color:#f59e0b;margin-right:5px"></i>鏍稿績浼樺娍</div>
+                    <div style="font-size:12px;color:#94a3b8;margin-bottom:5px"><i class="fa fa-star" style="color:#f59e0b;margin-right:5px"></i>核心优势</div>
                     <div style="font-size:13px;color:#e2e8f0">${suggestion.advantage}</div>
                 </div>
                 <div style="padding:10px;background:rgba(239,68,68,0.1);border-radius:8px">
-                    <div style="font-size:12px;color:#94a3b8;margin-bottom:5px"><i class="fa fa-exclamation-circle" style="color:#ef4444;margin-right:5px"></i>鎻愬崌鐭澘</div>
+                    <div style="font-size:12px;color:#94a3b8;margin-bottom:5px"><i class="fa fa-exclamation-circle" style="color:#ef4444;margin-right:5px"></i>提升短板</div>
                     <div style="font-size:13px;color:#e2e8f0">${suggestion.weakness}</div>
                 </div>
                 <div class="mini-chart" id="miniChart_${province}"></div>
@@ -1539,10 +1539,11 @@
             popup.style.top = '50%';
             popup.style.transform = 'translate(-50%, -50%)';
             
-            // 娓叉煋杩蜂綘瓒嬪娍鍥?            setTimeout(() => renderMiniChart(province), 100);
+            // 渲染迷你趋势图
+            setTimeout(() => renderMiniChart(province), 100);
         }
         
-        // 鍏抽棴寮圭獥
+        // 关闭弹窗
         function closePopup() {
             document.getElementById('mapPopup').classList.remove('active');
         }
@@ -1567,7 +1568,8 @@
             return null;
         }
 
-        // 娓叉煋杩蜂綘瓒嬪娍鍥?        async function renderMiniChart(province) {
+        // 渲染迷你趋势图
+        async function renderMiniChart(province) {
             const chartDom = document.getElementById(`miniChart_${province}`);
             if (!chartDom) return;
             
@@ -1581,7 +1583,7 @@
                         left: 'center',
                         top: 'middle',
                         style: {
-                            text: '鏆傛棤鐪熷疄鏃跺簭鏁版嵁',
+                            text: '暂无真实时序数据',
                             fill: '#94a3b8',
                             font: '12px "Microsoft YaHei"',
                             textAlign: 'center'
@@ -1591,11 +1593,11 @@
                 return;
             }
 
-            let seriesName = '婧惰В姘?;
+            let seriesName = '溶解氧';
             let seriesData = lineData.dissolved_oxygen || [];
             let lineColor = '#0ea5e9';
             if (!seriesData.length && lineData.ammonia_nitrogen && lineData.ammonia_nitrogen.length) {
-                seriesName = '姘ㄦ爱';
+                seriesName = '氨氮';
                 seriesData = lineData.ammonia_nitrogen;
                 lineColor = '#f59e0b';
             } else if (!seriesData.length && lineData.ph && lineData.ph.length) {
@@ -1645,11 +1647,11 @@
             miniChart.setOption(option);
         }
         
-        // 鏇存柊鎺掑悕琛?
+        // 更新排名表
         function updateRankingTable() {
             const tbody = document.getElementById('rankingTableBody');
             
-            // 鎺掑簭鏁版嵁
+            // 排序数据
             let sortedData = [...provinceData];
             if (sortField === 'do') {
                 sortedData.sort((a, b) => sortAsc ? a.do - b.do : b.do - a.do);
@@ -1664,7 +1666,7 @@
             if (!sortedData.length) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align:center;color:#94a3b8;padding:24px 12px;">鏆傛棤鐪熷疄鐪佷唤瀵规瘮鏁版嵁</td>
+                        <td colspan="7" style="text-align:center;color:#94a3b8;padding:24px 12px;">暂无真实省份对比数据</td>
                     </tr>
                 `;
                 return;
@@ -1692,7 +1694,7 @@
             `).join('');
         }
         
-        // 鍒濆鍖栨帓搴忓鐞嗗櫒
+        // 初始化排序处理器
         function initSortHandlers() {
             document.querySelectorAll('.ranking-table th.sortable').forEach(th => {
                 th.addEventListener('click', function() {
@@ -1704,7 +1706,7 @@
                         sortAsc = true;
                     }
                     
-                    // 鏇存柊鎺掑簭鎸囩ず鍣?
+                    // 更新排序指示器
                     document.querySelectorAll('.ranking-table th').forEach(h => {
                         h.classList.remove('sort-asc', 'sort-desc');
                     });
@@ -1715,7 +1717,7 @@
             });
         }
         
-        // 鏇存柊绠℃帶寤鸿
+        // 更新管控建议
         function updateSuggestions() {
             const container = document.getElementById('suggestionsContainer');
             if (!provinceData.length) {
@@ -1723,32 +1725,33 @@
                     <div class="suggestion-card">
                         <div class="suggestion-title">
                             <i class="fa fa-info-circle"></i>
-                            鏆傛棤鐪熷疄寤鸿
+                            暂无真实建议
                         </div>
-                        <div class="suggestion-content">褰撳墠鏁版嵁搴撴殏鏃犺冻澶熺殑鐪佷唤瀵规瘮鏍锋湰锛屾棤娉曠敓鎴愭不鐞嗗缓璁€?/div>
+                        <div class="suggestion-content">当前数据库暂无足够的省份对比样本，无法生成治理建议。</div>
                     </div>
                 `;
                 return;
             }
             
-            // 鏍规嵁鎺掑悕鏄剧ず寤鸿
+            // 根据排名显示建议
             const top3 = provinceData.slice(0, 3);
             const bottom3 = provinceData.slice(3);
             
             let html = '';
             
-            // 琛ㄧ幇浼樼鐨勭渷浠?            top3.forEach(data => {
+            // 表现优秀的省份
+            top3.forEach(data => {
                 const suggestion = getProvinceSuggestion(data.province);
                 if (suggestion) {
                     html += `
                         <div class="suggestion-card">
                             <div class="suggestion-title">
                                 <i class="fa fa-check-circle"></i>
-                                ${data.province} - 浼樼绀鸿寖
+                                ${data.province} - 优秀示范
                             </div>
                             <div class="suggestion-content">${suggestion.advantage}</div>
                             <div>
-                                <span class="suggestion-tag tag-maintain">缁存寔鐜扮姸</span>
+                                <span class="suggestion-tag tag-maintain">维持现状</span>
                                 ${suggestion.tags.map(t => `<span class="suggestion-tag tag-improve">${t}</span>`).join('')}
                             </div>
                         </div>
@@ -1756,7 +1759,7 @@
                 }
             });
             
-            // 闇€瑕佹敼杩涚殑鐪佷唤
+            // 需要改进的省份
             bottom3.forEach(data => {
                 const suggestion = getProvinceSuggestion(data.province);
                 if (suggestion) {
@@ -1764,7 +1767,7 @@
                         <div class="suggestion-card" style="border-left-color: #ef4444;">
                             <div class="suggestion-title" style="color: #ef4444;">
                                 <i class="fa fa-exclamation-triangle"></i>
-                                ${data.province} - 閲嶇偣鏁存敼
+                                ${data.province} - 重点整改
                             </div>
                             <div class="suggestion-content">${suggestion.weakness}</div>
                             <div>
@@ -1779,13 +1782,13 @@
             container.innerHTML = html;
         }
         
-        // 瀵煎嚭鏁版嵁
+        // 导出数据
         function exportData() {
             if (!provinceData.length) {
-                showToast('鏆傛棤鐪熷疄鏁版嵁鍙鍑?);
+                showToast('暂无真实数据可导出');
                 return;
             }
-            const headers = ['鎺掑悕', '鐪佸競', '婧惰В姘?mg/L)', '姘ㄦ爱(mg/L)', '鎬荤７(mg/L)', '缁煎悎寰楀垎', '姘磋川绛夌骇'];
+            const headers = ['排名', '省市', '溶解氧(mg/L)', '氨氮(mg/L)', '总磷(mg/L)', '综合得分', '水质等级'];
             const rows = provinceData.map((data, index) => [
                 index + 1,
                 data.province,
@@ -1804,23 +1807,23 @@
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `娲ユ按娴佸煙鍏渷甯傛按璐ㄥ姣擾${new Date().toISOString().slice(0, 10)}.csv`;
+            link.download = `津水流域六省市水质对比_${new Date().toISOString().slice(0, 10)}.csv`;
             link.click();
             
-            showToast('鏁版嵁瀵煎嚭鎴愬姛');
+            showToast('数据导出成功');
         }
         
-        // 鏄剧ず鍔犺浇鐘舵€?
+        // 显示加载状态
         function showLoading() {
             document.body.style.cursor = 'wait';
         }
         
-        // 闅愯棌鍔犺浇鐘舵€?
+        // 隐藏加载状态
         function hideLoading() {
             document.body.style.cursor = 'default';
         }
         
-        // Toast鎻愮ず
+        // Toast提示
         function showToast(message) {
             const existing = document.querySelector('.toast-message');
             if (existing) existing.remove();
@@ -1846,7 +1849,7 @@
             setTimeout(() => toast.remove(), 3000);
         }
         
-        // 鐐瑰嚮绌虹櫧澶勫叧闂脊绐?
+        // 点击空白处关闭弹窗
         document.addEventListener('click', function(e) {
             const popup = document.getElementById('mapPopup');
             const mapChart = document.getElementById('mapChart');
@@ -1857,4 +1860,3 @@
     </script>
 </body>
 </html>
-

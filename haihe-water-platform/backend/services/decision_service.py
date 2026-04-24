@@ -14,6 +14,7 @@ from __future__ import annotations
 import os
 from datetime import datetime, timedelta
 from decimal import Decimal
+from functools import lru_cache
 from typing import Any
 
 import pymysql
@@ -53,6 +54,34 @@ MYSQL_CONFIG = {
     "charset": "utf8mb4",
     "cursorclass": pymysql.cursors.DictCursor,
 }
+
+
+@lru_cache(maxsize=16)
+def _table_columns(table_name: str) -> set[str]:
+    conn = pymysql.connect(**MYSQL_CONFIG)
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT COLUMN_NAME
+                FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = %s
+                """,
+                (table_name,),
+            )
+            return {row["COLUMN_NAME"] for row in cursor.fetchall()}
+    finally:
+        conn.close()
+
+
+def _available_indicator_fields(table_name: str) -> dict[str, str]:
+    columns = _table_columns(table_name)
+    return {
+        field: label
+        for field, label in INDICATOR_FIELDS.items()
+        if field in columns
+    }
 
 NEO4J_CONFIG = get_neo4j_config()
 NEO4J_URI = NEO4J_CONFIG["uri"]
@@ -125,7 +154,7 @@ class DecisionService:
             {
                 "date": self._date_text(row[date_key]),
                 **{
-                    field: self._fmt(row[field])
+                    field: self._fmt(row.get(field))
                     for field in INDICATOR_FIELDS
                 },
             }
@@ -187,16 +216,21 @@ class DecisionService:
         window = self.get_prediction_window(province, model_type)
         sql_start, sql_end = self._resolve_window(window["end_date"], start_date, end_date, days)
         conn = self._get_mysql()
+        prediction_fields = _available_indicator_fields("fact_water_quality_predict")
+        select_metrics = ",\n                ".join(
+            f"AVG({field}) AS {field}" for field in prediction_fields
+        )
         query = """
             SELECT
-                DATE(predict_time) AS stat_date,
-                AVG(dissolved_oxygen) AS dissolved_oxygen,
-                AVG(ammonia_nitrogen) AS ammonia_nitrogen,
-                AVG(total_phosphorus) AS total_phosphorus,
-                AVG(permanganate_index) AS permanganate_index
+                DATE(predict_time) AS stat_date
             FROM fact_water_quality_predict
             WHERE region_name = %s AND model_type = %s
         """
+        if select_metrics:
+            query = query.replace(
+                "DATE(predict_time) AS stat_date",
+                f"DATE(predict_time) AS stat_date,\n                {select_metrics}",
+            )
         params = [province, self._normalize_model(model_type)]
         if sql_start and sql_end:
             query += " AND DATE(predict_time) BETWEEN %s AND %s"
@@ -220,16 +254,21 @@ class DecisionService:
         latest_history_date = self.get_latest_history_date(province)
         sql_start, sql_end = self._resolve_window(latest_history_date, start_date, end_date, days)
         conn = self._get_mysql()
+        history_fields = _available_indicator_fields("fact_water_quality_history")
+        select_metrics = ",\n                ".join(
+            f"AVG({field}) AS {field}" for field in history_fields
+        )
         query = """
             SELECT
-                DATE(monitor_time) AS stat_date,
-                AVG(dissolved_oxygen) AS dissolved_oxygen,
-                AVG(ammonia_nitrogen) AS ammonia_nitrogen,
-                AVG(total_phosphorus) AS total_phosphorus,
-                AVG(permanganate_index) AS permanganate_index
+                DATE(monitor_time) AS stat_date
             FROM fact_water_quality_history
             WHERE region_name = %s
         """
+        if select_metrics:
+            query = query.replace(
+                "DATE(monitor_time) AS stat_date",
+                f"DATE(monitor_time) AS stat_date,\n                {select_metrics}",
+            )
         params = [province]
         if sql_start and sql_end:
             query += " AND DATE(monitor_time) BETWEEN %s AND %s"

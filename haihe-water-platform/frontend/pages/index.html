@@ -10,6 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- ECharts -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -320,7 +322,7 @@
                                 <p class="text-sm text-gray-400">省市联动</p>
                             </div>
                             <div>
-                                <p class="text-3xl font-bold text-white">181</p>
+                                <p class="text-3xl font-bold text-white" id="heroGraphNodeCount">--</p>
                                 <p class="text-sm text-gray-400">图谱节点</p>
                             </div>
                             <div>
@@ -603,7 +605,7 @@
                                 <i class="fa fa-circle mr-1"></i>监测接入
                             </span>
                         </div>
-                        <p class="text-4xl font-bold text-white mb-1">8</p>
+                        <p class="text-4xl font-bold text-white mb-1" id="overviewStationCount">--</p>
                         <p class="text-sm text-gray-400">监测站点</p>
                         <div class="mt-4 h-1 bg-white/10 rounded-full overflow-hidden">
                             <div class="h-full bg-cyan-500 rounded-full" style="width: 40%"></div>
@@ -620,7 +622,7 @@
                                 <i class="fa fa-circle mr-1"></i>图谱在线
                             </span>
                         </div>
-                        <p class="text-4xl font-bold text-white mb-1">181</p>
+                        <p class="text-4xl font-bold text-white mb-1" id="overviewGraphNodeCount">--</p>
                         <p class="text-sm text-gray-400">知识节点</p>
                         <div class="mt-4 h-1 bg-white/10 rounded-full overflow-hidden">
                             <div class="h-full bg-green-500 rounded-full" style="width: 72%"></div>
@@ -637,7 +639,7 @@
                                 <i class="fa fa-circle mr-1"></i>溯源分析
                             </span>
                         </div>
-                        <p class="text-4xl font-bold text-white mb-1">4222</p>
+                        <p class="text-4xl font-bold text-white mb-1" id="overviewGraphLinkCount">--</p>
                         <p class="text-sm text-gray-400">关系链路</p>
                         <div class="mt-4 h-1 bg-white/10 rounded-full overflow-hidden">
                             <div class="h-full bg-teal-500 rounded-full" style="width: 88%"></div>
@@ -1010,6 +1012,47 @@
             localStorage.removeItem('currentUser');
             window.location.href = 'login.html';
         }
+
+        function resolveApiUrl(path) {
+            if (window.HAIHE_RUNTIME?.resolveApi) {
+                return window.HAIHE_RUNTIME.resolveApi(path);
+            }
+            if (window.location.protocol === 'file:') {
+                return `http://127.0.0.1:5001${path}`;
+            }
+            return path;
+        }
+
+        function setTextIfExists(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        function loadPlatformStats() {
+            fetch(resolveApiUrl('/api/graph/stats'))
+                .then(response => response.json())
+                .then(result => {
+                    if (!result?.success || !result.data) return;
+                    setTextIfExists('heroGraphNodeCount', result.data.nodeCount ?? '--');
+                    setTextIfExists('overviewGraphNodeCount', result.data.nodeCount ?? '--');
+                    setTextIfExists('overviewGraphLinkCount', result.data.linkCount ?? '--');
+                })
+                .catch(error => {
+                    console.error('加载图谱统计失败:', error);
+                });
+
+            fetch(resolveApiUrl('/api/dashboard/overview-stats'))
+                .then(response => response.json())
+                .then(result => {
+                    if (!result?.success || !result.data) return;
+                    setTextIfExists('overviewStationCount', result.data.monitoring_stations ?? '--');
+                })
+                .catch(error => {
+                    console.error('加载平台概览统计失败:', error);
+                });
+        }
         
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
@@ -1018,12 +1061,13 @@
             
             // 加载数据
             loadData();
+            loadPlatformStats();
         });
         
         // 加载数据
         function loadData() {
             // 加载水质数据
-            fetch('/api/water-quality/latest')
+            fetch(resolveApiUrl('/api/water-quality/latest'))
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -1035,7 +1079,7 @@
                 });
             
             // 加载季度数据
-            fetch('/api/water-quality/quarterly')
+            fetch(resolveApiUrl('/api/water-quality/quarterly'))
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

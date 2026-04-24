@@ -1225,12 +1225,22 @@ def get_overview_stats():
             total = cursor.fetchone()['total']
             
             # 监测点数
-            cursor.execute("SELECT COUNT(DISTINCT location) as stations FROM water_quality_raw")
-            stations = cursor.fetchone()['stations']
-            
-            # 省份数
-            cursor.execute("SELECT COUNT(DISTINCT province) as provinces FROM water_quality_raw")
-            provinces = cursor.fetchone()['provinces']
+            cursor.execute("""
+                SELECT
+                    COUNT(DISTINCT station_name) as stations,
+                    COUNT(DISTINCT province) as provinces
+                FROM station_coordinates
+                WHERE station_name IS NOT NULL
+            """)
+            station_scope = cursor.fetchone() or {}
+            stations = station_scope.get('stations') or 0
+            provinces = station_scope.get('provinces') or 0
+            if not stations:
+                cursor.execute("SELECT COUNT(DISTINCT location) as stations FROM water_quality_raw")
+                stations = cursor.fetchone()['stations']
+            if not provinces:
+                cursor.execute("SELECT COUNT(DISTINCT province) as provinces FROM water_quality_raw")
+                provinces = cursor.fetchone()['provinces']
             
             # 平均水质指标
             cursor.execute("""

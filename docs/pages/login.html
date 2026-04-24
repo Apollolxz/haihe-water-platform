@@ -1,13 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>娴锋渤鍏煙 - 鐧诲綍</title>
+    <title>海河六域 - 登录</title>
     <!-- Tailwind CSS v3 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="../config/site.config.js"></script>
+    <script src="../config/runtime-config.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -125,49 +127,48 @@
             }
         }
     </style>
-    <script src="../config/site.config.js"></script>
-    <script src="../config/runtime-config.js"></script>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 relative overflow-x-hidden">
-    <!-- 鑳屾櫙瑁呴グ -->
+    <!-- 背景装饰 -->
     <div class="fixed inset-0 pointer-events-none">
         <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-slow"></div>
         <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
         <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 4s;"></div>
     </div>
     
-    <!-- 绮掑瓙鑳屾櫙 -->
+    <!-- 粒子背景 -->
     <div id="particles-js"></div>
     
-    <!-- 娉㈡氮鏁堟灉 -->
+    <!-- 波浪效果 -->
     <div class="wave"></div>
     
     <div class="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-center relative z-10">
-        <!-- 宸︿晶淇℃伅 -->
+        <!-- 左侧信息 -->
         <div class="w-full md:w-1/2 space-y-6 animate-fade-in">
             <div class="flex items-center space-x-3 group">
                 <div class="w-12 h-12 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
                     <i class="fa fa-tint text-white text-2xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-bold text-white">娴锋渤鍏煙</h1>
-                    <p class="text-xs text-gray-400">娴佸煙姘磋川鏃剁┖婕斿彉涓庣煡璇嗗浘璋辨櫤鑳芥不鐞嗙郴缁?/p>
+                    <h1 class="text-3xl font-bold text-white">海河六域</h1>
+                    <p class="text-xs text-gray-400">流域水质时空演变与知识图谱智能治理系统</p>
                 </div>
             </div>
             <h2 class="text-4xl md:text-5xl font-bold text-white leading-tight">
-                鐧诲綍骞冲彴锛岃繘鍏?br>
-                <span class="text-gradient">娴佸煙鏅鸿兘鐮斿垽</span>
+                登录平台，进入<br>
+                <span class="text-gradient">流域智能研判</span>
             </h2>
             <p class="text-lg text-gray-400 max-w-lg leading-relaxed">
-                鐧诲綍鍚庡嵆鍙繘鍏ユ暟鎹ぇ灞忋€佹祦鍩熸椂绌烘帹婕旀矙鐩樸€佺煡璇嗗浘璋变笌鏅鸿兘闂瓟锛屽湪鍚屼竴骞冲彴鍐呭畬鎴愭€佸娍鏌ョ湅銆佹帹婕斿喅绛栦笌鍥捐氨婧簮銆?            </p>
+                登录后即可进入数据大屏、流域时空推演沙盘、知识图谱与智能问答，在同一平台内完成态势查看、推演决策与图谱溯源。
+            </p>
             <div class="grid grid-cols-2 gap-4 mt-8">
                 <div class="feature-card p-4 rounded-xl flex items-center space-x-4 border border-white/10">
                     <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                         <i class="fa fa-database text-primary"></i>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-white">鏁版嵁澶у睆</h3>
-                        <p class="text-sm text-gray-400">鏌ョ湅鍏ㄥ眬鎬佸娍鍒嗘瀽</p>
+                        <h3 class="font-semibold text-white">数据大屏</h3>
+                        <p class="text-sm text-gray-400">查看全局态势分析</p>
                     </div>
                 </div>
                 <div class="feature-card p-4 rounded-xl flex items-center space-x-4 border border-white/10">
@@ -175,8 +176,8 @@
                         <i class="fa fa-sitemap text-secondary"></i>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-white">鎺ㄦ紨娌欑洏</h3>
-                        <p class="text-sm text-gray-400">鑱斿姩 AI 鍐崇瓥缁撴灉</p>
+                        <h3 class="font-semibold text-white">推演沙盘</h3>
+                        <p class="text-sm text-gray-400">联动 AI 决策结果</p>
                     </div>
                 </div>
                 <div class="feature-card p-4 rounded-xl flex items-center space-x-4 border border-white/10">
@@ -184,8 +185,8 @@
                         <i class="fa fa-bar-chart text-primary"></i>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-white">鐭ヨ瘑鍥捐氨</h3>
-                        <p class="text-sm text-gray-400">杩借釜涓婃父婧簮閾捐矾</p>
+                        <h3 class="font-semibold text-white">知识图谱</h3>
+                        <p class="text-sm text-gray-400">追踪上游溯源链路</p>
                     </div>
                 </div>
                 <div class="feature-card p-4 rounded-xl flex items-center space-x-4 border border-white/10">
@@ -193,35 +194,35 @@
                         <i class="fa fa-users text-secondary"></i>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-white">鏅鸿兘闂瓟</h3>
-                        <p class="text-sm text-gray-400">蹇€熻幏寰楄В閲婅緟鍔?/p>
+                        <h3 class="font-semibold text-white">智能问答</h3>
+                        <p class="text-sm text-gray-400">快速获得解释辅助</p>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- 鍙充晶鐧诲綍琛ㄥ崟 -->
+        <!-- 右侧登录表单 -->
         <div class="w-full md:w-1/2 animate-slide-up">
             <div class="card-glass rounded-2xl p-8 border border-white/10 card-shadow">
-                <h2 class="text-2xl font-bold text-center text-white mb-2">鐧诲綍娴锋渤鍏煙</h2>
-                <p class="text-center text-sm text-gray-400 mb-6">缁х画璁块棶鍥涘ぇ鏍稿績妯″潡涓庝釜浜轰娇鐢ㄨ褰?/p>
+                <h2 class="text-2xl font-bold text-center text-white mb-2">登录海河六域</h2>
+                <p class="text-center text-sm text-gray-400 mb-6">继续访问四大核心模块与个人使用记录</p>
                 <form id="loginForm" class="space-y-6">
                     <div>
-                        <label for="username" class="block text-sm font-medium text-gray-400 mb-1">璐﹀彿</label>
+                        <label for="username" class="block text-sm font-medium text-gray-400 mb-1">账号</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                                 <i class="fa fa-user"></i>
                             </span>
-                            <input type="text" id="username" name="username" class="w-full pl-10 pr-4 py-3 border border-dark-lighter rounded-lg input-focus bg-dark-light text-white" placeholder="璇疯緭鍏ヨ处鍙? required>
+                            <input type="text" id="username" name="username" class="w-full pl-10 pr-4 py-3 border border-dark-lighter rounded-lg input-focus bg-dark-light text-white" placeholder="请输入账号" required>
                         </div>
                     </div>
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-400 mb-1">瀵嗙爜</label>
+                        <label for="password" class="block text-sm font-medium text-gray-400 mb-1">密码</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                                 <i class="fa fa-lock"></i>
                             </span>
-                            <input type="password" id="password" name="password" class="w-full pl-10 pr-4 py-3 border border-dark-lighter rounded-lg input-focus bg-dark-light text-white" placeholder="璇疯緭鍏ュ瘑鐮? required>
+                            <input type="password" id="password" name="password" class="w-full pl-10 pr-4 py-3 border border-dark-lighter rounded-lg input-focus bg-dark-light text-white" placeholder="请输入密码" required>
                             <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white">
                                 <i class="fa fa-eye-slash"></i>
                             </button>
@@ -230,25 +231,26 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
                             <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-primary focus:ring-primary border-dark-lighter rounded">
-                            <label for="remember" class="ml-2 block text-sm text-gray-400">璁颁綇瀵嗙爜</label>
+                            <label for="remember" class="ml-2 block text-sm text-gray-400">记住密码</label>
                         </div>
-                        <a href="forgot-password.html" class="text-sm text-primary hover:text-white transition-colors">蹇樿瀵嗙爜?</a>
+                        <a href="forgot-password.html" class="text-sm text-primary hover:text-white transition-colors">忘记密码?</a>
                     </div>
                     <button type="submit" class="w-full bg-gradient-water text-white py-3 px-6 rounded-lg hover:opacity-90 transition-opacity font-medium">
-                        鐧诲綍骞惰繘鍏ュ钩鍙?                    </button>
+                        登录并进入平台
+                    </button>
                     <div class="text-center text-sm">
-                        <span class="text-gray-400">杩樻病鏈夎处鍙?</span>
-                        <a href="register.html" class="text-primary font-medium hover:text-white ml-1 transition-colors">绔嬪嵆娉ㄥ唽</a>
+                        <span class="text-gray-400">还没有账号?</span>
+                        <a href="register.html" class="text-primary font-medium hover:text-white ml-1 transition-colors">立即注册</a>
                     </div>
                 </form>
             </div>
             <div class="mt-6 text-center text-sm text-gray-400">
-                <p>漏 2026 娴锋渤鍏煙 鐗堟潈鎵€鏈?/p>
+                <p>© 2026 海河六域 版权所有</p>
             </div>
         </div>
     </div>
 
-    <!-- 绮掑瓙鍔ㄧ敾鑴氭湰 -->
+    <!-- 粒子动画脚本 -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         particlesJS('particles-js', {
@@ -340,7 +342,8 @@
     </script>
 
     <script>
-        // 鍒囨崲瀵嗙爜鍙鎬?        document.getElementById('togglePassword').addEventListener('click', function() {
+        // 切换密码可见性
+        document.getElementById('togglePassword').addEventListener('click', function() {
             const passwordInput = document.getElementById('password');
             const icon = this.querySelector('i');
             
@@ -355,7 +358,7 @@
             }
         });
 
-        // 鐧诲綍琛ㄥ崟鎻愪氦
+        // 登录表单提交
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -363,14 +366,14 @@
             const password = document.getElementById('password').value;
             const remember = document.getElementById('remember').checked;
             
-            // 琛ㄥ崟楠岃瘉
+            // 表单验证
             if (!username || !password) {
-                alert('璇疯緭鍏ヨ处鍙峰拰瀵嗙爜');
+                alert('请输入账号和密码');
                 return;
             }
             
             try {
-                // 璋冪敤鍚庣鐧诲綍API
+                // 调用后端登录API
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: {
@@ -380,12 +383,13 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error('鐧诲綍澶辫触');
+                    throw new Error('登录失败');
                 }
                 
                 const data = await response.json();
                 
-                // 瀛樺偍鐢ㄦ埛淇℃伅鍜宼oken鍒版湰鍦板瓨鍌?                const userInfo = {
+                // 存储用户信息和token到本地存储
+                const userInfo = {
                     username: data.data.user.username,
                     role: data.data.user.role
                 };
@@ -393,13 +397,13 @@
                 localStorage.setItem('currentUser', JSON.stringify(userInfo));
                 localStorage.setItem('token', data.data.token);
                 
-                // 璺宠浆鍒颁富椤?                window.location.href = 'index.html';
+                // 跳转到主页
+                window.location.href = 'index.html';
             } catch (error) {
-                alert('鐧诲綍澶辫触锛岃妫€鏌ヨ处鍙峰拰瀵嗙爜');
-                console.error('鐧诲綍閿欒:', error);
+                alert('登录失败，请检查账号和密码');
+                console.error('登录错误:', error);
             }
         });
     </script>
 </body>
 </html>
-
