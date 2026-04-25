@@ -1,5 +1,6 @@
+# AI辅助生成：豆包-专家版, 2026-04-11
 from collections import defaultdict
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import numpy as np
 
@@ -61,6 +62,15 @@ def _f(value, digits=None):
 
 def _d(value):
     return str(value) if value is not None else None
+
+
+def _date_obj(value):
+    if value is None:
+        return None
+    if hasattr(value, "strftime"):
+        return value
+    text = str(value)[:10]
+    return datetime.strptime(text, "%Y-%m-%d")
 
 
 def _interp(value, points):
@@ -416,9 +426,11 @@ def get_screen_overview_data(province='all'):
                 'permanganate_index': snap['permanganate_index'], 'station_count': snap['station_count'],
             })
 
+        latest_date_obj = _date_obj(latest_date)
+        compare_date_obj = _date_obj(compare_date)
         monthly = defaultdict(lambda: {'scores': [], 'dissolved_oxygen': [], 'ammonia_nitrogen': [], 'total_phosphorus': [], 'permanganate_index': []})
         for row in daily_rows:
-            month = row['year_date'].strftime('%Y-%m')
+            month = _date_obj(row['year_date']).strftime('%Y-%m')
             score = _score(row)
             if score is not None:
                 monthly[month]['scores'].append(score)
@@ -469,8 +481,8 @@ def get_screen_overview_data(province='all'):
                 'prediction_records': int(prediction.get('total_records') or 0),
                 'latest_history_date': _d(latest_date),
                 'comparison_date': _d(compare_date),
-                'window_start': _d(latest_date - timedelta(days=29)),
-                'window_end': _d(latest_date),
+                'window_start': _d(latest_date_obj - timedelta(days=29) if latest_date_obj else None),
+                'window_end': _d(latest_date_obj),
             },
             'header': {
                 'title': '海河六域・水质时空演变智能治理系统',

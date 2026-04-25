@@ -1,3 +1,4 @@
+# AI辅助生成：豆包-专家版, 2026-03-28
 """Flask entry point for the Haihe knowledge graph project."""
 
 import os
@@ -53,12 +54,20 @@ def get_frontend_root():
     return os.path.join(project_dir, 'frontend')
 
 
+def get_frontend_static_root():
+    frontend_root = get_frontend_root()
+    dist_root = os.path.join(frontend_root, 'dist')
+    if os.path.exists(os.path.join(dist_root, 'index.html')):
+        return dist_root
+    return frontend_root
+
+
 @app.route('/')
 def index():
     return {
         "message": "海河六域后端服务运行中",
         "status": "ok",
-        "frontend": "/frontend/pages/index.html",
+        "frontend": "/frontend",
         "apis": [
             "/api/auth/register",
             "/api/auth/login",
@@ -71,12 +80,16 @@ def index():
 
 @app.route('/frontend/<path:path>')
 def serve_frontend(path):
-    return send_from_directory(get_frontend_root(), path)
+    frontend_root = get_frontend_static_root()
+    target_path = os.path.join(frontend_root, path)
+    if os.path.exists(target_path):
+        return send_from_directory(frontend_root, path)
+    return send_from_directory(frontend_root, 'index.html')
 
 
 @app.route('/frontend')
 def frontend_index():
-    return send_from_directory(get_frontend_root(), 'pages/index.html')
+    return send_from_directory(get_frontend_static_root(), 'index.html')
 
 
 def print_startup_banner():
@@ -84,7 +97,7 @@ def print_startup_banner():
     print("海河六域后端服务")
     print("=" * 52)
     print(f"服务地址: http://127.0.0.1:{APP_PORT}")
-    print(f"前端首页: http://127.0.0.1:{APP_PORT}/frontend/pages/index.html")
+    print(f"前端首页: http://127.0.0.1:{APP_PORT}/frontend")
     print("核心接口:")
     print("  POST /api/auth/register")
     print("  POST /api/auth/login")

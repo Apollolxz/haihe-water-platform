@@ -10,6 +10,8 @@ backend/.env.*
 !backend/.env.example
 !backend/*.example
 backend/.venv/
+backend/data/*.sqlite3
+!backend/data/.gitkeep
 
 frontend/node_modules/
 frontend/dist/
