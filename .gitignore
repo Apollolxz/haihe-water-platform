@@ -5,9 +5,14 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-haihe-water-platform/backend/.env
-haihe-water-platform/backend/.env.*
-!haihe-water-platform/backend/.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+!backend/*.example
+backend/.venv/
+
+frontend/node_modules/
+frontend/dist/
 
 .idea/
 .vscode/
