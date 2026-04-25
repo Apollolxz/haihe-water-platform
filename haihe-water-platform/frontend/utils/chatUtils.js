@@ -20,19 +20,19 @@ const chatUtils = {
     getCurrentUser() {
         const isLoggedIn = Boolean(localStorage.getItem('token'));
         if (!isLoggedIn) {
-            return { username: '璁垮', role: '鏈櫥褰? };
+            return { username: '访客', role: '未登录' };
         }
 
         const stored = localStorage.getItem('currentUser') || localStorage.getItem('user');
         if (!stored) {
-            return { username: '鐢ㄦ埛', role: '宸茬櫥褰? };
+            return { username: '用户', role: '已登录' };
         }
 
         try {
             return JSON.parse(stored);
         } catch (error) {
             console.warn('Failed to parse cached user info:', error);
-            return { username: '鐢ㄦ埛', role: '宸茬櫥褰? };
+            return { username: '用户', role: '已登录' };
         }
     },
 

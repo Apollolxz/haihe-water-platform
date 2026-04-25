@@ -19,6 +19,7 @@ $itemsToCopy = @(
     "assets",
     "components",
     "config",
+    "layouts",
     "pages",
     "services",
     "state",
