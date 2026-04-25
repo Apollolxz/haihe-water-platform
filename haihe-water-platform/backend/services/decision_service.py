@@ -156,10 +156,23 @@ class DecisionService:
                 **{
                     field: self._fmt(row.get(field))
                     for field in INDICATOR_FIELDS
+                    if field in row
                 },
             }
             for row in rows
         ]
+
+    def _indicator_items(self, *row_groups: Any) -> list[tuple[str, str]]:
+        items = []
+        for field, label in INDICATOR_FIELDS.items():
+            for group in row_groups:
+                if not group:
+                    continue
+                rows = group if isinstance(group, list) else [group]
+                if any(field in row for row in rows if isinstance(row, dict)):
+                    items.append((field, label))
+                    break
+        return items
 
     def get_prediction_window(self, province: str, model_type: str = DEFAULT_MODEL_TYPE) -> dict[str, Any]:
         conn = self._get_mysql()
@@ -433,7 +446,7 @@ class DecisionService:
 
     def _build_trend_summary(self, prediction_trend: list[dict[str, Any]]) -> list[str]:
         lines = []
-        for field, label in INDICATOR_FIELDS.items():
+        for field, label in self._indicator_items(prediction_trend):
             stats = self._series_stats(prediction_trend, field)
             if not stats:
                 lines.append(f"{label}：当前模型预测序列为空。")
@@ -453,7 +466,7 @@ class DecisionService:
         if not common_dates:
             return ["当前历史监测与预测序列没有同日重叠区间，无法直接计算贴合度。"]
         lines = [f"历史监测与预测在 {common_dates[0]} 至 {common_dates[-1]} 存在 {len(common_dates)} 天重叠区间。"]
-        for field, label in INDICATOR_FIELDS.items():
+        for field, label in self._indicator_items(historical_trend, prediction_trend):
             gaps = []
             for day in common_dates:
                 actual = history_map[day].get(field)
@@ -572,7 +585,7 @@ class DecisionService:
         latest = context.get("latest_prediction") or {}
         summary = context["summary"]
         latest_parts = []
-        for field, label in INDICATOR_FIELDS.items():
+        for field, label in self._indicator_items(context.get("prediction_trend"), context.get("historical_trend"), latest):
             value = latest.get(field)
             if value is not None:
                 latest_parts.append(f"{label}{value}")

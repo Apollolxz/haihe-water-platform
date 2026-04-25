@@ -1,54 +1,48 @@
-// 聊天工具函数，处理聊天相关的通用功能
+// 鑱婂ぉ宸ュ叿鍑芥暟锛屽鐞嗚亰澶╃浉鍏崇殑閫氱敤鍔熻兘
 const chatUtils = {
-    /**
-     * 保存聊天记录到本地存储
-     * @param {string} message - 用户输入的消息
-     */
     saveToHistory(message) {
         let history = JSON.parse(localStorage.getItem('chatHistory')) || [];
         history.unshift({ message, timestamp: new Date().toLocaleString() });
-        // 只保留最近10条记录
         if (history.length > 10) {
             history = history.slice(0, 10);
         }
         localStorage.setItem('chatHistory', JSON.stringify(history));
     },
 
-    /**
-     * 加载聊天历史记录
-     * @returns {Array} - 聊天历史记录
-     */
     loadHistory() {
         return JSON.parse(localStorage.getItem('chatHistory')) || [];
     },
 
-    /**
-     * 清空聊天历史记录
-     */
     clearHistory() {
         localStorage.removeItem('chatHistory');
     },
 
-    /**
-     * 获取当前用户信息
-     * @returns {Object} - 用户信息
-     */
     getCurrentUser() {
-        return JSON.parse(localStorage.getItem('currentUser')) || { username: '访客', role: '未登录' };
+        const isLoggedIn = Boolean(localStorage.getItem('token'));
+        if (!isLoggedIn) {
+            return { username: '璁垮', role: '鏈櫥褰? };
+        }
+
+        const stored = localStorage.getItem('currentUser') || localStorage.getItem('user');
+        if (!stored) {
+            return { username: '鐢ㄦ埛', role: '宸茬櫥褰? };
+        }
+
+        try {
+            return JSON.parse(stored);
+        } catch (error) {
+            console.warn('Failed to parse cached user info:', error);
+            return { username: '鐢ㄦ埛', role: '宸茬櫥褰? };
+        }
     },
 
-    /**
-     * 退出登录
-     */
     logout() {
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('user');
         localStorage.removeItem('token');
         window.location.href = 'index.html';
     },
 
-    /**
-     * 初始化粒子背景
-     */
     initParticles() {
         if (typeof particlesJS !== 'undefined') {
             particlesJS('particles-js', {
@@ -141,5 +135,4 @@ const chatUtils = {
     }
 };
 
-// 全局导出
 window.chatUtils = chatUtils;

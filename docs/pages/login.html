@@ -374,7 +374,10 @@
             
             try {
                 // 调用后端登录API
-                const response = await fetch('/api/auth/login', {
+                const loginUrl = window.HAIHE_RUNTIME?.resolveApi
+                    ? window.HAIHE_RUNTIME.resolveApi('/api/auth/login')
+                    : '/api/auth/login';
+                const response = await fetch(loginUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -382,25 +385,27 @@
                     body: JSON.stringify({ username, password })
                 });
                 
-                if (!response.ok) {
-                    throw new Error('登录失败');
-                }
-                
                 const data = await response.json();
-                
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || '登录失败');
+                }
+
                 // 存储用户信息和token到本地存储
                 const userInfo = {
                     username: data.data.user.username,
+                    email: data.data.user.email,
+                    tag: data.data.user.tag,
                     role: data.data.user.role
                 };
                 
                 localStorage.setItem('currentUser', JSON.stringify(userInfo));
+                localStorage.setItem('user', JSON.stringify(userInfo));
                 localStorage.setItem('token', data.data.token);
                 
                 // 跳转到主页
                 window.location.href = 'index.html';
             } catch (error) {
-                alert('登录失败，请检查账号和密码');
+                alert(error.message || '登录失败，请检查账号和密码');
                 console.error('登录错误:', error);
             }
         });

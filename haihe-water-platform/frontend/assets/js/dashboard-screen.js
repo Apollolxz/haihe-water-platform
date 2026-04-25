@@ -1,4 +1,7 @@
 const API_BASE = (() => {
+    if (window.HAIHE_RUNTIME?.resolveApi) {
+        return window.HAIHE_RUNTIME.resolveApi('/api').replace(/\/$/, '');
+    }
     if (window.location.protocol === 'file:') {
         return 'http://127.0.0.1:5001/api';
     }

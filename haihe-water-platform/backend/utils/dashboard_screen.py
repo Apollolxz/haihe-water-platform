@@ -232,6 +232,57 @@ def _sort_provinces(items):
     return sorted(items, key=lambda x: PROVINCE_INDEX.get(x['province'], 99))
 
 
+def _station_count(cursor, clause, params, province_grouped=False):
+    if province_grouped:
+        cursor.execute(
+            f"""
+            SELECT province, COUNT(DISTINCT location) AS station_count
+            FROM water_quality_raw
+            WHERE {clause} AND location IS NOT NULL AND TRIM(location) <> ''
+            GROUP BY province
+            """,
+            params,
+        )
+        rows = cursor.fetchall()
+        counts = {row['province']: int(row['station_count'] or 0) for row in rows}
+        if any(value >= 10 for value in counts.values()):
+            return counts
+
+        cursor.execute(
+            f"""
+            SELECT province, COUNT(DISTINCT station_name) AS station_count
+            FROM station_coordinates
+            WHERE {clause} AND station_name IS NOT NULL
+            GROUP BY province
+            """,
+            params,
+        )
+        rows = cursor.fetchall()
+        return {row['province']: int(row['station_count'] or 0) for row in rows}
+
+    cursor.execute(
+        f"""
+        SELECT COUNT(DISTINCT location) AS station_count
+        FROM water_quality_raw
+        WHERE {clause} AND location IS NOT NULL AND TRIM(location) <> ''
+        """,
+        params,
+    )
+    count = int((cursor.fetchone() or {}).get('station_count') or 0)
+    if count >= 50:
+        return count
+
+    cursor.execute(
+        f"""
+        SELECT COUNT(DISTINCT station_name) AS station_count
+        FROM station_coordinates
+        WHERE {clause} AND station_name IS NOT NULL
+        """,
+        params,
+    )
+    return int((cursor.fetchone() or {}).get('station_count') or count)
+
+
 def _reference_thresholds(cursor):
     fields = [item['field'] for item in INDICATORS if item['threshold']['type'] == 'reference_high']
     clause, params = _in_clause('province', SIX_PROVINCES)
@@ -278,8 +329,7 @@ def get_screen_overview_data(province='all'):
 
             cursor.execute(f"SELECT {fields_sql} FROM water_quality_raw WHERE {hist_clause} AND year_date BETWEEN DATE_SUB(%s, INTERVAL 29 DAY) AND %s", hist_params + [latest_date, latest_date])
             window_rows = cursor.fetchall()
-            cursor.execute(f"SELECT COUNT(*) AS station_count FROM station_coordinates WHERE {hist_clause} AND longitude_gcj02 IS NOT NULL AND latitude_gcj02 IS NOT NULL", hist_params)
-            scope_station_count = int((cursor.fetchone() or {}).get('station_count') or 0)
+            scope_station_count = _station_count(cursor, hist_clause, hist_params)
             cursor.execute(f"SELECT year_date, AVG(dissolved_oxygen) AS dissolved_oxygen, AVG(ammonia_nitrogen) AS ammonia_nitrogen, AVG(total_phosphorus) AS total_phosphorus, AVG(permanganate_index) AS permanganate_index FROM water_quality_raw WHERE {hist_clause} GROUP BY year_date ORDER BY year_date", hist_params)
             daily_rows = cursor.fetchall()
 
@@ -293,9 +343,7 @@ def get_screen_overview_data(province='all'):
                 GROUP BY w.province, latest.latest_date
             """, all_params)
             province_rows = cursor.fetchall()
-            cursor.execute(f"SELECT province, COUNT(*) AS station_count FROM station_coordinates WHERE {all_clause} AND longitude_gcj02 IS NOT NULL AND latitude_gcj02 IS NOT NULL GROUP BY province", all_params)
-            station_count_rows = cursor.fetchall()
-            station_counts = {row['province']: int(row['station_count']) for row in station_count_rows}
+            station_counts = _station_count(cursor, all_clause, all_params, province_grouped=True)
             cursor.execute(f"SELECT station_name, province, river_basin, longitude_gcj02, latitude_gcj02 FROM station_coordinates WHERE {hist_clause} AND longitude_gcj02 IS NOT NULL AND latitude_gcj02 IS NOT NULL", hist_params)
             stations = cursor.fetchall()
 

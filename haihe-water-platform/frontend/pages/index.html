@@ -654,9 +654,6 @@
             <div class="container mx-auto px-4">
                 <div class="text-center mb-16">
                     <h2 class="text-4xl font-bold text-white mb-4">典型使用场景</h2>
-                    <p class="text-gray-400 max-w-2xl mx-auto">
-                        不改变现有页面结构，只把首页的三个重点展示位切换成与你当前项目最贴近的场景入口。
-                    </p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -851,7 +848,7 @@
     <!-- 页脚 -->
     <footer class="bg-dark-light border-t border-white/10 py-12">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
                 <!-- 关于我们 -->
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
@@ -874,25 +871,6 @@
                         <li><a href="sandbox.html" class="text-gray-400 hover:text-white transition-colors">流域时空推演沙盘</a></li>
                         <li><a href="knowledge-graph.html" class="text-gray-400 hover:text-white transition-colors">知识图谱</a></li>
                         <li><a href="chat.html" class="text-gray-400 hover:text-white transition-colors">智能问答</a></li>
-                    </ul>
-                </div>
-                
-                <!-- 联系我们 -->
-                <div>
-                    <h3 class="text-lg font-semibold text-white mb-4">联系我们</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li class="flex items-center space-x-2">
-                            <i class="fa fa-envelope text-primary"></i>
-                            <span>contact@haihe-water.com</span>
-                        </li>
-                        <li class="flex items-center space-x-2">
-                            <i class="fa fa-phone text-primary"></i>
-                            <span>400-888-9999</span>
-                        </li>
-                        <li class="flex items-center space-x-2">
-                            <i class="fa fa-map-marker text-primary"></i>
-                            <span>天津市河西区</span>
-                        </li>
                     </ul>
                 </div>
                 
@@ -922,10 +900,25 @@
     </footer>
 
     <script>
+        function getStoredUserInfo() {
+            const raw = localStorage.getItem('currentUser') || localStorage.getItem('user');
+            if (!raw) {
+                return { username: '访客', role: '未登录' };
+            }
+            try {
+                return JSON.parse(raw) || { username: '访客', role: '未登录' };
+            } catch (error) {
+                console.warn('解析用户信息失败:', error);
+                return { username: '访客', role: '未登录' };
+            }
+        }
+
         // 初始化用户信息
         document.addEventListener('DOMContentLoaded', function() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { username: '访客', role: '未登录' };
-            document.getElementById('userName').textContent = currentUser.username;
+            const currentUser = localStorage.getItem('token')
+                ? getStoredUserInfo()
+                : { username: '访客', role: '未登录' };
+            document.getElementById('userName').textContent = `${currentUser.username || '访客'} · ${currentUser.role || '未登录'}`;
             
             // 绑定事件
             bindEvents();
@@ -1010,6 +1003,8 @@
         // 退出登录
         function logout() {
             localStorage.removeItem('currentUser');
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
             window.location.href = 'login.html';
         }
 

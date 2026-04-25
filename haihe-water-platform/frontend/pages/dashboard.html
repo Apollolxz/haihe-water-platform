@@ -354,10 +354,25 @@
 
     <script type="module" src="../assets/js/dashboard-screen.js?v=20260420d"></script>
     <script>
+        function getStoredUserInfo() {
+            const raw = localStorage.getItem('currentUser') || localStorage.getItem('user');
+            if (!raw) {
+                return { username: '访客', role: '未登录' };
+            }
+            try {
+                return JSON.parse(raw) || { username: '访客', role: '未登录' };
+            } catch (error) {
+                console.warn('解析用户信息失败:', error);
+                return { username: '访客', role: '未登录' };
+            }
+        }
+
         // 导航栏交互（首页同款）
         document.addEventListener('DOMContentLoaded', function() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { username: '访客', role: '未登录' };
-            document.getElementById('userName').textContent = currentUser.username;
+            const currentUser = localStorage.getItem('token')
+                ? getStoredUserInfo()
+                : { username: '访客', role: '未登录' };
+            document.getElementById('userName').textContent = `${currentUser.username || '访客'} · ${currentUser.role || '未登录'}`;
             
             // 移动端菜单切换
             document.getElementById('mobileMenuBtn').addEventListener('click', function() {
@@ -382,6 +397,8 @@
         
         function logout() {
             localStorage.removeItem('currentUser');
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
             window.location.href = 'login.html';
         }
     </script>

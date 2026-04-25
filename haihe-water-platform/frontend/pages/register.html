@@ -489,24 +489,26 @@
             
             try {
                 // 调用后端注册API
-                const response = await fetch('/api/auth/register', {
+                const registerUrl = window.HAIHE_RUNTIME?.resolveApi
+                    ? window.HAIHE_RUNTIME.resolveApi('/api/auth/register')
+                    : '/api/auth/register';
+                const response = await fetch(registerUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ username, password, email, tag })
                 });
-                
-                if (!response.ok) {
-                    throw new Error('注册失败');
-                }
-                
+
                 const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || '注册失败');
+                }
                 
                 alert('账号创建成功，请登录海河六域');
                 window.location.href = 'login.html';
             } catch (error) {
-                alert('注册失败，请检查输入信息');
+                alert(error.message || '注册失败，请检查输入信息');
                 console.error('注册错误:', error);
             }
         });

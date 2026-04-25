@@ -100,12 +100,18 @@ def get_comparison_data():
                 history = []
 
             all_dates = sorted({row["date"] for row in history} | {row["date"] for row in prediction})
+            supported_fields = ("dissolved_oxygen", "ammonia_nitrogen", "total_phosphorus", "permanganate_index")
+            available_fields = [
+                field
+                for field in supported_fields
+                if any(field in row for row in history + prediction)
+            ]
 
             def fill(rows):
                 mapping = {row["date"]: row for row in rows}
                 return {
                     field: [mapping.get(day, {}).get(field) for day in all_dates]
-                    for field in ("dissolved_oxygen", "ammonia_nitrogen", "total_phosphorus", "permanganate_index")
+                    for field in available_fields
                 }
 
             return jsonify(

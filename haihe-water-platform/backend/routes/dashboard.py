@@ -7,6 +7,7 @@ from flask import Blueprint, request, jsonify, send_file
 import pymysql
 import os
 import math
+from functools import lru_cache
 import numpy as np
 from models.water_quality import WaterQuality
 from utils.sandbox_data import get_sandbox_summary, generate_risk_report, get_model_comparison_metrics
@@ -26,6 +27,82 @@ dashboard_bp = Blueprint('dashboard', __name__)
 def get_db():
     """获取数据库连接"""
     return WaterQuality.get_db()
+
+
+ACTIVE_PROVINCES = ('北京市', '天津市', '河北省', '山西省', '山东省', '河南省')
+INDICATOR_FIELD_LABELS = {
+    'dissolved_oxygen': '溶解氧',
+    'ammonia_nitrogen': '氨氮',
+    'total_phosphorus': '总磷',
+    'permanganate_index': '高锰酸盐指数',
+    'ph': 'PH',
+}
+
+
+@lru_cache(maxsize=16)
+def get_table_columns(table_name):
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT COLUMN_NAME
+                FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = %s
+                """,
+                (table_name,),
+            )
+            return {row['COLUMN_NAME'] for row in cursor.fetchall()}
+    finally:
+        conn.close()
+
+
+def get_available_indicator_fields(table_name, fields=None):
+    candidates = fields or tuple(INDICATOR_FIELD_LABELS.keys())
+    columns = get_table_columns(table_name)
+    return [field for field in candidates if field in columns]
+
+
+def get_active_station_count(cursor, province=None, date=None):
+    where_clause = ["location IS NOT NULL", "TRIM(location) <> ''"]
+    params = []
+    if province and province != 'all':
+        where_clause.append("province = %s")
+        params.append(province)
+    if date:
+        where_clause.append("year_date = %s")
+        params.append(date)
+
+    cursor.execute(
+        f"""
+        SELECT COUNT(DISTINCT location) AS stations
+        FROM water_quality_raw
+        WHERE {' AND '.join(where_clause)}
+        """,
+        params,
+    )
+    row = cursor.fetchone() or {}
+    active_stations = int(row.get('stations') or 0)
+    if active_stations >= 50:
+        return active_stations
+
+    coord_where = ["station_name IS NOT NULL"]
+    coord_params = []
+    if province and province != 'all':
+        coord_where.append("province = %s")
+        coord_params.append(province)
+
+    cursor.execute(
+        f"""
+        SELECT COUNT(DISTINCT station_name) AS stations
+        FROM station_coordinates
+        WHERE {' AND '.join(coord_where)}
+        """,
+        coord_params,
+    )
+    coord_row = cursor.fetchone() or {}
+    return int(coord_row.get('stations') or active_stations)
 
 
 @dashboard_bp.route('/screen-overview', methods=['GET'])
@@ -451,7 +528,6 @@ def get_data_by_province():
             # 获取统计数据
             cursor.execute(f"""
                 SELECT COUNT(*) as count,
-                       COUNT(DISTINCT location) as stations,
                        AVG(dissolved_oxygen) as avg_do,
                        AVG(ammonia_nitrogen) as avg_nh3,
                        AVG(ph) as avg_ph
@@ -460,6 +536,7 @@ def get_data_by_province():
             """, params)
             
             stats = cursor.fetchone()
+            stats['stations'] = get_active_station_count(cursor, province, date)
             
             # 获取箱线图数据
             cursor.execute(f"""
@@ -646,11 +723,11 @@ def process_boxplot_data(data):
     if not data:
         return None
     
-    do_values = sorted([float(r['dissolved_oxygen']) for r in data if r['dissolved_oxygen']])
-    nh3_values = sorted([float(r['ammonia_nitrogen']) for r in data if r['ammonia_nitrogen']])
-    tp_values = sorted([float(r['total_phosphorus']) for r in data if r['total_phosphorus']])
-    pm_values = sorted([float(r['permanganate_index']) for r in data if r['permanganate_index']])
-    ph_values = sorted([float(r['ph']) for r in data if r['ph']])
+    do_values = sorted([float(r['dissolved_oxygen']) for r in data if r['dissolved_oxygen'] is not None])
+    nh3_values = sorted([float(r['ammonia_nitrogen']) for r in data if r['ammonia_nitrogen'] is not None])
+    tp_values = sorted([float(r['total_phosphorus']) for r in data if r['total_phosphorus'] is not None])
+    pm_values = sorted([float(r['permanganate_index']) for r in data if r['permanganate_index'] is not None])
+    ph_values = sorted([float(r['ph']) for r in data if r['ph'] is not None])
     
     def calc_stats(values):
         if not values:
@@ -771,9 +848,11 @@ def get_boxplot_data():
                 SELECT dissolved_oxygen, ammonia_nitrogen, total_phosphorus, 
                        permanganate_index, ph, year_date, location, province
                 FROM water_quality_raw
-                WHERE dissolved_oxygen IS NOT NULL 
-                  AND ammonia_nitrogen IS NOT NULL
-                  AND total_phosphorus IS NOT NULL
+                WHERE dissolved_oxygen IS NOT NULL
+                   OR ammonia_nitrogen IS NOT NULL
+                   OR total_phosphorus IS NOT NULL
+                   OR permanganate_index IS NOT NULL
+                   OR ph IS NOT NULL
                 LIMIT 10000
             """)
             data = cursor.fetchall()
@@ -1018,9 +1097,9 @@ def get_province_comparison():
                 }), 200
             
             provinces = [row['province'] for row in data]
-            do_values = [round(float(row['avg_do'] or 0), 2) for row in data]
-            nh3_values = [round(float(row['avg_nh3'] or 0), 3) for row in data]
-            tp_values = [round(float(row['avg_tp'] or 0), 3) for row in data]
+            do_values = [round(float(row['avg_do']), 2) if row['avg_do'] is not None else None for row in data]
+            nh3_values = [round(float(row['avg_nh3']), 3) if row['avg_nh3'] is not None else None for row in data]
+            tp_values = [round(float(row['avg_tp']), 3) if row['avg_tp'] is not None else None for row in data]
             
             print(f"[DEBUG] Returning data for provinces: {provinces}")
             
@@ -1071,9 +1150,6 @@ def get_timeseries_data():
                     COUNT(*) as count
                 FROM water_quality_raw
                 WHERE year_date IS NOT NULL
-                  AND dissolved_oxygen IS NOT NULL
-                  AND ph IS NOT NULL
-                  AND ammonia_nitrogen IS NOT NULL
                 GROUP BY date
                 ORDER BY date
                 LIMIT 50
@@ -1095,9 +1171,9 @@ def get_timeseries_data():
                 }), 200
             
             dates = [str(row['date']) for row in data]
-            do_values = [round(float(row['avg_do']), 2) for row in data]
-            ph_values = [round(float(row['avg_ph']), 2) for row in data]
-            nh3_values = [round(float(row['avg_nh3']), 3) for row in data]
+            do_values = [round(float(row['avg_do']), 2) if row['avg_do'] is not None else None for row in data]
+            ph_values = [round(float(row['avg_ph']), 2) if row['avg_ph'] is not None else None for row in data]
+            nh3_values = [round(float(row['avg_nh3']), 3) if row['avg_nh3'] is not None else None for row in data]
             
             return jsonify({
                 "success": True,
@@ -1224,23 +1300,17 @@ def get_overview_stats():
             cursor.execute("SELECT COUNT(*) as total FROM water_quality_raw")
             total = cursor.fetchone()['total']
             
-            # 监测点数
-            cursor.execute("""
-                SELECT
-                    COUNT(DISTINCT station_name) as stations,
-                    COUNT(DISTINCT province) as provinces
+            # 活跃监测点数与省份范围
+            stations = get_active_station_count(cursor)
+            cursor.execute(
+                """
+                SELECT COUNT(DISTINCT province) as provinces
                 FROM station_coordinates
-                WHERE station_name IS NOT NULL
-            """)
-            station_scope = cursor.fetchone() or {}
-            stations = station_scope.get('stations') or 0
-            provinces = station_scope.get('provinces') or 0
-            if not stations:
-                cursor.execute("SELECT COUNT(DISTINCT location) as stations FROM water_quality_raw")
-                stations = cursor.fetchone()['stations']
-            if not provinces:
-                cursor.execute("SELECT COUNT(DISTINCT province) as provinces FROM water_quality_raw")
-                provinces = cursor.fetchone()['provinces']
+                WHERE province IN (%s, %s, %s, %s, %s, %s)
+                """,
+                ACTIVE_PROVINCES,
+            )
+            provinces = (cursor.fetchone() or {}).get('provinces') or len(ACTIVE_PROVINCES)
             
             # 平均水质指标
             cursor.execute("""
