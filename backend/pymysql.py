@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import re
+import shutil
 import sqlite3
 from pathlib import Path
 
@@ -42,6 +43,44 @@ def _resolve_database_path(kwargs) -> str:
 
 def _ensure_parent_dir(path: str) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
+
+
+def _seed_database_path() -> Path:
+    return Path(__file__).resolve().parent / "data" / "haihe.seed.sqlite3"
+
+
+def _has_business_tables(path: str) -> bool:
+    if not Path(path).exists():
+        return False
+    try:
+        conn = sqlite3.connect(path)
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT COUNT(*)
+            FROM sqlite_master
+            WHERE type IN ('table', 'view')
+              AND name IN ('water_quality_raw', 'fact_water_quality_history', 'fact_water_quality_predict')
+            """
+        )
+        count = cur.fetchone()[0]
+        conn.close()
+        return count >= 3
+    except sqlite3.Error:
+        return False
+
+
+def _bootstrap_database_if_needed(path: str) -> None:
+    seed_path = _seed_database_path()
+    target_path = Path(path)
+    if not seed_path.exists():
+        return
+    if target_path.resolve() == seed_path.resolve():
+        return
+    if _has_business_tables(path):
+        return
+    _ensure_parent_dir(path)
+    shutil.copyfile(seed_path, target_path)
 
 
 def _normalize_schema_sql(sql: str) -> str:
@@ -160,6 +199,7 @@ class Cursor:
 
 class Connection:
     def __init__(self, database_path: str) -> None:
+        _bootstrap_database_if_needed(database_path)
         _ensure_parent_dir(database_path)
         self._conn = sqlite3.connect(database_path, detect_types=sqlite3.PARSE_DECLTYPES, check_same_thread=False)
         self._conn.row_factory = sqlite3.Row
