@@ -1,5 +1,32 @@
 // 聊天消息组件
 const chatMessage = {
+    escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    },
+
+    formatPlainAnswer(message) {
+        return String(message ?? '')
+            .replace(/```[\s\S]*?```/g, block => block.replace(/```[a-zA-Z0-9_-]*\n?/g, '').replace(/```/g, ''))
+            .replace(/^#{1,6}\s*/gm, '')
+            .replace(/^\s*[-*+]\s+/gm, '')
+            .replace(/\*\*(.*?)\*\*/g, '$1')
+            .replace(/\*(.*?)\*/g, '$1')
+            .replace(/__(.*?)__/g, '$1')
+            .replace(/_(.*?)_/g, '$1')
+            .replace(/`([^`]+)`/g, '$1')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+    },
+
+    renderText(message) {
+        return this.escapeHtml(this.formatPlainAnswer(message)).replace(/\n/g, '<br>');
+    },
+
     /**
      * 创建用户消息元素
      * @param {string} message - 消息内容
@@ -11,7 +38,7 @@ const chatMessage = {
         messageDiv.innerHTML = `
             <div class="flex items-start space-x-3 justify-end">
                 <div>
-                    <p class="text-sm">${message}</p>
+                    <p class="text-sm">${this.renderText(message)}</p>
                 </div>
                 <div class="w-8 h-8 rounded-full bg-gradient-eco flex items-center justify-center flex-shrink-0">
                     <i class="fa fa-user text-white"></i>
@@ -35,7 +62,7 @@ const chatMessage = {
                     <i class="fa fa-robot text-white"></i>
                 </div>
                 <div>
-                    <p class="text-sm">${message}</p>
+                    <p class="text-sm leading-7">${this.renderText(message)}</p>
                     <div class="mt-1 text-xs text-gray-400 flex items-center">
                         <i class="fa fa-bolt mr-1"></i>
                         <span>DeepSeek 智能分析</span>

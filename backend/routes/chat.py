@@ -124,6 +124,10 @@ def call_deepseek_api(question):
                     'content': '你是一个专业的污水处理和水质保护领域的智能助手，提供准确、专业的回答。'
                 },
                 {
+                    'role': 'system',
+                    'content': '回答请使用自然、易读的中文段落。不要使用 Markdown 标题、星号列表、代码块或加粗符号；如需分点，请直接用“第一、第二、第三”这类普通文字表达。'
+                },
+                {
                     'role': 'user',
                     'content': question
                 }

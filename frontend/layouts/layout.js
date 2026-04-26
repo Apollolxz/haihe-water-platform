@@ -45,7 +45,10 @@ const layout = {
     updateUserInfo(user) {
         const userNameElement = document.getElementById('userName');
         if (userNameElement) {
-            userNameElement.textContent = user.username || '访客';
+            const displayName = (user?.nickname || user?.name || user?.username || '访客')
+                .replace(/\.?用户$/u, '')
+                .trim();
+            userNameElement.textContent = displayName || '访客';
         }
     },
 

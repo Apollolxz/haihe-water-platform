@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <script src="../config/site.config.js"></script>
     <script src="../config/runtime-config.js"></script>
+    <script src="../assets/js/nav-search.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -176,7 +177,7 @@
 
     <!-- 顶部导航栏 -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
-        <div class="container mx-auto px-4">
+        <div class="w-full px-6">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
                 <div class="flex items-center space-x-3 group">
@@ -214,9 +215,10 @@
                 
                 <!-- 右侧用户操作 -->
                 <div class="flex items-center space-x-4">
-                    <button class="text-gray-400 hover:text-white transition-colors">
-                        <i class="fa fa-search text-lg"></i>
-                    </button>
+                    <form class="hidden lg:flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 focus-within:border-primary/70 focus-within:bg-white/10 transition-colors" data-nav-search>
+                        <i class="fa fa-search text-gray-400 mr-2"></i>
+                        <input type="search" class="w-40 bg-transparent text-sm text-white placeholder:text-gray-500 focus:outline-none" placeholder="搜索功能或页面">
+                    </form>
                     <button class="text-gray-400 hover:text-white transition-colors relative">
                         <i class="fa fa-bell text-lg"></i>
                         <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
@@ -918,7 +920,10 @@
             const currentUser = localStorage.getItem('token')
                 ? getStoredUserInfo()
                 : { username: '访客', role: '未登录' };
-            document.getElementById('userName').textContent = `${currentUser.username || '访客'} · ${currentUser.role || '未登录'}`;
+            const displayName = String(currentUser.nickname || currentUser.name || currentUser.username || '访客')
+                .replace(/\.?用户$/u, '')
+                .trim();
+            document.getElementById('userName').textContent = displayName || '访客';
             
             // 绑定事件
             bindEvents();
