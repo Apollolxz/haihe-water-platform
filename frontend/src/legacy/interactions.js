@@ -1,8 +1,17 @@
+import { initChatPageInteractions } from '../features/chat/chatController.js';
 import { loadHomeData, loadPlatformStats } from '../features/home/homeData.js';
 import { ensureRuntimeBridge } from './runtimeBridge.js';
 import { initParticles } from './particles.js';
 import { getLegacyPage, pageBase } from './routing.js';
 import { loadLegacyScripts } from './scriptLoader.js';
+
+const navSearchRoutes = [
+  { keys: ['首页', '主页', '海河', 'home'], url: 'index.html' },
+  { keys: ['数据', '大屏', '监测', '指标', 'dashboard'], url: 'dashboard.html' },
+  { keys: ['沙盘', '推演', '预测', '决策', 'sandbox'], url: 'sandbox.html' },
+  { keys: ['知识', '图谱', '溯源', '节点', 'graph'], url: 'knowledge-graph.html' },
+  { keys: ['问答', '智能', '助手', 'chat'], url: 'chat.html' },
+];
 
 function getStoredUserInfo() {
   const raw = localStorage.getItem('currentUser') || localStorage.getItem('user');
@@ -23,6 +32,52 @@ function setTextIfExists(id, value) {
   if (element) {
     element.textContent = value;
   }
+}
+
+function initNavSearch() {
+  const forms = [...document.querySelectorAll('[data-nav-search]')];
+
+  const submitSearch = (event) => {
+    event.preventDefault();
+    const input = event.currentTarget.querySelector('input[type="search"], input[type="text"]');
+    const query = input ? input.value.trim() : '';
+    if (!query) return;
+
+    const normalized = query.toLowerCase();
+    const route = navSearchRoutes.find((item) => item.keys.some((key) => normalized.includes(key.toLowerCase())));
+
+    if (route) {
+      window.location.href = `${pageBase}${route.url}`;
+      return;
+    }
+
+    const graphInput = document.getElementById('searchInput');
+    const graphButton = document.getElementById('searchBtn');
+    if (graphInput && graphButton) {
+      graphInput.value = query;
+      graphButton.click();
+      graphInput.focus();
+      return;
+    }
+
+    window.location.href = `${pageBase}knowledge-graph.html?search=${encodeURIComponent(query)}`;
+  };
+
+  forms.forEach((form) => form.addEventListener('submit', submitSearch));
+
+  return () => {
+    forms.forEach((form) => form.removeEventListener('submit', submitSearch));
+  };
+}
+
+function runPendingGraphSearch() {
+  const params = new URLSearchParams(window.location.search);
+  const query = params.get('search');
+  const graphInput = document.getElementById('searchInput');
+  const graphButton = document.getElementById('searchBtn');
+  if (!query || !graphInput || !graphButton) return;
+  graphInput.value = query;
+  window.setTimeout(() => graphButton.click(), 500);
 }
 
 export function wireLegacyInteractions(pageName) {
@@ -72,7 +127,19 @@ export function wireLegacyInteractions(pageName) {
   logoutLinks.forEach((link) => link.addEventListener('click', logout));
 
   const cleanupParticles = initParticles();
-  loadLegacyScripts(page).catch((error) => {
+  const cleanupNavSearch = initNavSearch();
+  let cleanupPageInteractions;
+  let cancelled = false;
+
+  loadLegacyScripts(page).then(() => {
+    if (cancelled) return;
+    if (pageName === 'chat.html') {
+      cleanupPageInteractions = initChatPageInteractions();
+    }
+    if (pageName === 'knowledge-graph.html') {
+      runPendingGraphSearch();
+    }
+  }).catch((error) => {
     console.error('加载旧版页面脚本失败:', error);
   });
 
@@ -82,10 +149,13 @@ export function wireLegacyInteractions(pageName) {
   }
 
   return () => {
+    cancelled = true;
     mobileMenuBtn?.removeEventListener('click', toggleMobileMenu);
     userMenuBtn?.removeEventListener('click', toggleUserMenu);
     document.removeEventListener('click', closeMenus);
     logoutLinks.forEach((link) => link.removeEventListener('click', logout));
     cleanupParticles?.();
+    cleanupNavSearch?.();
+    cleanupPageInteractions?.();
   };
 }

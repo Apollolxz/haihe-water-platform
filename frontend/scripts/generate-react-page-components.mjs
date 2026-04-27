@@ -90,7 +90,21 @@ function extractStyles(source) {
 function extractScripts(source) {
   return [...source.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi)]
     .map((match) => match[1])
-    .filter((src) => !/tailwindcss\.com|echarts@|font-awesome/i.test(src));
+    .filter((src) => !/tailwindcss\.com|echarts@|font-awesome|assets\/js\/nav-search\.js/i.test(src));
+}
+
+function normalizeScripts(file, scripts) {
+  if (file !== 'chat.html') return scripts;
+
+  const removedChatRuntime = new Set([
+    '../services/chatService.js',
+    '../utils/chatUtils.js',
+    '../components/ChatMessage.js',
+    '../layouts/layout.js',
+    '../assets/js/chat-page.js',
+  ]);
+
+  return scripts.filter((src) => !removedChatRuntime.has(src.split('?')[0]));
 }
 
 async function extractLinkedLocalStyles(source) {
@@ -123,7 +137,7 @@ for (const file of pageFiles) {
   const title = extract(/<title>([\s\S]*?)<\/title>/i, source, basename(file, '.html'));
   const linkedStyles = await extractLinkedLocalStyles(source);
   const styles = [linkedStyles, extractStyles(source)].filter(Boolean).join('\n\n');
-  const scripts = extractScripts(source);
+  const scripts = normalizeScripts(file, extractScripts(source));
   const body = extract(/<body[^>]*>([\s\S]*?)<\/body>/i, source);
   const jsx = normalizeBody(body);
   const componentName = toComponentName(file);
