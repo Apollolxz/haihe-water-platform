@@ -218,3 +218,51 @@ backend/data/haihe.seed.sqlite3
 - `NEO4J_USER`
 - `NEO4J_PASSWORD`
 - `NEO4J_DATABASE`
+
+## 本项目开源代码与组件使用情况说明
+
+本项目为海河流域水质监测、时空推演、知识图谱和智能问答平台。项目业务页面、交互逻辑、接口封装、数据处理流程、部署脚本和页面迁移适配代码主要由本项目开发维护；第三方开源组件仅作为基础框架、构建工具、可视化组件、算法库或运行时依赖使用。
+
+### 前端开源组件
+
+前端采用 React + Vite 构建，主要开源依赖包括：
+
+- React、React DOM、React Router DOM：用于前端组件化渲染与页面路由。
+- Vite、@vitejs/plugin-react：用于前端开发服务、构建和 React 编译支持。
+- Tailwind CSS、@tailwindcss/vite：用于样式构建与工具类 CSS 支持。
+- lucide-react：用于部分图标组件。
+- Vitest、Testing Library、jsdom：用于前端单元测试与 DOM 测试环境。
+
+部分历史静态页面及构建后的页面仍会通过 CDN 使用以下前端开源资源：
+
+- ECharts：用于数据大屏、统计分析和图表展示。
+- Font Awesome：用于页面图标。
+- particles.js：用于登录页、问答页等粒子背景效果。
+- vis-network：用于知识图谱网络关系可视化。
+
+### 后端开源组件
+
+后端采用 Python + Flask，主要开源依赖包括：
+
+- Flask、Flask-CORS、Werkzeug、Gunicorn：用于 Web API 服务、跨域处理和线上运行。
+- neo4j：用于连接 Neo4j 图数据库。
+- PyJWT、bcrypt、python-dotenv：用于身份认证、密码加密和环境变量管理。
+- requests、beautifulsoup4：用于 HTTP 请求和文本/HTML 处理。
+- numpy、pandas、scikit-learn、xgboost：用于数据分析、模型推理和机器学习相关处理。
+- openpyxl：用于 Excel 文件读写。
+
+### 外部服务
+
+- DeepSeek API：用于智能问答与 AI 辅助分析能力。项目通过配置项调用外部 API，不包含 DeepSeek 模型权重或模型源码。
+- Neo4j：用于知识图谱数据存储与查询。项目包含连接和查询逻辑，不包含 Neo4j 数据库软件源码。
+- Railway、GitHub Pages：分别用于后端和前端部署。
+
+### 自研代码与第三方代码边界
+
+本项目自研部分包括：
+
+- 前端 React 页面适配、页面路由、导航交互、登录/注册/个人中心交互、智能问答交互、知识图谱页面控制逻辑、沙盘页面交互和 GitHub Pages 构建适配。
+- 后端 Flask API、认证逻辑、用户种子数据初始化、SQLite 兼容层、图谱查询接口、问答接口、数据大屏接口和水质分析相关业务逻辑。
+- 页面样式、业务文案、平台结构、部署工作流和项目配置。
+
+第三方开源组件均通过 `frontend/package.json`、`frontend/package-lock.json`、`backend/requirements.txt` 或 CDN 链接声明和引入。项目未将第三方开源项目整体源码作为自研代码声明；使用相关组件时应遵守其各自许可证要求。实际许可证信息以对应依赖包、CDN 资源或官方仓库发布的许可证为准。
