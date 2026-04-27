@@ -6,7 +6,7 @@ function BoxplotAnalysisPage() {
 <div className="bg-grid"></div>
     <div className="glow-orb glow-orb-1"></div>
     <div className="glow-orb glow-orb-2"></div>
-    
+
     <nav className="top-nav">
         <div className="nav-title">
             <i className="fa fa-bar-chart"></i>
@@ -23,7 +23,7 @@ function BoxplotAnalysisPage() {
             </button>
         </div>
     </nav>
-    
+
     <div className="main-container">
         <div className="conclusion-bar">
             <div className="conclusion-tag tag-1">
@@ -41,14 +41,14 @@ function BoxplotAnalysisPage() {
                 </div>
             </div>
         </div>
-        
+
         <div className="content-area">
             <div className="chart-card">
                 <div className="corner-decoration corner-tl"></div>
                 <div className="corner-decoration corner-tr"></div>
                 <div className="corner-decoration corner-bl"></div>
                 <div className="corner-decoration corner-br"></div>
-                
+
                 <div className="card-header">
                     <div className="card-title"><i className="fa fa-bar-chart"></i>核心指标箱线图分布</div>
                     <div className="card-subtitle">点击异常值查看详情</div>
@@ -57,7 +57,7 @@ function BoxplotAnalysisPage() {
                     <div className="boxplot-grid" id="boxplotGrid"></div>
                 </div>
             </div>
-            
+
             <div className="right-panel">
                 <div className="chart-card">
                     <div className="corner-decoration corner-tl"></div>
@@ -76,7 +76,7 @@ function BoxplotAnalysisPage() {
                         </table>
                     </div>
                 </div>
-                
+
                 <div className="chart-card">
                     <div className="corner-decoration corner-tl"></div>
                     <div className="corner-decoration corner-tr"></div>
@@ -87,7 +87,7 @@ function BoxplotAnalysisPage() {
                     </div>
                     <div className="chart-container" id="thresholdContainer" style={{ "overflow": "auto" }}></div>
                 </div>
-                
+
                 <div className="chart-card">
                     <div className="corner-decoration corner-tl"></div>
                     <div className="corner-decoration corner-tr"></div>
@@ -107,7 +107,7 @@ function BoxplotAnalysisPage() {
             </div>
         </div>
     </div>
-    
+
     <div className="outlier-modal" id="outlierModal">
         <div className="outlier-content">
             <div className="outlier-header">
@@ -124,25 +124,27 @@ function BoxplotAnalysisPage() {
 function ChatPage() {
   return (
     <>
-      <style>{"@layer utilities {\r\n            .bg-gradient-eco {\r\n                background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);\r\n            }\r\n            .bg-gradient-dark {\r\n                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\r\n            }\r\n            .bg-gradient-wave {\r\n                background: linear-gradient(-45deg, #06b6d4, #10b981, #3b82f6, #06b6d4);\r\n                background-size: 400% 400%;\r\n                animation: wave 10s ease infinite;\r\n            }\r\n            .text-gradient {\r\n                background-clip: text;\r\n                -webkit-background-clip: text;\r\n                color: transparent;\r\n                background-image: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);\r\n            }\r\n            .card-shadow {\r\n                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);\r\n            }\r\n            .glass {\r\n                background: rgba(30, 41, 59, 0.7);\r\n                backdrop-filter: blur(10px);\r\n                -webkit-backdrop-filter: blur(10px);\r\n                border: 1px solid rgba(255, 255, 255, 0.1);\r\n            }\r\n            .glass-light {\r\n                background: rgba(49, 64, 84, 0.7);\r\n                backdrop-filter: blur(10px);\r\n                -webkit-backdrop-filter: blur(10px);\r\n                border: 1px solid rgba(255, 255, 255, 0.1);\r\n            }\r\n            .nav-link {\r\n                @apply relative px-4 py-2 text-gray-400 hover:text-primary transition-colors duration-300;\r\n            }\r\n            .nav-link::after {\r\n                content: '';\r\n                @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;\r\n            }\r\n            .nav-link:hover::after {\r\n                @apply w-full;\r\n            }\r\n            .nav-link.active {\r\n                @apply text-primary font-medium;\r\n            }\r\n            .nav-link.active::after {\r\n                @apply w-full;\r\n            }\r\n            .nav-core {\r\n                @apply relative px-5 py-2 rounded-full text-white font-semibold text-sm shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 flex items-center;\r\n                background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);\r\n                animation: glow-pulse 2s infinite;\r\n            }\r\n            @keyframes glow-pulse {\r\n                0%, 100% { box-shadow: 0 0 8px rgba(6,182,212,0.6); transform: scale(1); }\r\n                50% { box-shadow: 0 0 20px rgba(6,182,212,0.9); transform: scale(1.02); }\r\n            }\r\n            .chat-message {\r\n                @apply rounded-lg p-4 max-w-[80%] animate-fade-in;\r\n            }\r\n            .user-message {\r\n                @apply bg-gradient-eco text-white self-end;\r\n            }\r\n            .bot-message {\r\n                @apply glass-light text-text-light self-start;\r\n            }\r\n            .typing-indicator {\r\n                @apply flex items-center space-x-1;\r\n            }\r\n            .typing-dot {\r\n                @apply w-2 h-2 bg-primary rounded-full animate-pulse;\r\n            }\r\n            .input-glow {\r\n                box-shadow: 0 0 5px rgba(6, 182, 212, 0.5);\r\n                transition: box-shadow 0.3s ease;\r\n            }\r\n            .input-glow:focus {\r\n                box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);\r\n            }\r\n        }"}</style>
-<div id="particles-js" className="fixed inset-0 z-0"></div>
-    
+      <style>{".bg-gradient-eco {\r\n                background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);\r\n            }\r\n            .bg-gradient-dark {\r\n                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\r\n            }\r\n            .bg-gradient-wave {\r\n                background: linear-gradient(-45deg, #06b6d4, #10b981, #3b82f6, #06b6d4);\r\n                background-size: 400% 400%;\r\n                animation: wave 10s ease infinite;\r\n            }\r\n            .text-gradient {\r\n                background-clip: text;\r\n                -webkit-background-clip: text;\r\n                color: transparent;\r\n                background-image: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);\r\n            }\r\n            .card-shadow {\r\n                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);\r\n            }\r\n            .glass {\r\n                background: rgba(30, 41, 59, 0.7);\r\n                backdrop-filter: blur(10px);\r\n                -webkit-backdrop-filter: blur(10px);\r\n                border: 1px solid rgba(255, 255, 255, 0.1);\r\n            }\r\n            .glass-light {\r\n                background: rgba(49, 64, 84, 0.7);\r\n                backdrop-filter: blur(10px);\r\n                -webkit-backdrop-filter: blur(10px);\r\n                border: 1px solid rgba(255, 255, 255, 0.1);\r\n            }\r\n            .nav-link {\n                position: relative;\n                padding: 0.5rem 1rem;\n                color: #9ca3af;\n                transition: color 300ms ease;\n            }\n            .nav-link::after {\n                content: '';\n                position: absolute;\n                bottom: 0;\n                left: 0;\n                width: 0;\n                height: 2px;\n                background: #06b6d4;\n                transition: width 300ms ease;\n            }\n            .nav-link:hover {\n                color: #06b6d4;\n            }\n            .nav-link:hover::after {\n                width: 100%;\n            }\n            .nav-link.active {\n                color: #06b6d4;\n                font-weight: 500;\n            }\n            .nav-link.active::after {\n                width: 100%;\n            }\n            .nav-core {\n                position: relative;\n                display: flex;\n                align-items: center;\n                padding: 0.5rem 1.25rem;\n                border-radius: 9999px;\n                color: #ffffff;\n                font-size: 0.875rem;\n                font-weight: 600;\n                box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.35);\n                transition: all 300ms ease;\n                background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);\n                animation: glow-pulse 2s infinite;\n            }\n            @keyframes glow-pulse {\n                0%, 100% { box-shadow: 0 0 8px rgba(6,182,212,0.6); transform: scale(1); }\n                50% { box-shadow: 0 0 20px rgba(6,182,212,0.9); transform: scale(1.02); }\n            }\n            @keyframes fadeIn {\n                0% { opacity: 0; }\n                100% { opacity: 1; }\n            }\n            @keyframes slideUp {\n                0% { transform: translateY(20px); opacity: 0; }\n                100% { transform: translateY(0); opacity: 1; }\n            }\n            @keyframes float {\n                0%, 100% { transform: translateY(0); }\n                50% { transform: translateY(-10px); }\n            }\n            @keyframes wave {\n                0% { background-position: 0% 50%; }\n                50% { background-position: 100% 50%; }\n                100% { background-position: 0% 50%; }\n            }\n            @keyframes pulseGlow {\n                0% { box-shadow: 0 0 5px rgba(6, 182, 212, 0.5); }\n                100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.8), 0 0 30px rgba(16, 185, 129, 0.5); }\n            }\n            @keyframes pulse {\n                50% { opacity: 0.5; }\n            }\n            .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }\n            .animate-slide-up { animation: slideUp 0.5s ease-in-out; }\n            .animate-float { animation: float 3s ease-in-out infinite; }\n            .animate-glow { animation: pulseGlow 2s ease-in-out infinite alternate; }\n            .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }\n            .chat-message {\n                max-width: 80%;\n                padding: 1rem;\n                border-radius: 0.5rem;\n                animation: fadeIn 0.5s ease-in-out;\n            }\n            .user-message {\n                align-self: flex-end;\n                color: #ffffff;\n                background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);\n            }\n            .bot-message {\n                align-self: flex-start;\n                color: #e2e8f0;\n                background: rgba(49, 64, 84, 0.7);\n                backdrop-filter: blur(10px);\n                -webkit-backdrop-filter: blur(10px);\n                border: 1px solid rgba(255, 255, 255, 0.1);\n            }\n            .typing-indicator {\n                display: flex;\n                align-items: center;\n                gap: 0.25rem;\n            }\n            .typing-dot {\n                width: 0.5rem;\n                height: 0.5rem;\n                border-radius: 9999px;\n                background: #06b6d4;\n                animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;\n            }\n            .input-glow {\r\n                box-shadow: 0 0 5px rgba(6, 182, 212, 0.5);\r\n                transition: box-shadow 0.3s ease;\r\n            }\r\n            .input-glow:focus {\r\n                box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);\r\n            }"}</style>
+<div className="bg-dark min-h-screen text-text-light overflow-x-hidden relative">
+
+    <div id="particles-js" className="fixed inset-0 z-0"></div>
+
     <div className="fixed inset-0 z-0 opacity-20">
         <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-wave"></div>
     </div>
-    
+
     <header className="glass sticky top-0 z-50">
         <div className="w-full px-6">
             <div className="flex items-center justify-between h-16">
-                
+
                 <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-eco flex items-center justify-center animate-float animate-glow">
                         <i className="fa fa-tint text-white text-xl"></i>
                     </div>
                     <h1 className="text-xl font-bold text-white">海河六域</h1>
                 </div>
-                
-                
+
+
                 <nav className="hidden md:flex space-x-1">
                     <a href="index.html" data-page-link="index.html" className="nav-link">
                         <i className="fa fa-home mr-2"></i>
@@ -164,8 +166,8 @@ function ChatPage() {
                         <span>智能问答</span>
                     </a>
                 </nav>
-                
-                
+
+
                 <div className="flex items-center space-x-4">
                     <form className="hidden lg:flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 focus-within:border-primary/70 focus-within:bg-white/10 transition-colors" data-nav-search>
                         <i className="fa fa-search text-gray-400 mr-2"></i>
@@ -182,7 +184,7 @@ function ChatPage() {
                             <span className="text-sm font-medium text-text-light hidden md:inline" id="userName">用户名</span>
                             <i className="fa fa-chevron-down text-xs text-gray-400"></i>
                         </button>
-                        
+
                         <div className="absolute right-0 mt-2 w-48 glass rounded-lg shadow-lg py-2 z-50 hidden" id="userMenu">
                             <a href="profile.html" data-page-link="profile.html" className="block px-4 py-2 text-sm text-text-light hover:bg-dark-lighter rounded-md">
                                 <i className="fa fa-user-o mr-2"></i>个人中心
@@ -196,15 +198,15 @@ function ChatPage() {
                             </a>
                         </div>
                     </div>
-                    
+
                     <button className="md:hidden text-gray-400 hover:text-primary" id="mobileMenuBtn">
                         <i className="fa fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div className="md:hidden glass shadow-md hidden" id="mobileMenu">
             <div className="container mx-auto px-4 py-2 space-y-1">
                 <a href="index.html" data-page-link="index.html" className="block px-4 py-3 text-text-light hover:bg-dark-lighter rounded-md">
@@ -226,13 +228,13 @@ function ChatPage() {
         </div>
     </header>
 
-    
+
     <main className="container mx-auto px-4 py-8 relative z-10">
         <div className="flex flex-col lg:flex-row gap-6">
-            
+
             <div className="lg:w-3/4">
                 <div className="glass rounded-xl card-shadow h-[80vh] flex flex-col animate-fade-in">
-                    
+
                     <div className="border-b border-dark-lighter p-4">
                         <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 rounded-full bg-gradient-eco flex items-center justify-center animate-float">
@@ -243,10 +245,10 @@ function ChatPage() {
                             </div>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="flex-1 overflow-y-auto p-4 space-y-4" id="chatMessages">
-                        
+
                         <div className="chat-message bot-message">
                             <div className="flex items-start space-x-3">
                                 <div className="w-8 h-8 rounded-full bg-gradient-eco flex items-center justify-center flex-shrink-0 animate-glow">
@@ -258,8 +260,8 @@ function ChatPage() {
                             </div>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="border-t border-dark-lighter p-4">
                         <form id="chatForm" className="flex space-x-2">
                             <input type="text" id="messageInput" className="flex-1 glass-light border border-dark-lighter rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none text-text-light input-glow" placeholder="请输入您的问题..." required />
@@ -273,10 +275,10 @@ function ChatPage() {
                     </div>
                 </div>
             </div>
-            
-            
+
+
             <div className="lg:w-1/4 space-y-6">
-                
+
                 <div className="glass rounded-xl card-shadow p-4 animate-slide-up">
                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center">
                         <i className="fa fa-fire text-primary mr-2"></i>
@@ -310,8 +312,8 @@ function ChatPage() {
                         </li>
                     </ul>
                 </div>
-                
-                
+
+
                 <div className="glass rounded-xl card-shadow p-4 animate-slide-up" style={{ "animationDelay": "0.2s" }}>
                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center">
                         <i className="fa fa-history text-primary mr-2"></i>
@@ -321,8 +323,8 @@ function ChatPage() {
                         <div className="text-sm text-gray-500 italic">暂无历史记录</div>
                     </div>
                 </div>
-                
-                
+
+
                 <div className="hidden" style={{ "animationDelay": "0.4s" }}>
                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center">
                         <i className="fa fa-lightbulb-o text-primary mr-2"></i>
@@ -355,18 +357,18 @@ function ChatPage() {
         </div>
     </main>
 
-    
+
     <footer className="glass py-12 mt-12 relative z-10">
         <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
+
                 <div>
                     <h3 className="text-lg font-semibold mb-4 text-white">关于我们</h3>
                     <p className="text-gray-400 text-sm">
                         海河六域平台整合数据大屏、流域时空推演沙盘、知识图谱与智能问答，支持流域水环境分析与治理决策。
                     </p>
                 </div>
-                
+
                 <div>
                     <h3 className="text-lg font-semibold mb-4 text-white">快速链接</h3>
                     <ul className="space-y-2 text-sm text-gray-400">
@@ -377,7 +379,7 @@ function ChatPage() {
                         <li><a href="chat.html" data-page-link="chat.html" className="hover:text-primary transition-colors">智能问答</a></li>
                     </ul>
                 </div>
-                
+
                 <div>
                     <h3 className="text-lg font-semibold mb-4 text-white">关注我们</h3>
                     <div className="flex space-x-4">
@@ -398,6 +400,9 @@ function ChatPage() {
             </div>
         </div>
     </footer>
+
+
+    </div>
     </>
   );
 }
@@ -409,8 +414,8 @@ function CorrelationAnalysisPage() {
 <div className="bg-grid"></div>
     <div className="glow-orb glow-orb-1"></div>
     <div className="glow-orb glow-orb-2"></div>
-    
-    
+
+
     <nav className="top-nav">
         <div className="nav-title">
             <i className="fa fa-th"></i>
@@ -427,10 +432,10 @@ function CorrelationAnalysisPage() {
             </button>
         </div>
     </nav>
-    
-    
+
+
     <div className="main-container">
-        
+
         <div className="conclusion-bar animate-fade-in">
             <div className="conclusion-tag tag-1">
                 <div className="tag-icon">
@@ -469,16 +474,16 @@ function CorrelationAnalysisPage() {
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div className="content-area">
-            
+
             <div className="chart-card">
                 <div className="corner-decoration corner-tl"></div>
                 <div className="corner-decoration corner-tr"></div>
                 <div className="corner-decoration corner-bl"></div>
                 <div className="corner-decoration corner-br"></div>
-                
+
                 <div className="card-header">
                     <div className="card-title">
                         <i className="fa fa-th"></i>
@@ -503,8 +508,8 @@ function CorrelationAnalysisPage() {
                     </div>
                 </div>
                 <div className="chart-container" id="heatmapChart"></div>
-                
-                
+
+
                 <div className="detail-panel" id="detailPanel">
                     <div className="detail-header">
                         <div className="detail-title" id="detailTitle">指标相关性详情</div>
@@ -531,16 +536,16 @@ function CorrelationAnalysisPage() {
                     </div>
                 </div>
             </div>
-            
-            
+
+
             <div className="right-panel">
-                
+
                 <div className="chart-card">
                     <div className="corner-decoration corner-tl"></div>
                     <div className="corner-decoration corner-tr"></div>
                     <div className="corner-decoration corner-bl"></div>
                     <div className="corner-decoration corner-br"></div>
-                    
+
                     <div className="card-header">
                         <div className="card-title">
                             <i className="fa fa-tags"></i>
@@ -567,14 +572,14 @@ function CorrelationAnalysisPage() {
                         </div>
                     </div>
                 </div>
-                
-                
+
+
                 <div className="chart-card">
                     <div className="corner-decoration corner-tl"></div>
                     <div className="corner-decoration corner-tr"></div>
                     <div className="corner-decoration corner-bl"></div>
                     <div className="corner-decoration corner-br"></div>
-                    
+
                     <div className="card-header">
                         <div className="card-title">
                             <i className="fa fa-magic"></i>
@@ -625,19 +630,19 @@ function CorrelationAnalysisPage() {
                                 冗余特征建议剔除
                             </div>
                             <div id="redundantList">
-                                
+
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                
+
+
                 <div className="chart-card">
                     <div className="corner-decoration corner-tl"></div>
                     <div className="corner-decoration corner-tr"></div>
                     <div className="corner-decoration corner-bl"></div>
                     <div className="corner-decoration corner-br"></div>
-                    
+
                     <div className="card-header">
                         <div className="card-title">
                             <i className="fa fa-list-check"></i>
@@ -691,18 +696,18 @@ function DashboardPage() {
     <>
       <style>{"/* ============================================================\r\n   海河六域 · 数据大屏科技暗调风格\r\n   ============================================================ */\r\n\r\n:root {\r\n    --bg-deep: #1a2435;\r\n    --bg-panel: rgba(24, 34, 52, 0.55);\r\n    --bg-panel-hover: rgba(32, 46, 70, 0.7);\r\n    --border-glow: rgba(14, 165, 233, 0.28);\r\n    --border-glow-strong: rgba(14, 165, 233, 0.55);\r\n    --text-primary: #f8fafc;\r\n    --text-secondary: #cbd5e1;\r\n    --text-muted: #94a3b8;\r\n    --cyan: #0ea5e9;\r\n    --cyan-light: #38bdf8;\r\n    --teal: #22c55e;\r\n    --amber: #f59e0b;\r\n    --rose: #f43f5e;\r\n    --radius: 14px;\r\n    --radius-lg: 18px;\r\n    --shadow: 0 8px 32px rgba(0, 0, 0, 0.18);\r\n}\r\n\r\n* {\r\n    box-sizing: border-box;\r\n    margin: 0;\r\n    padding: 0;\r\n}\r\n\r\nhtml, body {\n    width: 100%;\n    height: 100%;\n    min-height: 100%;\n    background: var(--bg-deep);\n    color: var(--text-primary);\n    font-family: \"Noto Sans SC\", \"Microsoft YaHei\", sans-serif;\n    overflow-x: hidden;\r\n    overflow-y: auto;\r\n}\r\n\r\n/* 粒子背景Canvas */\r\n#particleCanvas {\r\n    position: fixed;\r\n    inset: 0;\r\n    pointer-events: none;\r\n    z-index: 0;\r\n}\r\n\r\n/* 背景网格 */\r\nbody::before {\r\n    content: \"\";\r\n    position: fixed;\r\n    inset: 0;\r\n    pointer-events: none;\r\n    z-index: 0;\r\n    background-image:\r\n        linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px),\r\n        linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px);\r\n    background-size: 50px 50px;\r\n    mask-image: linear-gradient(180deg, rgba(0,0,0,0.5), transparent 92%);\r\n}\r\n\r\n/* 扫描光效 */\r\nbody::after {\r\n    content: \"\";\r\n    position: fixed;\r\n    top: 0;\r\n    left: -100%;\r\n    width: 60%;\r\n    height: 2px;\r\n    background: linear-gradient(90deg, transparent, rgba(14,165,233,0.4), transparent);\r\n    animation: scanLight 10s linear infinite;\r\n    z-index: 0;\r\n    pointer-events: none;\r\n}\r\n\r\n@keyframes scanLight {\r\n    0% { left: -60%; }\r\n    100% { left: 120%; }\r\n}\r\n\r\n/* ---------- 导航栏兼容样式 ---------- */\r\n.bg-gradient-water {\r\n    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #22c55e 100%);\r\n}\r\n\r\n.nav-link {\r\n    position: relative;\r\n    display: inline-flex;\r\n    align-items: center;\r\n    padding: 0.5rem 1rem;\r\n    color: #d1d5db;\r\n    text-decoration: none;\r\n    transition: all 0.3s;\r\n    border-radius: 0.375rem;\r\n}\r\n.nav-link:hover {\r\n    color: #fff;\r\n    background: rgba(255,255,255,0.05);\r\n}\r\n.nav-link.active {\r\n    color: #fff;\r\n    font-weight: 500;\r\n}\r\n.nav-link::after {\r\n    content: '';\r\n    position: absolute;\r\n    bottom: 0;\r\n    left: 50%;\r\n    width: 0;\r\n    height: 2px;\r\n    background: linear-gradient(90deg, #0ea5e9, #22c55e);\r\n    transition: all 0.3s;\r\n    transform: translateX(-50%);\r\n}\r\n.nav-link:hover::after,\r\n.nav-link.active::after {\r\n    width: 80%;\r\n}\r\n\r\n.nav-core {\r\n    position: relative;\r\n    display: inline-flex;\r\n    align-items: center;\r\n    padding: 0.5rem 1.25rem;\r\n    border-radius: 9999px;\r\n    color: #fff;\r\n    font-weight: 600;\r\n    font-size: 0.875rem;\r\n    text-decoration: none;\r\n    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #22c55e 100%);\r\n    box-shadow: 0 0 12px rgba(14,165,233,0.4);\r\n    transition: all 0.3s;\r\n}\r\n.nav-core:hover {\n    box-shadow: 0 0 20px rgba(14,165,233,0.7);\n    transform: translateY(-1px);\n}\n\n.dashboard-topbar,\n.dashboard-mobile-nav {\n    width: 100%;\n    max-width: none;\n}\n\n/* ---------- 大屏容器 ---------- */\n.dashboard-shell {\n    position: relative;\n    z-index: 1;\n    width: 100%;\n    min-width: 0;\n    padding: 84px 24px 20px;\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n    min-height: 100vh;\n}\n\r\n/* ---------- 顶部标题栏 ---------- */\r\n.dash-header {\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: space-between;\r\n    gap: 20px;\r\n    padding: 14px 20px;\r\n    background: linear-gradient(135deg, rgba(15,23,42,0.85), rgba(20,30,50,0.75));\r\n    border: 1px solid var(--border-glow);\r\n    border-radius: var(--radius-lg);\r\n    box-shadow: var(--shadow), 0 0 40px rgba(14,165,233,0.06);\r\n    backdrop-filter: blur(12px);\r\n    position: relative;\r\n    overflow: hidden;\r\n}\r\n\r\n.dash-header::before {\r\n    content: \"\";\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n    width: 4px;\r\n    height: 100%;\r\n    background: linear-gradient(180deg, var(--cyan), var(--teal));\r\n}\r\n\r\n.dash-header::after {\r\n    content: \"\";\r\n    position: absolute;\r\n    top: -50%;\r\n    right: -10%;\r\n    width: 300px;\r\n    height: 300px;\r\n    background: radial-gradient(circle, rgba(14,165,233,0.08), transparent 70%);\r\n    pointer-events: none;\r\n}\r\n\r\n.dash-header-left {\r\n    display: flex;\r\n    flex-direction: column;\r\n    gap: 12px;\r\n}\r\n\r\n.dash-title-group h1 {\r\n    font-family: \"Rajdhani\", \"Noto Sans SC\", sans-serif;\r\n    font-size: clamp(22px, 2vw, 34px);\r\n    font-weight: 700;\r\n    letter-spacing: 0.04em;\r\n    color: #fff;\r\n    line-height: 1.2;\r\n    margin: 0;\r\n}\r\n\r\n.scope-badge {\r\n    display: inline-flex;\r\n    align-items: center;\r\n    gap: 10px;\r\n    padding: 10px 22px;\r\n    border-radius: 999px;\r\n    background: linear-gradient(135deg, rgba(14, 165, 233, 0.18), rgba(6, 182, 212, 0.1));\r\n    border: 1px solid rgba(14, 165, 233, 0.35);\r\n    color: #e0f2fe;\r\n    font-size: 18px;\r\n    font-weight: 700;\r\n    letter-spacing: 0.04em;\r\n    width: fit-content;\r\n    box-shadow: 0 0 20px rgba(14, 165, 233, 0.12), inset 0 1px 0 rgba(255,255,255,0.08);\r\n    text-shadow: 0 0 10px rgba(14, 165, 233, 0.3);\r\n}\r\n\r\n.dash-meta-row {\r\n    display: flex;\r\n    gap: 12px;\r\n    flex-wrap: wrap;\r\n}\r\n\r\n.meta-pill {\r\n    display: inline-flex;\r\n    align-items: center;\r\n    gap: 6px;\r\n    padding: 4px 12px;\r\n    border-radius: 999px;\r\n    background: rgba(255,255,255,0.04);\r\n    border: 1px solid rgba(255,255,255,0.06);\r\n    font-size: 12px;\r\n    color: var(--text-secondary);\r\n}\r\n.meta-pill strong {\r\n    color: var(--text-primary);\r\n    font-weight: 600;\r\n}\r\n\r\n.dash-header-right {\r\n    display: flex;\r\n    flex-direction: column;\r\n    align-items: flex-end;\r\n    gap: 10px;\r\n}\r\n\r\n.kpi-cards {\r\n    display: flex;\r\n    gap: 10px;\r\n}\r\n\r\n.kpi-card {\r\n    min-width: 84px;\r\n    padding: 10px 12px;\r\n    background: linear-gradient(180deg, rgba(14,165,233,0.1), rgba(20,30,50,0.5));\r\n    border: 1px solid rgba(14,165,233,0.15);\r\n    border-radius: var(--radius);\r\n    text-align: center;\r\n    transition: all 0.3s ease;\r\n    position: relative;\r\n    overflow: hidden;\r\n}\r\n.kpi-card::before {\r\n    content: \"\";\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n    right: 0;\r\n    height: 2px;\r\n    background: linear-gradient(90deg, transparent, var(--cyan), transparent);\r\n    opacity: 0.6;\r\n}\r\n.kpi-card:hover {\r\n    transform: translateY(-2px);\r\n    box-shadow: 0 8px 20px rgba(14,165,233,0.18);\r\n    border-color: rgba(14,165,233,0.35);\r\n}\r\n.kpi-card.alert {\r\n    background: linear-gradient(180deg, rgba(244,63,94,0.1), rgba(20,30,50,0.5));\r\n    border-color: rgba(244,63,94,0.22);\r\n}\r\n.kpi-card.alert::before {\r\n    background: linear-gradient(90deg, transparent, var(--rose), transparent);\r\n}\r\n.kpi-card.alert:hover {\r\n    box-shadow: 0 8px 20px rgba(244,63,94,0.18);\r\n    border-color: rgba(244,63,94,0.4);\r\n}\r\n\r\n.kpi-label {\r\n    font-size: 10px;\r\n    color: var(--text-muted);\r\n    margin-bottom: 4px;\r\n    letter-spacing: 0.03em;\r\n}\r\n\r\n.kpi-value {\r\n    font-family: \"Rajdhani\", \"Noto Sans SC\", sans-serif;\r\n    font-size: 22px;\r\n    font-weight: 700;\r\n    color: #fff;\r\n    line-height: 1;\r\n    margin-bottom: 4px;\r\n}\r\n\r\n.kpi-bar {\r\n    height: 2px;\r\n    background: rgba(255,255,255,0.06);\r\n    border-radius: 2px;\r\n    overflow: hidden;\r\n}\r\n.kpi-bar span {\r\n    display: block;\r\n    height: 100%;\r\n    background: linear-gradient(90deg, var(--cyan), var(--teal));\r\n    border-radius: 2px;\r\n    transition: width 0.6s ease;\r\n}\r\n.kpi-card.alert .kpi-bar span {\r\n    background: linear-gradient(90deg, var(--rose), var(--amber));\r\n}\r\n\r\n.kpi-level-dot {\r\n    width: 6px;\r\n    height: 6px;\r\n    border-radius: 50%;\r\n    margin: 0 auto;\r\n    background: var(--teal);\r\n    box-shadow: 0 0 6px var(--teal);\r\n}\r\n\r\n.kpi-sublabel {\r\n    font-size: 9px;\r\n    color: var(--text-muted);\r\n    margin-top: 2px;\r\n}\r\n\r\n.dash-time {\r\n    font-family: \"Rajdhani\", monospace;\r\n    font-size: 14px;\r\n    color: var(--cyan-light);\r\n    letter-spacing: 0.08em;\r\n    background: rgba(14,165,233,0.08);\r\n    padding: 4px 12px;\r\n    border-radius: 6px;\r\n    border: 1px solid rgba(14,165,233,0.12);\r\n}\r\n\r\n/* ---------- 主体网格 ---------- */\r\n.dash-body {\n    display: grid;\n    grid-template-columns: minmax(220px, 15.5vw) minmax(0, 1fr) minmax(240px, 17vw);\n    gap: 24px;\n    flex: 1;\n    min-height: calc(100vh - 196px);\n    align-items: stretch;\n}\n\r\n/* ---------- 侧边栏 ---------- */\r\n.dash-side {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n    min-height: 0;\n}\n\r\n.side-panel {\r\n    background: var(--bg-panel);\r\n    border: 1px solid var(--border-glow);\r\n    border-radius: var(--radius-lg);\r\n    padding: 18px;\r\n    backdrop-filter: blur(10px);\r\n    box-shadow: var(--shadow);\r\n    position: relative;\r\n    overflow: hidden;\r\n    transition: all 0.35s ease;\r\n}\r\n.side-panel:hover {\r\n    border-color: var(--border-glow-strong);\r\n    box-shadow: var(--shadow), 0 0 30px rgba(14,165,233,0.1);\r\n    transform: translateY(-2px);\r\n}\r\n.side-panel::after {\r\n    content: \"\";\r\n    position: absolute;\r\n    top: 0;\r\n    left: 18px;\r\n    width: 100px;\r\n    height: 2px;\r\n    background: linear-gradient(90deg, var(--cyan), var(--teal), transparent);\r\n}\r\n\r\n/* 图表容器 */\r\n.chart-side {\r\n    width: 100%;\r\n    height: 220px;\r\n    border-radius: var(--radius);\r\n    overflow: visible;\r\n}\r\n\r\n/* echarts tooltip 不被遮挡 */\r\n.chart-map > div,\r\n.chart-side > div,\r\n.chart-mini > div,\r\n.chart-trend > div {\r\n    overflow: visible !important;\r\n}\r\n\r\n.side-head {\r\n    display: flex;\r\n    align-items: center;\r\n    gap: 8px;\r\n    margin-bottom: 14px;\r\n    font-size: 14px;\r\n    font-weight: 600;\r\n    color: var(--text-primary);\r\n}\r\n.side-head i {\r\n    color: var(--cyan);\r\n    font-size: 14px;\r\n}\r\n\r\n/* ---------- 省份按钮 ---------- */\r\n.province-pills {\r\n    display: flex;\r\n    flex-wrap: wrap;\r\n    gap: 8px;\r\n}\r\n\r\n.province-btn {\r\n    padding: 7px 14px;\r\n    border: 1px solid rgba(14,165,233,0.15);\r\n    background: rgba(7,18,30,0.7);\r\n    color: var(--text-secondary);\r\n    cursor: pointer;\r\n    transition: all 0.2s;\r\n    font-size: 12px;\r\n    font-weight: 600;\r\n    border-radius: 999px;\r\n    font-family: inherit;\r\n}\r\n.province-btn:hover {\r\n    color: #fff;\r\n    border-color: rgba(14,165,233,0.4);\r\n    background: linear-gradient(135deg, rgba(14,165,233,0.2), rgba(34,197,94,0.1));\r\n}\r\n.province-btn.active {\r\n    color: #fff;\r\n    border-color: rgba(14,165,233,0.5);\r\n    background: linear-gradient(135deg, rgba(14,165,233,0.35), rgba(34,197,94,0.2));\r\n    box-shadow: 0 0 12px rgba(14,165,233,0.2);\r\n}\r\n\r\n/* ---------- 排行列表 ---------- */\r\n.ranking-list {\r\n    display: flex;\r\n    flex-direction: column;\r\n    gap: 8px;\r\n}\r\n\r\n.ranking-item {\r\n    display: grid;\r\n    grid-template-columns: 26px 1fr;\r\n    gap: 10px;\r\n    padding: 10px 12px;\r\n    background: rgba(10,22,38,0.5);\r\n    border: 1px solid rgba(14,165,233,0.08);\r\n    border-radius: 10px;\r\n    cursor: pointer;\r\n    transition: all 0.2s;\r\n}\r\n.ranking-item:hover {\r\n    transform: translateX(3px);\r\n    border-color: rgba(14,165,233,0.2);\r\n    background: rgba(14,165,233,0.08);\r\n}\r\n.ranking-item.selected {\r\n    border-color: rgba(14,165,233,0.35);\r\n    background: rgba(14,165,233,0.12);\r\n}\r\n\r\n.rank-no {\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: center;\r\n    font-family: \"Rajdhani\", sans-serif;\r\n    font-size: 16px;\r\n    font-weight: 700;\r\n    color: var(--cyan);\r\n}\r\n\r\n.rank-topline {\r\n    display: flex;\r\n    justify-content: space-between;\r\n    align-items: center;\r\n    margin-bottom: 4px;\r\n    font-size: 13px;\r\n}\r\n.rank-topline strong {\r\n    font-family: \"Rajdhani\", sans-serif;\r\n    font-size: 18px;\r\n    color: #fff;\r\n}\r\n\r\n.rank-subline {\r\n    display: flex;\r\n    justify-content: space-between;\r\n    font-size: 11px;\r\n    color: var(--text-muted);\r\n}\r\n\r\n.rank-bar {\r\n    margin-top: 6px;\r\n    height: 4px;\r\n    background: rgba(255,255,255,0.05);\r\n    border-radius: 2px;\r\n    overflow: hidden;\r\n}\r\n.rank-bar span {\r\n    display: block;\r\n    height: 100%;\r\n    background: linear-gradient(90deg, var(--cyan), var(--teal));\r\n    border-radius: 2px;\r\n}\r\n\r\n/* ---------- 中心地图 ---------- */\r\n.dash-center {\r\n    display: flex;\r\n    flex-direction: column;\r\n    gap: 18px;\r\n    height: 100%;\r\n    min-height: 0;\r\n}\r\n\r\n.map-panel {\n    background: var(--bg-panel);\r\n    border: 1px solid var(--border-glow);\r\n    border-radius: var(--radius-lg);\r\n    padding: 14px 16px;\r\n    backdrop-filter: blur(10px);\r\n    box-shadow: var(--shadow), 0 0 60px rgba(14,165,233,0.08);\r\n    display: flex;\r\n    flex-direction: column;\r\n    flex: 1 1 auto;\n    min-height: 0;\n    position: relative;\n    overflow: hidden;\n}\n.map-panel::before {\r\n    content: \"\";\r\n    position: absolute;\r\n    inset: 0;\r\n    border: 1px solid rgba(14,165,233,0.06);\r\n    pointer-events: none;\r\n    border-radius: inherit;\r\n}\r\n.map-panel::after {\r\n    content: \"\";\r\n    position: absolute;\r\n    top: 0;\r\n    left: 20px;\r\n    width: 180px;\r\n    height: 2px;\r\n    background: linear-gradient(90deg, var(--cyan), var(--teal), var(--cyan-light), transparent);\r\n}\r\n\r\n/* 地图四角科技装饰 */\r\n.map-panel .corner-deco {\r\n    position: absolute;\r\n    width: 16px;\r\n    height: 16px;\r\n    border: 2px solid var(--cyan);\r\n    opacity: 0.5;\r\n    pointer-events: none;\r\n    z-index: 2;\r\n}\r\n.map-panel .corner-deco.tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }\r\n.map-panel .corner-deco.tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }\r\n.map-panel .corner-deco.bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }\r\n.map-panel .corner-deco.br { bottom: 10px; right: 10px; border-left: none; border-top: none; }\r\n\r\n.map-head {\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: space-between;\r\n    margin-bottom: 12px;\r\n    padding-bottom: 10px;\r\n    border-bottom: 1px solid rgba(14,165,233,0.08);\r\n}\r\n.map-head h2 {\r\n    font-size: 18px;\r\n    font-weight: 700;\r\n    color: #fff;\r\n    display: flex;\r\n    align-items: center;\r\n    gap: 10px;\r\n    margin: 0;\r\n}\r\n.map-head h2 i {\r\n    color: var(--cyan);\r\n    font-size: 20px;\r\n}\r\n.map-hint {\r\n    font-size: 11px;\r\n    color: var(--text-muted);\r\n    background: rgba(255,255,255,0.04);\r\n    padding: 4px 10px;\r\n    border-radius: 999px;\r\n}\r\n\r\n.chart-map {\n    width: 100%;\n    flex: 1 1 auto;\n    height: min(60vh, calc(100vh - 330px));\n    min-height: 460px;\n    border-radius: var(--radius);\n    overflow: visible;\n    position: relative;\n    isolation: isolate;\r\n    background:\r\n        radial-gradient(circle at 52% 46%, rgba(34, 211, 238, 0.12), transparent 34%),\r\n        radial-gradient(circle at 24% 30%, rgba(45, 212, 191, 0.08), transparent 24%),\r\n        linear-gradient(180deg, rgba(7, 16, 28, 0.86), rgba(8, 21, 35, 0.64));\r\n    border: 1px solid rgba(56, 189, 248, 0.1);\r\n    box-shadow:\r\n        inset 0 0 0 1px rgba(125, 211, 252, 0.04),\r\n        inset 0 0 60px rgba(34, 211, 238, 0.05);\r\n}\r\n\r\n.chart-map::before,\r\n.chart-map::after {\r\n    content: \"\";\r\n    position: absolute;\r\n    inset: 12px;\r\n    border-radius: calc(var(--radius) - 4px);\r\n    pointer-events: none;\r\n}\r\n\r\n.chart-map::before {\r\n    background:\r\n        linear-gradient(rgba(125, 211, 252, 0.04) 1px, transparent 1px),\r\n        linear-gradient(90deg, rgba(125, 211, 252, 0.04) 1px, transparent 1px);\r\n    background-size: 28px 28px;\r\n    mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.9), transparent 84%);\r\n    opacity: 0.5;\r\n    z-index: 0;\r\n}\r\n\r\n.chart-map::after {\r\n    inset: auto 18px 18px 18px;\r\n    height: 72px;\r\n    border-radius: 18px;\r\n    background: linear-gradient(180deg, transparent, rgba(8, 21, 35, 0.78));\r\n    z-index: 0;\r\n}\r\n\r\n.chart-map > div {\r\n    position: relative;\r\n    z-index: 1;\r\n}\r\n\r\n/* ---------- 核心指标迷你网格 ---------- */\r\n.indicator-mini-grid {\r\n    display: grid;\r\n    grid-template-columns: 1fr 1fr;\r\n    gap: 10px;\r\n}\r\n\r\n.indicator-card {\r\n    padding: 12px 10px;\r\n    background: linear-gradient(180deg, rgba(9,20,35,0.8), rgba(11,26,42,0.6));\r\n    border: 1px solid rgba(14,165,233,0.08);\r\n    border-radius: 10px;\r\n    transition: all 0.2s;\r\n    overflow: hidden;\r\n}\r\n.indicator-card:hover {\r\n    border-color: rgba(14,165,233,0.2);\r\n    background: rgba(14,165,233,0.06);\r\n}\r\n.indicator-card.improved {\r\n    border-color: rgba(34,197,94,0.2);\r\n}\r\n.indicator-card.worsened {\r\n    border-color: rgba(244,63,94,0.2);\r\n}\r\n\r\n.indicator-top {\r\n    display: flex;\r\n    justify-content: space-between;\r\n    align-items: center;\r\n    margin-bottom: 6px;\r\n}\r\n.indicator-name {\r\n    font-size: 12px;\r\n    font-weight: 600;\r\n    color: var(--text-primary);\r\n}\r\n\r\n.indicator-value {\r\n    display: flex;\r\n    align-items: baseline;\r\n    gap: 4px;\r\n    margin-bottom: 6px;\r\n}\r\n.indicator-value strong {\r\n    font-family: \"Rajdhani\", \"Noto Sans SC\", sans-serif;\r\n    font-size: 20px;\r\n    font-weight: 700;\r\n    color: #fff;\r\n    line-height: 1;\r\n    word-break: break-all;\r\n}\r\n.indicator-value span {\r\n    font-size: 10px;\r\n    color: var(--text-muted);\r\n}\r\n\r\n.indicator-meta {\r\n    display: flex;\r\n    justify-content: space-between;\r\n    font-size: 10px;\r\n    color: var(--text-muted);\r\n    line-height: 1.5;\r\n}\r\n.indicator-meta strong {\r\n    color: var(--text-primary);\r\n    font-weight: 600;\r\n}\r\n\r\n.delta-improved { color: #4ade80; }\r\n.delta-worsened { color: #fb7185; }\r\n.delta-neutral { color: var(--cyan-light); }\r\n\r\n/* ---------- 模型迷你图 ---------- */\r\n.model-mini {\r\n    display: flex;\r\n    flex-direction: column;\r\n    gap: 8px;\r\n}\r\n\r\n.chart-mini {\r\n    width: 100%;\r\n    height: 160px;\r\n    border-radius: var(--radius);\r\n    overflow: visible;\r\n}\r\n\r\n.model-caption {\r\n    font-size: 11px;\r\n    color: var(--text-muted);\r\n    text-align: center;\r\n}\r\n\r\n/* ---------- 快捷入口 ---------- */\r\n.links-panel {\r\n    padding: 14px;\r\n}\r\n.links-panel .side-head {\r\n    margin-bottom: 10px;\r\n}\r\n\r\n.quick-links {\r\n    display: grid;\r\n    grid-template-columns: 1fr 1fr 1fr;\r\n    gap: 8px;\r\n}\r\n\r\n.q-card {\r\n    display: flex;\r\n    flex-direction: column;\r\n    align-items: center;\r\n    gap: 5px;\r\n    padding: 12px 6px;\r\n    background: linear-gradient(180deg, rgba(14,165,233,0.06), rgba(10,20,35,0.5));\r\n    border: 1px solid rgba(14,165,233,0.1);\r\n    border-radius: 10px;\r\n    text-decoration: none;\r\n    transition: all 0.25s;\r\n    cursor: pointer;\r\n}\r\n.q-card:hover {\r\n    transform: translateY(-3px);\r\n    border-color: rgba(14,165,233,0.3);\r\n    background: linear-gradient(180deg, rgba(14,165,233,0.12), rgba(10,20,35,0.6));\r\n    box-shadow: 0 8px 20px rgba(14,165,233,0.15);\r\n}\r\n\r\n.q-icon {\r\n    width: 32px;\r\n    height: 32px;\r\n    border-radius: 8px;\r\n    background: rgba(14,165,233,0.12);\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: center;\r\n    color: var(--cyan);\r\n    font-size: 14px;\r\n    transition: all 0.25s;\r\n}\r\n.q-card:hover .q-icon {\r\n    background: rgba(14,165,233,0.25);\r\n    color: var(--cyan-light);\r\n    transform: scale(1.1);\r\n}\r\n\r\n.q-text {\r\n    font-size: 11px;\r\n    color: var(--text-secondary);\r\n    font-weight: 500;\r\n}\r\n.q-data {\r\n    font-size: 10px;\r\n    color: var(--text-muted);\r\n    font-family: \"Rajdhani\", sans-serif;\r\n}\r\n\r\n/* ---------- 底部趋势 ---------- */\r\n.dash-footer {\r\n    min-height: 0;\r\n}\r\n\r\n.trend-panel {\r\n    background: var(--bg-panel);\r\n    border: 1px solid var(--border-glow);\r\n    border-radius: var(--radius-lg);\r\n    padding: 16px 18px;\r\n    backdrop-filter: blur(10px);\r\n    box-shadow: var(--shadow), 0 0 40px rgba(14,165,233,0.05);\r\n    position: relative;\r\n    overflow: hidden;\r\n    transition: all 0.35s ease;\r\n    display: flex;\r\n    flex-direction: column;\r\n}\r\n.trend-panel:hover {\r\n    border-color: var(--border-glow-strong);\r\n    box-shadow: var(--shadow), 0 0 40px rgba(14,165,233,0.1);\r\n}\r\n.trend-panel::after {\r\n    content: \"\";\r\n    position: absolute;\r\n    top: 0;\r\n    left: 20px;\r\n    width: 120px;\r\n    height: 2px;\r\n    background: linear-gradient(90deg, var(--cyan), var(--teal), transparent);\r\n}\r\n\r\n.trend-head {\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: space-between;\r\n    margin-bottom: 10px;\r\n}\r\n.trend-head h3 {\r\n    font-size: 15px;\r\n    font-weight: 700;\r\n    color: #fff;\r\n    display: flex;\r\n    align-items: center;\r\n    gap: 8px;\r\n    margin: 0;\r\n}\r\n.trend-head h3 i {\r\n    color: var(--cyan);\r\n}\r\n.trend-meta {\r\n    font-size: 11px;\r\n    color: var(--text-muted);\r\n}\r\n\r\n.chart-trend {\r\n    width: 100%;\r\n    height: 210px;\r\n    border-radius: var(--radius);\r\n    overflow: visible;\r\n}\r\n\r\n.center-trend-panel {\n    flex: 0 0 auto;\n    min-height: 0;\n    height: auto;\n    padding: 15px 18px;\n}\n\r\n.center-trend-panel .trend-head {\r\n    margin-bottom: 8px;\r\n}\r\n\r\n.center-trend-panel .trend-head h3 {\r\n    font-size: 14px;\r\n}\r\n\r\n.center-trend-panel .chart-trend {\n    flex: 0 0 auto;\n    min-height: 188px;\n    height: clamp(188px, 22vh, 220px);\n}\n\r\n/* ---------- Loading ---------- */\r\n.loading-mask {\r\n    position: fixed;\r\n    inset: 0;\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: center;\r\n    flex-direction: column;\r\n    gap: 16px;\r\n    background: rgba(3, 8, 14, 0.88);\r\n    backdrop-filter: blur(10px);\r\n    z-index: 100;\r\n    transition: opacity 0.3s;\r\n}\r\n.loading-mask.hidden {\r\n    display: none;\r\n}\r\n\r\n.spinner {\r\n    width: 48px;\r\n    height: 48px;\r\n    border-radius: 50%;\r\n    border: 3px solid rgba(14,165,233,0.1);\r\n    border-top-color: var(--cyan);\r\n    animation: spin 1s linear infinite;\r\n}\r\n\r\n.loading-text {\r\n    font-size: 14px;\r\n    color: var(--text-secondary);\r\n    letter-spacing: 0.1em;\r\n}\r\n\r\n@keyframes spin {\r\n    to { transform: rotate(360deg); }\r\n}\r\n\r\n/* ---------- 空状态 ---------- */\r\n.empty-state {\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: center;\r\n    height: 100%;\r\n    color: var(--text-muted);\r\n    font-size: 13px;\r\n}\r\n\r\n/* ---------- 隐藏兼容元素 ---------- */\r\n#indicatorWindow, #indicatorNotes, #scopeScoreFoot, #scopeLevelFoot,\r\n#scopeStationsFoot, #scopeAlertsFoot, #modelScope {\r\n    display: none !important;\r\n}\r\n\r\n/* ---------- 响应式 ---------- */\r\n@media (max-width: 1440px) {\n    .dash-body {\n        grid-template-columns: 220px 1fr 260px;\n        gap: 16px;\n    }\n    .dashboard-shell {\n        padding: 84px 16px 18px;\n    }\n    .kpi-cards {\r\n        gap: 10px;\r\n    }\r\n    .kpi-card {\r\n        min-width: 90px;\r\n        padding: 10px 12px;\r\n    }\r\n    .kpi-value {\r\n        font-size: 22px;\r\n    }\r\n}\r\n\r\n@media (max-width: 1180px) {\n    .dash-body {\n        grid-template-columns: 1fr;\n        grid-template-rows: auto auto auto;\n        min-height: auto;\n    }\n    .dash-center {\r\n        gap: 16px;\r\n    }\r\n    .dash-side.left {\r\n        flex-direction: row;\r\n        flex-wrap: wrap;\r\n    }\r\n    .dash-side.left .side-panel {\r\n        flex: 1;\r\n        min-width: 260px;\r\n    }\r\n    .dash-side.right {\r\n        flex-direction: row;\r\n        flex-wrap: wrap;\r\n    }\r\n    .dash-side.right .side-panel {\r\n        flex: 1;\r\n        min-width: 260px;\r\n    }\r\n    .map-panel {\r\n        min-height: auto;\r\n    }\r\n    .chart-map {\r\n        height: clamp(380px, 50vh, 430px);\r\n        min-height: 380px;\r\n    }\r\n    .center-trend-panel {\n        flex-basis: auto;\n        min-height: 0;\n    }\n    .center-trend-panel .chart-trend {\n        height: clamp(184px, 21vh, 208px);\n        min-height: 184px;\n    }\n    .dash-header {\r\n        flex-direction: column;\r\n        align-items: flex-start;\r\n        gap: 16px;\r\n    }\r\n    .dash-header-right {\r\n        align-items: flex-start;\r\n        width: 100%;\r\n    }\r\n    .kpi-cards {\r\n        width: 100%;\r\n        justify-content: space-between;\r\n    }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n    .dashboard-shell {\r\n        padding: 72px 12px 16px;\r\n        gap: 12px;\r\n    }\r\n    .dash-header {\r\n        padding: 14px 16px;\r\n    }\r\n    .dash-title-group h1 {\r\n        font-size: 20px;\r\n    }\r\n    .kpi-cards {\r\n        flex-wrap: wrap;\r\n        gap: 8px;\r\n    }\r\n    .kpi-card {\r\n        min-width: calc(50% - 4px);\r\n        flex: 1;\r\n    }\r\n    .map-panel {\r\n        min-height: auto;\r\n        padding: 14px;\r\n    }\r\n    .chart-map {\r\n        height: 320px;\r\n        min-height: 320px;\r\n    }\r\n    .dash-center {\r\n        gap: 12px;\r\n    }\r\n    .side-panel {\r\n        padding: 14px;\r\n    }\r\n    .quick-links {\r\n        grid-template-columns: 1fr 1fr;\r\n    }\r\n    .chart-trend {\r\n        height: 188px;\r\n    }\r\n    .center-trend-panel {\n        min-height: 0;\n        padding: 14px;\n    }\n    .center-trend-panel .chart-trend {\n        height: 176px;\n        min-height: 176px;\n    }\n}\n"}</style>
 <canvas id="particleCanvas"></canvas>
-    
+
     <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse-slow" style={{ "animationDelay": "2s" }}></div>
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/5 rounded-full blur-3xl animate-pulse-slow" style={{ "animationDelay": "4s" }}></div>
     </div>
 
-    
+
     <header className="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
         <div className="w-full px-6">
             <div className="flex items-center justify-between h-16">
-                
+
                 <div className="flex items-center space-x-3 group">
                     <div className="w-10 h-10 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
                         <i className="fa fa-tint text-white text-xl"></i>
@@ -712,8 +717,8 @@ function DashboardPage() {
                         <p className="text-xs text-gray-400">流域水质时空演变与知识图谱智能治理系统</p>
                     </div>
                 </div>
-                
-                
+
+
                 <nav className="hidden md:flex space-x-1">
                     <a href="index.html" data-page-link="index.html" className="nav-link">
                         <i className="fa fa-home mr-2"></i>
@@ -735,8 +740,8 @@ function DashboardPage() {
                         <span>智能问答</span>
                     </a>
                 </nav>
-                
-                
+
+
                 <div className="flex items-center space-x-4">
                     <form className="hidden lg:flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 focus-within:border-primary/70 focus-within:bg-white/10 transition-colors" data-nav-search>
                         <i className="fa fa-search text-gray-400 mr-2"></i>
@@ -754,7 +759,7 @@ function DashboardPage() {
                             <span className="text-sm font-medium text-gray-300 hidden md:inline" id="userName">用户名</span>
                             <i className="fa fa-chevron-down text-xs text-gray-400"></i>
                         </button>
-                        
+
                         <div className="absolute right-0 mt-2 w-48 bg-dark-light rounded-lg shadow-2xl py-2 z-50 hidden border border-white/10" id="userMenu">
                             <a href="profile.html" data-page-link="profile.html" className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
                                 <i className="fa fa-user-o mr-2"></i>个人中心
@@ -768,15 +773,15 @@ function DashboardPage() {
                             </a>
                         </div>
                     </div>
-                    
+
                     <button className="md:hidden text-gray-400 hover:text-white" id="mobileMenuBtn">
                         <i className="fa fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div className="md:hidden bg-dark-light border-t border-white/10 hidden" id="mobileMenu">
             <div className="container mx-auto px-4 py-2 space-y-1">
                 <a href="index.html" data-page-link="index.html" className="block px-4 py-3 text-gray-300 hover:bg-white/5 rounded-lg transition-colors">
@@ -798,9 +803,9 @@ function DashboardPage() {
         </div>
     </header>
 
-    
+
     <div className="dashboard-shell">
-        
+
         <div className="dash-header">
             <div className="dash-header-left">
                 <div className="scope-badge" id="currentScope">全流域宏观水质总览</div>
@@ -837,9 +842,9 @@ function DashboardPage() {
             </div>
         </div>
 
-        
+
         <div className="dash-body">
-            
+
             <aside className="dash-side left">
                 <div className="side-panel">
                     <div className="side-head">
@@ -866,7 +871,7 @@ function DashboardPage() {
                 </div>
             </aside>
 
-            
+
             <main className="dash-center">
                 <div className="map-panel">
                     <div className="corner-deco tl"></div>
@@ -889,7 +894,7 @@ function DashboardPage() {
                 </div>
             </main>
 
-            
+
             <aside className="dash-side right">
                 <div className="side-panel">
                     <div className="side-head">
@@ -910,7 +915,7 @@ function DashboardPage() {
                     </div>
                 </div>
 
-                
+
                 <div className="side-panel links-panel">
                     <div className="side-head">
                         <i className="fa fa-th-large"></i>
@@ -954,13 +959,13 @@ function DashboardPage() {
 
     </div>
 
-    
+
     <div className="loading-mask hidden" id="loadingMask">
         <div className="spinner"></div>
         <div className="loading-text">数据同步中...</div>
     </div>
 
-    
+
     <div style={{ "display": "none" }}>
         <div id="pageTitle"></div>
         <div id="indicatorWindow"></div>
@@ -991,13 +996,13 @@ function ForgotPasswordPage() {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse-slow" style={{ "animationDelay": "2s" }}></div>
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style={{ "animationDelay": "4s" }}></div>
     </div>
-    
-    
+
+
     <div id="particles-js"></div>
-    
-    
+
+
     <div className="wave"></div>
-    
+
     <div className="w-full max-w-md mx-auto animate-slide-up relative z-10">
         <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-3 mb-4 group">
@@ -1012,7 +1017,7 @@ function ForgotPasswordPage() {
             <h2 className="text-2xl font-bold text-white">重置登录密码</h2>
             <p className="text-gray-400 mt-2">请输入注册邮箱并完成验证，以便继续访问数据大屏、推演沙盘、知识图谱和智能问答。</p>
         </div>
-        
+
         <div className="card-glass rounded-2xl p-8 border border-white/10 card-shadow">
             <form id="forgotPasswordForm" className="space-y-6">
                 <div>
@@ -1085,11 +1090,11 @@ function IndexPage() {
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style={{ "animationDelay": "4s" }}></div>
     </div>
 
-    
+
     <header className="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
         <div className="w-full px-6">
             <div className="flex items-center justify-between h-16">
-                
+
                 <div className="flex items-center space-x-3 group">
                     <div className="w-10 h-10 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
                         <i className="fa fa-tint text-white text-xl"></i>
@@ -1099,8 +1104,8 @@ function IndexPage() {
                         <p className="text-xs text-gray-400">流域水质时空演变与知识图谱智能治理系统</p>
                     </div>
                 </div>
-                
-                
+
+
                 <nav className="hidden md:flex space-x-1">
                     <a href="index.html" data-page-link="index.html" className="nav-link active">
                         <i className="fa fa-home mr-2"></i>
@@ -1122,8 +1127,8 @@ function IndexPage() {
                         <span>智能问答</span>
                     </a>
                 </nav>
-                
-                
+
+
                 <div className="flex items-center space-x-4">
                     <form className="hidden lg:flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 focus-within:border-primary/70 focus-within:bg-white/10 transition-colors" data-nav-search>
                         <i className="fa fa-search text-gray-400 mr-2"></i>
@@ -1141,7 +1146,7 @@ function IndexPage() {
                             <span className="text-sm font-medium text-gray-300 hidden md:inline" id="userName">用户名</span>
                             <i className="fa fa-chevron-down text-xs text-gray-400"></i>
                         </button>
-                        
+
                         <div className="absolute right-0 mt-2 w-48 bg-dark-light rounded-lg shadow-2xl py-2 z-50 hidden border border-white/10" id="userMenu">
                             <a href="profile.html" data-page-link="profile.html" className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
                                 <i className="fa fa-user-o mr-2"></i>个人中心
@@ -1155,15 +1160,15 @@ function IndexPage() {
                             </a>
                         </div>
                     </div>
-                    
+
                     <button className="md:hidden text-gray-400 hover:text-white" id="mobileMenuBtn">
                         <i className="fa fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div className="md:hidden bg-dark-light border-t border-white/10 hidden" id="mobileMenu">
             <div className="container mx-auto px-4 py-2 space-y-1">
                 <a href="index.html" data-page-link="index.html" className="block px-4 py-3 text-white bg-white/10 rounded-lg">
@@ -1185,37 +1190,37 @@ function IndexPage() {
         </div>
     </header>
 
-    
+
     <main className="pt-16 relative">
-        
+
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-            
+
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-b from-dark via-dark-light to-dark"></div>
                 <canvas id="particleCanvas" className="absolute inset-0 w-full h-full"></canvas>
             </div>
-            
-            
+
+
             <div className="water-wave"></div>
-            
+
             <div className="container mx-auto px-4 relative z-10">
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-                    
+
                     <div className="w-full lg:w-1/2 space-y-8 animate-slide-up">
                         <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
                             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                             <span className="text-sm text-gray-300">四大核心能力已接入</span>
                         </div>
-                        
+
                         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
                             守护海河<br />
                             <span className="text-gradient">水质未来</span>
                         </h1>
-                        
+
                         <p className="text-xl text-gray-400 max-w-xl leading-relaxed">
                             围绕海河流域监测数据，整合数据大屏、流域时空推演沙盘、知识图谱与智能问答，支撑态势感知、风险推演、图谱溯源与辅助决策。
                         </p>
-                        
+
                         <div className="flex flex-wrap gap-4">
                             <a href="sandbox.html" data-page-link="sandbox.html" className="btn-primary flex items-center space-x-2">
                                 <i className="fa fa-globe"></i>
@@ -1226,8 +1231,8 @@ function IndexPage() {
                                 <span>查看大屏</span>
                             </a>
                         </div>
-                        
-                        
+
+
                         <div className="flex items-center space-x-8 pt-8 border-t border-white/10">
                             <div>
                                 <p className="text-3xl font-bold text-white">6</p>
@@ -1243,14 +1248,14 @@ function IndexPage() {
                             </div>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="w-full lg:w-1/2 animate-slide-down">
                         <div className="relative">
-                            
+
                             <div className="absolute inset-0 bg-gradient-water rounded-3xl blur-3xl opacity-30 animate-pulse-slow"></div>
-                            
-                            
+
+
                             <div className="relative card-glass rounded-3xl p-8 card-shadow">
                                 <div className="flex items-center justify-between mb-6">
                                     <h3 className="text-xl font-semibold text-white">平台核心入口</h3>
@@ -1258,7 +1263,7 @@ function IndexPage() {
                                         在线运行
                                     </span>
                                 </div>
-                                
+
                                 <div className="space-y-4">
                                     <a href="dashboard.html" data-page-link="dashboard.html" className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                                         <div className="flex items-center space-x-3">
@@ -1275,7 +1280,7 @@ function IndexPage() {
                                             <p className="text-xs text-gray-400">dashboard</p>
                                         </div>
                                     </a>
-                                    
+
                                     <a href="sandbox.html" data-page-link="sandbox.html" className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                                         <div className="flex items-center space-x-3">
                                             <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
@@ -1291,7 +1296,7 @@ function IndexPage() {
                                             <p className="text-xs text-gray-400">sandbox</p>
                                         </div>
                                     </a>
-                                    
+
                                     <a href="knowledge-graph.html" data-page-link="knowledge-graph.html" className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                                         <div className="flex items-center space-x-3">
                                             <div className="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
@@ -1324,7 +1329,7 @@ function IndexPage() {
                                         </div>
                                     </a>
                                 </div>
-                                
+
                                 <a href="sandbox.html" data-page-link="sandbox.html" className="mt-6 flex items-center justify-center space-x-2 text-primary hover:text-white transition-colors">
                                     <span>从流域时空推演沙盘开始体验</span>
                                     <i className="fa fa-arrow-right"></i>
@@ -1336,7 +1341,7 @@ function IndexPage() {
             </div>
         </section>
 
-        
+
         <section className="py-24 relative">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
@@ -1345,9 +1350,9 @@ function IndexPage() {
                         围绕当前项目的四个核心页面，形成从态势展示、推演决策到图谱溯源和智能问答的完整闭环。
                     </p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    
+
                     <a href="dashboard.html" data-page-link="dashboard.html" className="feature-card group block">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <i className="fa fa-bar-chart text-white text-2xl"></i>
@@ -1358,8 +1363,8 @@ function IndexPage() {
                         </p>
                         <p className="text-sm text-primary mt-4">进入模块 <i className="fa fa-arrow-right ml-1"></i></p>
                     </a>
-                    
-                    
+
+
                     <a href="sandbox.html" data-page-link="sandbox.html" className="feature-card group block">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <i className="fa fa-globe text-white text-2xl"></i>
@@ -1370,8 +1375,8 @@ function IndexPage() {
                         </p>
                         <p className="text-sm text-primary mt-4">进入模块 <i className="fa fa-arrow-right ml-1"></i></p>
                     </a>
-                    
-                    
+
+
                     <a href="knowledge-graph.html" data-page-link="knowledge-graph.html" className="feature-card group block">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-green-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <i className="fa fa-share-alt text-white text-2xl"></i>
@@ -1382,8 +1387,8 @@ function IndexPage() {
                         </p>
                         <p className="text-sm text-primary mt-4">进入模块 <i className="fa fa-arrow-right ml-1"></i></p>
                     </a>
-                    
-                    
+
+
                     <a href="chat.html" data-page-link="chat.html" className="feature-card group block">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <i className="fa fa-comments-o text-white text-2xl"></i>
@@ -1398,7 +1403,7 @@ function IndexPage() {
             </div>
         </section>
 
-        
+
         <section className="py-24 relative bg-dark-light/50">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
@@ -1407,9 +1412,9 @@ function IndexPage() {
                         从数据接入到推演、溯源和问答解释，首页展示的是当前项目最常用的一条工作路径。
                     </p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                    
+
                     <div className="relative group">
                         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
                             <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-4">
@@ -1422,8 +1427,8 @@ function IndexPage() {
                             <i className="fa fa-chevron-right"></i>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="relative group">
                         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
                             <div className="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center mb-4">
@@ -1436,8 +1441,8 @@ function IndexPage() {
                             <i className="fa fa-chevron-right"></i>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="relative group">
                         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
                             <div className="w-12 h-12 rounded-full bg-teal-500/20 flex items-center justify-center mb-4">
@@ -1450,8 +1455,8 @@ function IndexPage() {
                             <i className="fa fa-chevron-right"></i>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="relative group">
                         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
                             <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
@@ -1464,8 +1469,8 @@ function IndexPage() {
                             <i className="fa fa-chevron-right"></i>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="group">
                         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300 h-full">
                             <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4">
@@ -1479,7 +1484,7 @@ function IndexPage() {
             </div>
         </section>
 
-        
+
         <section className="py-24 relative">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
@@ -1488,9 +1493,9 @@ function IndexPage() {
                         用现有项目中的关键规模信息，快速说明平台当前的数据范围和图谱能力。
                     </p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    
+
                     <div className="stat-card group hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
@@ -1506,8 +1511,8 @@ function IndexPage() {
                             <div className="h-full bg-blue-500 rounded-full" style={{ "width": "60%" }}></div>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="stat-card group hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <div className="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center">
@@ -1523,8 +1528,8 @@ function IndexPage() {
                             <div className="h-full bg-cyan-500 rounded-full" style={{ "width": "40%" }}></div>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="stat-card group hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
@@ -1540,8 +1545,8 @@ function IndexPage() {
                             <div className="h-full bg-green-500 rounded-full" style={{ "width": "72%" }}></div>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="stat-card group hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center justify-between mb-4">
                             <div className="w-12 h-12 rounded-xl bg-teal-500/20 flex items-center justify-center">
@@ -1561,15 +1566,15 @@ function IndexPage() {
             </div>
         </section>
 
-        
+
         <section className="py-24 relative bg-dark-light/50">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl font-bold text-white mb-4">典型使用场景</h2>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    
+
                     <div className="feature-card group">
                         <div className="relative h-48 rounded-xl overflow-hidden mb-6">
                             <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800"></div>
@@ -1590,8 +1595,8 @@ function IndexPage() {
                             </a>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="feature-card group">
                         <div className="relative h-48 rounded-xl overflow-hidden mb-6">
                             <div className="absolute inset-0 bg-gradient-to-br from-cyan-600 to-cyan-800"></div>
@@ -1612,8 +1617,8 @@ function IndexPage() {
                             </a>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="feature-card group">
                         <div className="relative h-48 rounded-xl overflow-hidden mb-6">
                             <div className="absolute inset-0 bg-gradient-to-br from-teal-600 to-teal-800"></div>
@@ -1638,7 +1643,7 @@ function IndexPage() {
             </div>
         </section>
 
-        
+
         <section className="py-24 relative">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between mb-12">
@@ -1650,9 +1655,9 @@ function IndexPage() {
                         查看完整图谱 <i className="fa fa-arrow-right ml-2"></i>
                     </a>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    
+
                     <div className="feature-card">
                         <div className="flex items-center space-x-3 mb-4">
                             <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
@@ -1675,8 +1680,8 @@ function IndexPage() {
                             <span className="text-blue-400">污染溯源</span>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="feature-card">
                         <div className="flex items-center space-x-3 mb-4">
                             <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
@@ -1699,8 +1704,8 @@ function IndexPage() {
                             <span className="text-cyan-400">超标查询</span>
                         </div>
                     </div>
-                    
-                    
+
+
                     <div className="feature-card">
                         <div className="flex items-center space-x-3 mb-4">
                             <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
@@ -1727,15 +1732,15 @@ function IndexPage() {
             </div>
         </section>
 
-        
+
         <section className="py-24 relative">
             <div className="container mx-auto px-4">
                 <div className="relative rounded-3xl overflow-hidden">
-                    
+
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20"></div>
                     <div className="absolute inset-0 bg-gradient-water opacity-10"></div>
-                    
-                    
+
+
                     <div className="relative p-12 md:p-16 text-center">
                         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                             从首页直达核心模块
@@ -1757,11 +1762,11 @@ function IndexPage() {
         </section>
     </main>
 
-    
+
     <footer className="bg-dark-light border-t border-white/10 py-12">
         <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-                
+
                 <div>
                     <div className="flex items-center space-x-2 mb-4">
                         <div className="w-8 h-8 rounded-full bg-gradient-water flex items-center justify-center">
@@ -1773,8 +1778,8 @@ function IndexPage() {
                         面向海河流域水质分析与治理决策，整合数据大屏、时空推演、知识图谱与智能问答，形成统一的项目首页入口。
                     </p>
                 </div>
-                
-                
+
+
                 <div>
                     <h3 className="text-lg font-semibold text-white mb-4">快速链接</h3>
                     <ul className="space-y-2 text-sm">
@@ -1785,8 +1790,8 @@ function IndexPage() {
                         <li><a href="chat.html" data-page-link="chat.html" className="text-gray-400 hover:text-white transition-colors">智能问答</a></li>
                     </ul>
                 </div>
-                
-                
+
+
                 <div>
                     <h3 className="text-lg font-semibold text-white mb-4">关注我们</h3>
                     <div className="flex space-x-3">
@@ -1802,7 +1807,7 @@ function IndexPage() {
                     </div>
                 </div>
             </div>
-            
+
             <div className="border-t border-white/10 pt-8 text-center">
                 <p className="text-gray-500 text-sm">
                     © 2026 海河六域 - 流域水质时空演变与知识图谱智能治理系统 版权所有
@@ -1973,15 +1978,15 @@ function LoginPage() {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse-slow" style={{ "animationDelay": "2s" }}></div>
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style={{ "animationDelay": "4s" }}></div>
     </div>
-    
-    
+
+
     <div id="particles-js"></div>
-    
-    
+
+
     <div className="wave"></div>
-    
+
     <div className="min-h-screen w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-center justify-center px-4 py-10 relative z-10">
-        
+
         <div className="w-full md:w-1/2 space-y-6 animate-fade-in">
             <div className="flex items-center space-x-3 group">
                 <div className="w-12 h-12 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
@@ -2037,8 +2042,8 @@ function LoginPage() {
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div className="w-full md:w-1/2 animate-slide-up">
             <div className="card-glass rounded-2xl p-8 border border-white/10 card-shadow">
                 <h2 className="text-2xl font-bold text-center text-white mb-2">登录海河六域</h2>
@@ -2506,8 +2511,8 @@ function ProvinceComparisonPage() {
 <div className="bg-grid"></div>
     <div className="glow-orb glow-orb-1"></div>
     <div className="glow-orb glow-orb-2"></div>
-    
-    
+
+
     <nav className="top-nav">
         <div className="nav-title">
             <i className="fa fa-map"></i>
@@ -2524,10 +2529,10 @@ function ProvinceComparisonPage() {
             </button>
         </div>
     </nav>
-    
-    
+
+
     <div className="main-container">
-        
+
         <div className="conclusion-bar animate-fade-in">
             <div className="conclusion-tag tag-1">
                 <div className="tag-icon">
@@ -2557,16 +2562,16 @@ function ProvinceComparisonPage() {
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div className="content-area">
-            
+
             <div className="chart-card">
                 <div className="corner-decoration corner-tl"></div>
                 <div className="corner-decoration corner-tr"></div>
                 <div className="corner-decoration corner-bl"></div>
                 <div className="corner-decoration corner-br"></div>
-                
+
                 <div className="card-header">
                     <div className="card-title">
                         <i className="fa fa-bar-chart"></i>
@@ -2592,14 +2597,14 @@ function ProvinceComparisonPage() {
                 </div>
                 <div className="chart-container" id="barChart"></div>
             </div>
-            
-            
+
+
             <div className="chart-card" style={{ "position": "relative" }}>
                 <div className="corner-decoration corner-tl"></div>
                 <div className="corner-decoration corner-tr"></div>
                 <div className="corner-decoration corner-bl"></div>
                 <div className="corner-decoration corner-br"></div>
-                
+
                 <div className="card-header">
                     <div className="card-title">
                         <i className="fa fa-globe"></i>
@@ -2608,8 +2613,8 @@ function ProvinceComparisonPage() {
                     <div className="card-subtitle">点击省市高亮查看详情</div>
                 </div>
                 <div className="chart-container" id="mapChart"></div>
-                
-                
+
+
                 <div className="map-popup" id="mapPopup">
                     <div className="popup-header">
                         <div className="popup-title" id="popupTitle">--</div>
@@ -2618,21 +2623,21 @@ function ProvinceComparisonPage() {
                         </button>
                     </div>
                     <div className="popup-content" id="popupContent">
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div className="bottom-section">
-            
+
             <div className="chart-card">
                 <div className="corner-decoration corner-tl"></div>
                 <div className="corner-decoration corner-tr"></div>
                 <div className="corner-decoration corner-bl"></div>
                 <div className="corner-decoration corner-br"></div>
-                
+
                 <div className="card-header">
                     <div className="card-title">
                         <i className="fa fa-list-ol"></i>
@@ -2657,19 +2662,19 @@ function ProvinceComparisonPage() {
                             </tr>
                         </thead>
                         <tbody id="rankingTableBody">
-                            
+
                         </tbody>
                     </table>
                 </div>
             </div>
-            
-            
+
+
             <div className="chart-card">
                 <div className="corner-decoration corner-tl"></div>
                 <div className="corner-decoration corner-tr"></div>
                 <div className="corner-decoration corner-bl"></div>
                 <div className="corner-decoration corner-br"></div>
-                
+
                 <div className="card-header">
                     <div className="card-title">
                         <i className="fa fa-lightbulb-o"></i>
@@ -2677,7 +2682,7 @@ function ProvinceComparisonPage() {
                     </div>
                 </div>
                 <div className="chart-container" id="suggestionsContainer">
-                    
+
                 </div>
             </div>
         </div>
@@ -2695,15 +2700,15 @@ function RegisterPage() {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse-slow" style={{ "animationDelay": "2s" }}></div>
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style={{ "animationDelay": "4s" }}></div>
     </div>
-    
-    
+
+
     <div id="particles-js"></div>
-    
-    
+
+
     <div className="wave"></div>
-    
+
     <div className="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-center relative z-10">
-        
+
         <div className="w-full md:w-1/2 space-y-6 animate-fade-in">
             <div className="flex items-center space-x-3 group">
                 <div className="w-12 h-12 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
@@ -2760,8 +2765,8 @@ function RegisterPage() {
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div className="w-full md:w-1/2 animate-slide-up">
             <div className="card-glass rounded-2xl p-8 border border-white/10 card-shadow">
                 <h2 className="text-2xl font-bold text-center text-white mb-2">创建平台账号</h2>
@@ -2890,7 +2895,7 @@ function SandboxPage() {
                     </div>
                 </div>
 
-                
+
                 <nav className="hidden md:flex space-x-1">
                     <a href="index.html" data-page-link="index.html" className="nav-link">
                         <i className="fa fa-home mr-2"></i>
@@ -3175,8 +3180,8 @@ function TrendAnalysisPage() {
 <div className="bg-grid"></div>
     <div className="glow-orb glow-orb-1"></div>
     <div className="glow-orb glow-orb-2"></div>
-    
-    
+
+
     <nav className="top-nav">
         <div className="nav-title">
             <i className="fa fa-line-chart"></i>
@@ -3193,10 +3198,10 @@ function TrendAnalysisPage() {
             </button>
         </div>
     </nav>
-    
-    
+
+
     <div className="main-container">
-        
+
         <div className="conclusion-bar animate-fade-in">
             <div className="conclusion-tag tag-1">
                 <div className="tag-icon">
@@ -3232,16 +3237,16 @@ function TrendAnalysisPage() {
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div className="content-area">
-            
+
             <div className="chart-card main-visual">
                 <div className="corner-decoration corner-tl"></div>
                 <div className="corner-decoration corner-tr"></div>
                 <div className="corner-decoration corner-bl"></div>
                 <div className="corner-decoration corner-br"></div>
-                
+
                 <div className="card-header">
                     <div className="card-title">
                         <i className="fa fa-area-chart"></i>
@@ -3273,8 +3278,8 @@ function TrendAnalysisPage() {
                         <div className="card-subtitle">全周期时间维度变化规律</div>
                     </div>
                 </div>
-                
-                
+
+
                 <div className="toolbar">
                     <button className="tool-btn active" data-legacy-click="switchView('all')">
                         <i className="fa fa-th-large"></i>全指标视图
@@ -3292,8 +3297,8 @@ function TrendAnalysisPage() {
                         <i className="fa fa-exchange"></i>多指标对比
                     </button>
                 </div>
-                
-                
+
+
                 <div className="indicator-chart" id="doChartContainer" style={{ "height": "280px" }}>
                     <div className="indicator-header">
                         <div className="indicator-name do">
@@ -3308,8 +3313,8 @@ function TrendAnalysisPage() {
                     </div>
                     <div className="indicator-chart-container" id="doChart"></div>
                 </div>
-                
-                
+
+
                 <div className="indicator-chart" id="phChartContainer" style={{ "height": "280px" }}>
                     <div className="indicator-header">
                         <div className="indicator-name ph">
@@ -3322,8 +3327,8 @@ function TrendAnalysisPage() {
                     </div>
                     <div className="indicator-chart-container" id="phChart"></div>
                 </div>
-                
-                
+
+
                 <div className="indicator-chart" id="nhChartContainer" style={{ "height": "280px" }}>
                     <div className="indicator-header">
                         <div className="indicator-name nh">
@@ -3339,16 +3344,16 @@ function TrendAnalysisPage() {
                     <div className="indicator-chart-container" id="nhChart"></div>
                 </div>
             </div>
-            
-            
+
+
             <div className="right-panel">
-                
+
                 <div className="chart-card" style={{ "minHeight": "220px" }}>
                     <div className="corner-decoration corner-tl"></div>
                     <div className="corner-decoration corner-tr"></div>
                     <div className="corner-decoration corner-bl"></div>
                     <div className="corner-decoration corner-br"></div>
-                    
+
                     <div className="card-header">
                         <div className="card-title">
                             <i className="fa fa-table"></i>
@@ -3408,14 +3413,14 @@ function TrendAnalysisPage() {
                         </table>
                     </div>
                 </div>
-                
-                
+
+
                 <div className="chart-card" style={{ "minHeight": "280px" }}>
                     <div className="corner-decoration corner-tl"></div>
                     <div className="corner-decoration corner-tr"></div>
                     <div className="corner-decoration corner-bl"></div>
                     <div className="corner-decoration corner-br"></div>
-                    
+
                     <div className="card-header">
                         <div className="card-title">
                             <i className="fa fa-bar-chart"></i>
@@ -3425,14 +3430,14 @@ function TrendAnalysisPage() {
                     </div>
                     <div className="chart-container" id="seasonChart"></div>
                 </div>
-                
-                
+
+
                 <div className="chart-card" style={{ "minHeight": "240px" }}>
                     <div className="corner-decoration corner-tl"></div>
                     <div className="corner-decoration corner-tr"></div>
                     <div className="corner-decoration corner-bl"></div>
                     <div className="corner-decoration corner-br"></div>
-                    
+
                     <div className="card-header">
                         <div className="card-title">
                             <i className="fa fa-check-circle"></i>

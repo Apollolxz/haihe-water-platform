@@ -82,7 +82,8 @@ function normalizeBody(body) {
         .replace(/\sonclick="([^"]*)"/gi, (_, expression) => ` data-legacy-click=${JSON.stringify(expression)}`)
         .replace(/\son[a-z]+="[^"]*"/gi, '')
         .replace(pageLinkPattern, 'href="$1" data-page-link="$1"')
-        .trim(),
+        .trim()
+        .replace(/[ \t]+$/gm, ''),
     ),
   );
 }

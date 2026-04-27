@@ -63,8 +63,7 @@
             }
         }
     </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
+    <style>
             .bg-gradient-eco {
                 background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
             }
@@ -98,23 +97,45 @@
                 border: 1px solid rgba(255, 255, 255, 0.1);
             }
             .nav-link {
-                @apply relative px-4 py-2 text-gray-400 hover:text-primary transition-colors duration-300;
+                position: relative;
+                padding: 0.5rem 1rem;
+                color: #9ca3af;
+                transition: color 300ms ease;
             }
             .nav-link::after {
                 content: '';
-                @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: #06b6d4;
+                transition: width 300ms ease;
+            }
+            .nav-link:hover {
+                color: #06b6d4;
             }
             .nav-link:hover::after {
-                @apply w-full;
+                width: 100%;
             }
             .nav-link.active {
-                @apply text-primary font-medium;
+                color: #06b6d4;
+                font-weight: 500;
             }
             .nav-link.active::after {
-                @apply w-full;
+                width: 100%;
             }
             .nav-core {
-                @apply relative px-5 py-2 rounded-full text-white font-semibold text-sm shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 flex items-center;
+                position: relative;
+                display: flex;
+                align-items: center;
+                padding: 0.5rem 1.25rem;
+                border-radius: 9999px;
+                color: #ffffff;
+                font-size: 0.875rem;
+                font-weight: 600;
+                box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.35);
+                transition: all 300ms ease;
                 background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
                 animation: glow-pulse 2s infinite;
             }
@@ -122,20 +143,65 @@
                 0%, 100% { box-shadow: 0 0 8px rgba(6,182,212,0.6); transform: scale(1); }
                 50% { box-shadow: 0 0 20px rgba(6,182,212,0.9); transform: scale(1.02); }
             }
+            @keyframes fadeIn {
+                0% { opacity: 0; }
+                100% { opacity: 1; }
+            }
+            @keyframes slideUp {
+                0% { transform: translateY(20px); opacity: 0; }
+                100% { transform: translateY(0); opacity: 1; }
+            }
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            @keyframes wave {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+            @keyframes pulseGlow {
+                0% { box-shadow: 0 0 5px rgba(6, 182, 212, 0.5); }
+                100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.8), 0 0 30px rgba(16, 185, 129, 0.5); }
+            }
+            @keyframes pulse {
+                50% { opacity: 0.5; }
+            }
+            .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+            .animate-slide-up { animation: slideUp 0.5s ease-in-out; }
+            .animate-float { animation: float 3s ease-in-out infinite; }
+            .animate-glow { animation: pulseGlow 2s ease-in-out infinite alternate; }
+            .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
             .chat-message {
-                @apply rounded-lg p-4 max-w-[80%] animate-fade-in;
+                max-width: 80%;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                animation: fadeIn 0.5s ease-in-out;
             }
             .user-message {
-                @apply bg-gradient-eco text-white self-end;
+                align-self: flex-end;
+                color: #ffffff;
+                background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
             }
             .bot-message {
-                @apply glass-light text-text-light self-start;
+                align-self: flex-start;
+                color: #e2e8f0;
+                background: rgba(49, 64, 84, 0.7);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
             }
             .typing-indicator {
-                @apply flex items-center space-x-1;
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
             }
             .typing-dot {
-                @apply w-2 h-2 bg-primary rounded-full animate-pulse;
+                width: 0.5rem;
+                height: 0.5rem;
+                border-radius: 9999px;
+                background: #06b6d4;
+                animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
             }
             .input-glow {
                 box-shadow: 0 0 5px rgba(6, 182, 212, 0.5);
@@ -144,10 +210,10 @@
             .input-glow:focus {
                 box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
             }
-        }
     </style>
 </head>
 <body class="bg-dark min-h-screen text-text-light overflow-x-hidden">
+    <div class="bg-dark min-h-screen text-text-light overflow-x-hidden relative">
     <!-- 粒子背景 -->
     <div id="particles-js" class="fixed inset-0 z-0"></div>
     <!-- 波浪背景 -->
@@ -424,6 +490,7 @@
     </footer>
 
     <!-- 引入必要的脚本 -->
+    </div>
     <script src="../services/chatService.js"></script>
     <script src="../utils/chatUtils.js"></script>
     <script src="../components/ChatMessage.js"></script>
