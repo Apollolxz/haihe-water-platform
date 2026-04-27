@@ -620,10 +620,10 @@ body::before {
 }
 
 .main-visuals.aggregate-only {
-    grid-template-columns: minmax(260px, 0.92fr) minmax(360px, 1.18fr) minmax(360px, 1.18fr);
+    grid-template-columns: minmax(260px, 0.92fr) minmax(420px, 1.45fr) minmax(280px, 0.92fr);
     grid-template-areas:
-        "conclusion time time"
-        "conclusion scatter scatter";
+        "conclusion time feature"
+        "conclusion scatter feature";
 }
 
 .main-visuals.aggregate-only .scatter-panel {
@@ -1151,7 +1151,7 @@ body::before {
         grid-template-columns: 1fr 1fr;
         grid-template-areas:
             "conclusion time"
-            "scatter scatter";
+            "scatter feature";
     }
 
     .spatial-panel,
@@ -1231,7 +1231,8 @@ body::before {
         grid-template-areas:
             "conclusion"
             "time"
-            "scatter";
+            "scatter"
+            "feature";
     }
 
     .spatial-panel,

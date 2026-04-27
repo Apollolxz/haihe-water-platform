@@ -1293,7 +1293,7 @@ function applyScopeLayout() {
         mainVisuals.classList.toggle('aggregate-only', aggregateOnly);
     }
 
-    ['.spatial-panel', '.radar-panel', '.feature-panel', '.detail-panel'].forEach((selector) => {
+    ['.spatial-panel', '.radar-panel', '.detail-panel'].forEach((selector) => {
         const panel = document.querySelector(selector);
         if (panel) {
             panel.hidden = aggregateOnly;
