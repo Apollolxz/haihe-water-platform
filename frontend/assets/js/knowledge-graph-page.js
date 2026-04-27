@@ -22,7 +22,7 @@ let edgesDataSet;
 let allNodes = [];
 let allEdges = [];
 let graphMeta = {};
-let physicsEnabled = false;
+let physicsEnabled = true;
 
 const $ = id => document.getElementById(id);
 
@@ -374,26 +374,6 @@ function tooltipHtml(node) {
   return html;
 }
 
-function getInitialNodePosition(node, index, total) {
-  const groups = [...new Set(allNodes.map(item => item.group))];
-  const groupIndex = Math.max(0, groups.indexOf(node.group));
-  const itemsInGroup = allNodes.filter(item => item.group === node.group);
-  const localIndex = Math.max(0, itemsInGroup.findIndex(item => item.id === node.id));
-  const baseAngle = (2 * Math.PI * groupIndex) / Math.max(groups.length, 1);
-  const localAngle = baseAngle + ((localIndex % 24) - 12) * 0.018;
-  const ring = 180 + groupIndex * 130 + Math.floor(localIndex / 24) * 70;
-  const jitter = (index % 7) * 8;
-
-  if (total <= 1) {
-    return { x: 0, y: 0 };
-  }
-
-  return {
-    x: Math.round(Math.cos(localAngle) * (ring + jitter)),
-    y: Math.round(Math.sin(localAngle) * (ring + jitter)),
-  };
-}
-
 function setGraphMetaText() {
   const meta = $('graphPanelMeta');
   if (!meta) return;
@@ -402,31 +382,6 @@ function setGraphMetaText() {
 
 function setGraphStatus(text) {
   $('graphStatus').textContent = text;
-}
-
-function syncGraphViewport() {
-  const graphContainer = $('knowledgeGraph');
-  const graphStage = graphContainer?.closest('.graph-stage');
-  if (!graphContainer || !graphStage) return;
-
-  const stageRect = graphStage.getBoundingClientRect();
-  const nextHeight = Math.max(520, Math.round(stageRect.height || window.innerHeight * 0.62));
-  graphContainer.style.height = `${nextHeight}px`;
-
-  if (network) {
-    network.setSize('100%', `${nextHeight}px`);
-    network.redraw();
-  }
-}
-
-function fitGraph(delay = 0) {
-  if (!network) return;
-  window.setTimeout(() => {
-    syncGraphViewport();
-    network.fit({
-      animation: { duration: 700, easingFunction: 'easeInOutQuad' }
-    });
-  }, delay);
 }
 
 async function fetchData() {
@@ -459,9 +414,7 @@ function initApp() {
   initSearch();
   initLayoutButtons();
   setGraphMetaText();
-  initGraphResize();
-  syncGraphViewport();
-  requestAnimationFrame(() => fitGraph(80));
+  setTimeout(() => network && network.fit({ animation: { duration: 800, easingFunction: 'easeInOutQuad' } }), 300);
 }
 
 function initLegend() {
@@ -484,12 +437,10 @@ function initLegend() {
 }
 
 function initNetwork() {
-  syncGraphViewport();
-  nodesDataSet = new vis.DataSet(allNodes.map((node, index) => ({
+  nodesDataSet = new vis.DataSet(allNodes.map(node => ({
     id: node.id,
     label: node.label,
     group: node.group,
-    ...getInitialNodePosition(node, index, allNodes.length),
     color: {
       background: categoryStyle(node.group).color,
       border: categoryStyle(node.group).color,
@@ -530,22 +481,15 @@ function initNetwork() {
         }
       }
     },
-    edges: { chosen: { edge(values, id, selected) { if (selected) values.width *= 2.5; } } },
-    interaction: {
-      hover: false,
-      tooltipDelay: 0,
-      hideEdgesOnDrag: false,
-      navigationButtons: false,
-      keyboard: false,
-      zoomView: true,
-      dragView: true,
-      dragNodes: true,
-    },
+    edges: { chosen: { edge(values, id, selected, hovering) { if (selected || hovering) values.width *= 2.5; } } },
+    interaction: { hover: true, tooltipDelay: 200, hideEdgesOnDrag: false, navigationButtons: false, keyboard: false },
     physics: {
-      enabled: false,
-      stabilization: false,
+      enabled: true,
+      solver: 'forceAtlas2Based',
+      forceAtlas2Based: { gravitationalConstant: -50, centralGravity: 0.003, springLength: 180, springConstant: 0.015, damping: 0.6, avoidOverlap: 0.25 },
+      stabilization: { enabled: true, iterations: 300, updateInterval: 25 }
     },
-    layout: { improvedLayout: false, randomSeed: 42 }
+    layout: { improvedLayout: true }
   });
 
   network.on('click', params => {
@@ -560,8 +504,10 @@ function initNetwork() {
     }
   });
 
-  setGraphStatus(`节点 ${allNodes.length} 个 · 关系 ${allEdges.length} 条 · 数据库 ${graphDbName()} 已连接`);
-  setPhysicsEnabled(false);
+  network.on('stabilizationIterationsDone', () => {
+    setGraphStatus(`节点 ${allNodes.length} 个 · 关系 ${allEdges.length} 条 · 数据库 ${graphDbName()} 已连接`);
+    setGraphMetaText();
+  });
 }
 
 function initCategoryList() {
@@ -975,18 +921,8 @@ function initLayoutButtons() {
   $('hierarchyLayoutBtn').addEventListener('click', () => switchLayout('hierarchy'));
   $('circleLayoutBtn').addEventListener('click', () => switchLayout('circle'));
   $('physicsBtn').addEventListener('click', togglePhysics);
-  $('fitBtn').addEventListener('click', () => fitGraph());
+  $('fitBtn').addEventListener('click', () => network && network.fit({ animation: { duration: 600 } }));
   $('fullscreenBtn').addEventListener('click', toggleFullscreen);
-}
-
-function initGraphResize() {
-  window.addEventListener('resize', () => fitGraph(80));
-
-  const graphStage = $('knowledgeGraph')?.closest('.graph-stage');
-  if (graphStage && 'ResizeObserver' in window) {
-    const observer = new ResizeObserver(() => fitGraph(40));
-    observer.observe(graphStage);
-  }
 }
 
 function switchLayout(type) {
@@ -996,21 +932,11 @@ function switchLayout(type) {
   $('circleLayoutBtn').classList.toggle('active', type === 'circle');
   if (type === 'hierarchy') {
     network.setOptions({ layout: { hierarchical: { enabled: true, direction: 'UD', sortMethod: 'directed', levelSeparation: 120, nodeSpacing: 180 } }, physics: { enabled: false } });
-    setPhysicsEnabled(false);
   } else if (type === 'circle') {
     network.setOptions({ layout: { hierarchical: false }, physics: { enabled: false } });
-    setPhysicsEnabled(false);
     applyCircleLayout();
   } else {
-    network.setOptions({ layout: { hierarchical: false }, physics: { enabled: true, solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -30, centralGravity: 0.005, springLength: 220, springConstant: 0.008, damping: 0.65, avoidOverlap: 0.15 }, stabilization: { enabled: true, iterations: 180, fit: true } } });
-    physicsEnabled = true;
-    $('physicsBtn').innerHTML = '<i class="fa fa-pause"></i>关闭物理模拟';
-    $('physicsBtn').classList.add('active');
-    network.once('stabilizationIterationsDone', () => {
-      setPhysicsEnabled(false);
-      network.storePositions();
-      fitGraph(40);
-    });
+    network.setOptions({ layout: { hierarchical: false }, physics: { enabled: physicsEnabled, solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -30, centralGravity: 0.005, springLength: 220, springConstant: 0.008, damping: 0.65, avoidOverlap: 0.15 }, stabilization: { enabled: true, iterations: 300 } } });
   }
 }
 
@@ -1037,14 +963,6 @@ function setPhysicsEnabled(enabled) {
 function togglePhysics() {
   if (!network) return;
   setPhysicsEnabled(!physicsEnabled);
-  if (physicsEnabled) {
-    window.setTimeout(() => {
-      if (physicsEnabled) {
-        setPhysicsEnabled(false);
-        network.storePositions();
-      }
-    }, 1800);
-  }
 }
 
 function toggleFullscreen() {
