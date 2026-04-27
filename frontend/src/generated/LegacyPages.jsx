@@ -3482,7 +3482,7 @@ const legacyPages = {
   "dashboard.html": { title: "海河六域・水质时空演变智能治理系统", scripts: ["../config/site.config.js","../config/runtime-config.js","../assets/js/nav-search.js","../assets/js/dashboard-screen.js?v=20260420d"], Component: DashboardPage },
   "forgot-password.html": { title: "海河六域 - 忘记密码", scripts: ["../config/site.config.js","../config/runtime-config.js","https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"], Component: ForgotPasswordPage },
   "index.html": { title: "海河六域 - 流域水质时空演变与知识图谱智能治理系统", scripts: ["../config/site.config.js","../config/runtime-config.js","../assets/js/nav-search.js"], Component: IndexPage },
-  "knowledge-graph.html": { title: "海河六域｜知识图谱", scripts: ["https://cdn.jsdelivr.net/npm/vis-network@9.1.9/dist/vis-network.min.js","../config/site.config.js","../config/runtime-config.js","../assets/js/nav-search.js","../assets/js/knowledge-graph-page.js?v=20260427d"], Component: KnowledgeGraphPage },
+  "knowledge-graph.html": { title: "海河六域｜知识图谱", scripts: ["https://cdn.jsdelivr.net/npm/vis-network@9.1.9/dist/vis-network.min.js","../config/site.config.js","../config/runtime-config.js","../assets/js/nav-search.js","../assets/js/knowledge-graph-page.js?v=20260427e"], Component: KnowledgeGraphPage },
   "login.html": { title: "海河六域 - 登录", scripts: ["../config/site.config.js","../config/runtime-config.js","https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"], Component: LoginPage },
   "profile.html": { title: "海河六域 - 个人中心", scripts: [], Component: ProfilePage },
   "province-comparison.html": { title: "海河六域 - 省际空间对比专项屏", scripts: ["../config/site.config.js","../config/runtime-config.js"], Component: ProvinceComparisonPage },

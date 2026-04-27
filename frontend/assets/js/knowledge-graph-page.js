@@ -374,6 +374,26 @@ function tooltipHtml(node) {
   return html;
 }
 
+function getInitialNodePosition(node, index, total) {
+  const groups = [...new Set(allNodes.map(item => item.group))];
+  const groupIndex = Math.max(0, groups.indexOf(node.group));
+  const itemsInGroup = allNodes.filter(item => item.group === node.group);
+  const localIndex = Math.max(0, itemsInGroup.findIndex(item => item.id === node.id));
+  const baseAngle = (2 * Math.PI * groupIndex) / Math.max(groups.length, 1);
+  const localAngle = baseAngle + ((localIndex % 24) - 12) * 0.018;
+  const ring = 180 + groupIndex * 130 + Math.floor(localIndex / 24) * 70;
+  const jitter = (index % 7) * 8;
+
+  if (total <= 1) {
+    return { x: 0, y: 0 };
+  }
+
+  return {
+    x: Math.round(Math.cos(localAngle) * (ring + jitter)),
+    y: Math.round(Math.sin(localAngle) * (ring + jitter)),
+  };
+}
+
 function setGraphMetaText() {
   const meta = $('graphPanelMeta');
   if (!meta) return;
@@ -465,10 +485,11 @@ function initLegend() {
 
 function initNetwork() {
   syncGraphViewport();
-  nodesDataSet = new vis.DataSet(allNodes.map(node => ({
+  nodesDataSet = new vis.DataSet(allNodes.map((node, index) => ({
     id: node.id,
     label: node.label,
     group: node.group,
+    ...getInitialNodePosition(node, index, allNodes.length),
     color: {
       background: categoryStyle(node.group).color,
       border: categoryStyle(node.group).color,
@@ -510,14 +531,21 @@ function initNetwork() {
       }
     },
     edges: { chosen: { edge(values, id, selected) { if (selected) values.width *= 2.5; } } },
-    interaction: { hover: false, tooltipDelay: 0, hideEdgesOnDrag: false, navigationButtons: false, keyboard: false },
-    physics: {
-      enabled: true,
-      solver: 'forceAtlas2Based',
-      forceAtlas2Based: { gravitationalConstant: -50, centralGravity: 0.003, springLength: 180, springConstant: 0.015, damping: 0.6, avoidOverlap: 0.25 },
-      stabilization: { enabled: true, iterations: 180, updateInterval: 25, fit: true }
+    interaction: {
+      hover: false,
+      tooltipDelay: 0,
+      hideEdgesOnDrag: false,
+      navigationButtons: false,
+      keyboard: false,
+      zoomView: true,
+      dragView: true,
+      dragNodes: true,
     },
-    layout: { improvedLayout: true }
+    physics: {
+      enabled: false,
+      stabilization: false,
+    },
+    layout: { improvedLayout: false, randomSeed: 42 }
   });
 
   network.on('click', params => {
@@ -532,13 +560,8 @@ function initNetwork() {
     }
   });
 
-  network.on('stabilizationIterationsDone', () => {
-    setGraphStatus(`节点 ${allNodes.length} 个 · 关系 ${allEdges.length} 条 · 数据库 ${graphDbName()} 已连接`);
-    setGraphMetaText();
-    setPhysicsEnabled(false);
-    network.storePositions();
-    fitGraph(40);
-  });
+  setGraphStatus(`节点 ${allNodes.length} 个 · 关系 ${allEdges.length} 条 · 数据库 ${graphDbName()} 已连接`);
+  setPhysicsEnabled(false);
 }
 
 function initCategoryList() {
@@ -968,16 +991,21 @@ function initGraphResize() {
 
 function switchLayout(type) {
   if (!network) return;
-    $('forceLayoutBtn').classList.toggle('active', type === 'force');
+  $('forceLayoutBtn').classList.toggle('active', type === 'force');
   $('hierarchyLayoutBtn').classList.toggle('active', type === 'hierarchy');
   $('circleLayoutBtn').classList.toggle('active', type === 'circle');
   if (type === 'hierarchy') {
     network.setOptions({ layout: { hierarchical: { enabled: true, direction: 'UD', sortMethod: 'directed', levelSeparation: 120, nodeSpacing: 180 } }, physics: { enabled: false } });
+    setPhysicsEnabled(false);
   } else if (type === 'circle') {
     network.setOptions({ layout: { hierarchical: false }, physics: { enabled: false } });
+    setPhysicsEnabled(false);
     applyCircleLayout();
   } else {
     network.setOptions({ layout: { hierarchical: false }, physics: { enabled: true, solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -30, centralGravity: 0.005, springLength: 220, springConstant: 0.008, damping: 0.65, avoidOverlap: 0.15 }, stabilization: { enabled: true, iterations: 180, fit: true } } });
+    physicsEnabled = true;
+    $('physicsBtn').innerHTML = '<i class="fa fa-pause"></i>关闭物理模拟';
+    $('physicsBtn').classList.add('active');
     network.once('stabilizationIterationsDone', () => {
       setPhysicsEnabled(false);
       network.storePositions();
@@ -1009,6 +1037,14 @@ function setPhysicsEnabled(enabled) {
 function togglePhysics() {
   if (!network) return;
   setPhysicsEnabled(!physicsEnabled);
+  if (physicsEnabled) {
+    window.setTimeout(() => {
+      if (physicsEnabled) {
+        setPhysicsEnabled(false);
+        network.storePositions();
+      }
+    }, 1800);
+  }
 }
 
 function toggleFullscreen() {
