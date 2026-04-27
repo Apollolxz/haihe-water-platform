@@ -1980,7 +1980,7 @@ function LoginPage() {
     
     <div className="wave"></div>
     
-    <div className="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-center relative z-10">
+    <div className="min-h-screen w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-center justify-center px-4 py-10 relative z-10">
         
         <div className="w-full md:w-1/2 space-y-6 animate-fade-in">
             <div className="flex items-center space-x-3 group">
@@ -1993,8 +1993,7 @@ function LoginPage() {
                 </div>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                登录平台，进入<br />
-                <span className="text-gradient">流域智能研判</span>
+                登录平台
             </h2>
             <p className="text-lg text-gray-400 max-w-lg leading-relaxed">
                 登录后即可进入数据大屏、流域时空推演沙盘、知识图谱与智能问答，在同一平台内完成态势查看、推演决策与图谱溯源。
