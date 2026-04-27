@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import legacyPages from './legacyPageMarkup.js';
+import { resolveApiUrl } from './config/runtime.js';
+import legacyPages from './generated/LegacyPages.jsx';
 import './styles.css';
 
 const basePath = import.meta.env.BASE_URL || '/';
@@ -33,16 +34,6 @@ function getStoredUserInfo() {
     console.warn('解析用户信息失败:', error);
     return { username: '访客', role: '未登录' };
   }
-}
-
-function resolveApiUrl(path) {
-  if (window.HAIHE_RUNTIME?.resolveApi) {
-    return window.HAIHE_RUNTIME.resolveApi(path);
-  }
-  if (window.location.protocol === 'file:') {
-    return `http://127.0.0.1:5001${path}`;
-  }
-  return path;
 }
 
 function setTextIfExists(id, value) {
@@ -228,11 +219,12 @@ function wireLegacyInteractions(pageName) {
 export default function App() {
   const pageName = getCurrentPage();
   const page = legacyPages[pageName] || legacyPages['index.html'];
+  const Page = page.Component;
 
   useEffect(() => {
     document.title = page.title;
     return wireLegacyInteractions(pageName);
   }, [page.title, pageName]);
 
-  return <div key={pageName} dangerouslySetInnerHTML={{ __html: page.markup }} />;
+  return <Page key={pageName} />;
 }

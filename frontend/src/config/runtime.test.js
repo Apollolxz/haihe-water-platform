@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach } from 'vitest';
-import { resolveApiBaseUrl, resolveApiUrl } from './runtime.js';
+import { resolveApiBaseUrl, resolveApiUrl, resolveDefaultApiBaseUrl } from './runtime.js';
 
 describe('runtime API config', () => {
   beforeEach(() => {
@@ -24,5 +24,17 @@ describe('runtime API config', () => {
     expect(resolveApiUrl('/api/dashboard/validation-overview')).toBe(
       'http://127.0.0.1:5001/api/dashboard/validation-overview',
     );
+  });
+
+  test('uses the Railway backend on GitHub Pages', () => {
+    expect(
+      resolveDefaultApiBaseUrl({
+        location: {
+          protocol: 'https:',
+          hostname: 'apollolxz.github.io',
+          origin: 'https://apollolxz.github.io',
+        },
+      }),
+    ).toBe('https://haihe-water-platform-production.up.railway.app');
   });
 });
