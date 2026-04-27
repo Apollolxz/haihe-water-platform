@@ -97,7 +97,7 @@ function extractStyles(source) {
 function extractScripts(source) {
   return [...source.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi)]
     .map((match) => match[1])
-    .filter((src) => !/tailwindcss\.com|font-awesome|assets\/js\/nav-search\.js/i.test(src));
+    .filter((src) => !/tailwindcss\.com|font-awesome|assets\/js\/nav-search\.js|assets\/js\/dashboard-screen\.js|assets\/js\/sandbox-validation\.js|assets\/js\/knowledge-graph-page\.js/i.test(src));
 }
 
 function normalizeScripts(file, scripts) {

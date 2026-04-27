@@ -1,7 +1,9 @@
 import { resolveLegacyScriptSrc } from './routing.js';
+import { getBundledRuntimeSource } from './pageRuntimeSources.js';
 
 const loadedLegacyScripts = new Set();
 const executedInlineScriptPages = new Set();
+const executedBundledRuntimeScripts = new Set();
 
 function loadScript(src) {
   const resolvedSrc = resolveLegacyScriptSrc(src);
@@ -31,7 +33,19 @@ function loadScript(src) {
 export async function loadLegacyScripts(page) {
   const scripts = page.scripts || [];
   for (const src of scripts) {
-    await loadScript(src);
+    const bundledSource = getBundledRuntimeSource(src);
+    if (bundledSource) {
+      const key = src.split('?')[0];
+      if (!executedBundledRuntimeScripts.has(key)) {
+        const script = document.createElement('script');
+        script.text = bundledSource;
+        script.dataset.bundledPageRuntime = key;
+        document.body.appendChild(script);
+        executedBundledRuntimeScripts.add(key);
+      }
+    } else {
+      await loadScript(src);
+    }
   }
 
   const inlineScripts = page.inlineScripts || [];

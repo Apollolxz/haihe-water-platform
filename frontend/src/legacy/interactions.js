@@ -155,8 +155,12 @@ export function wireLegacyInteractions(pageName) {
   const cleanupNavSearch = initNavSearch();
   let cleanupPageInteractions;
   let cancelled = false;
+  const bundledRuntimePage = ['dashboard.html', 'sandbox.html', 'knowledge-graph.html'].includes(pageName);
+  const runtimePage = bundledRuntimePage
+    ? { ...page, scripts: [...(page.scripts || []), `../assets/js/${pageName === 'dashboard.html' ? 'dashboard-screen.js' : pageName === 'sandbox.html' ? 'sandbox-validation.js' : 'knowledge-graph-page.js'}`] }
+    : page;
 
-  loadLegacyScripts(page).then(() => {
+  loadLegacyScripts(runtimePage).then(() => {
     if (cancelled) return;
     if (pageName === 'chat.html') {
       cleanupPageInteractions = initChatPageInteractions();
