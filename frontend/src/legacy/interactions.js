@@ -93,7 +93,7 @@ export function wireLegacyInteractions(pageName) {
     if (target) link.setAttribute('href', `${pageBase}${target}`);
   });
 
-  const currentUser = localStorage.getItem('token')
+  const currentUser = localStorage.getItem('currentUser') || localStorage.getItem('user') || localStorage.getItem('token')
     ? getStoredUserInfo()
     : { username: '访客', role: '未登录' };
   const displayName = String(currentUser.nickname || currentUser.name || currentUser.username || '访客')
@@ -105,7 +105,7 @@ export function wireLegacyInteractions(pageName) {
   const mobileMenu = document.getElementById('mobileMenu');
   const userMenuBtn = document.getElementById('userMenuBtn');
   const userMenu = document.getElementById('userMenu');
-  const logoutLinks = document.querySelectorAll('[data-logout-link]');
+  const logoutLinks = document.querySelectorAll('[data-logout-link], [data-legacy-click="logout()"]');
 
   const toggleMobileMenu = () => mobileMenu?.classList.toggle('hidden');
   const toggleUserMenu = () => userMenu?.classList.toggle('hidden');
@@ -118,12 +118,14 @@ export function wireLegacyInteractions(pageName) {
     }
   };
   const logout = (event) => {
-    event.preventDefault();
+    event?.preventDefault();
     localStorage.removeItem('currentUser');
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     window.location.href = `${pageBase}login.html`;
   };
+
+  window.logout = logout;
 
   mobileMenuBtn?.addEventListener('click', toggleMobileMenu);
   userMenuBtn?.addEventListener('click', toggleUserMenu);
@@ -137,6 +139,10 @@ export function wireLegacyInteractions(pageName) {
     event.preventDefault();
     const expression = trigger.getAttribute('data-legacy-click');
     if (!expression) return;
+    if (expression.trim() === 'logout()') {
+      logout(event);
+      return;
+    }
     try {
       try {
         window.event = event;
