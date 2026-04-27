@@ -587,6 +587,18 @@ function renderRadarPanel() {
     const panel = state.payload.radar_panel;
     const province = panel.province || pickRadarProvince();
     $('radarTitle').textContent = '多指标雷达';
+
+    if (isAllSelected()) {
+        $('radarSubtitle').textContent = '全流域模式不使用单一省市代表值';
+        $('radarMeta').textContent = '请选择单个省市查看雷达画像';
+        state.charts.radar.clear();
+        state.charts.radar.setOption({
+            backgroundColor: 'transparent',
+            graphic: buildEmptyGraphic(false, '全流域不展示单省多指标雷达'),
+        }, true);
+        return;
+    }
+
     $('radarSubtitle').textContent = isAllSelected()
         ? `${province} · 3个月预测（全流域下按参考省展示）`
         : `${province} · 3个月预测`;
@@ -713,6 +725,18 @@ function renderAccuracyPanel() {
 
     const feature = panel.feature_importance || {};
     $('featureTitle').textContent = '特征重要性';
+
+    if (isAllSelected()) {
+        $('featureSubtitle').textContent = '全流域模式不使用北京或任一省市的代表特征';
+        state.charts.feature.clear();
+        state.charts.feature.setOption({
+            backgroundColor: 'transparent',
+            graphic: buildEmptyGraphic(false, '请选择单个省市查看特征重要性'),
+        }, true);
+        $('featureTableBody').innerHTML = '<tr><td colspan="2">全流域不展示单省特征重要性，请切换到具体省市。</td></tr>';
+        return;
+    }
+
     $('featureSubtitle').textContent = isAllSelected()
         ? `${feature.province || pickRadarProvince()} · ${feature.indicator_label || state.payload.selection.indicator.label}（全流域下按参考省展示）`
         : `${feature.province || pickRadarProvince()} · ${feature.indicator_label || state.payload.selection.indicator.label}`;
