@@ -45,6 +45,139 @@ railway.json                # Railway 配置
 - npm
 - Neo4j（知识图谱功能需要）
 
+## 作品安装说明
+
+### 1. 获取项目代码
+
+```powershell
+git clone https://github.com/Apollolxz/haihe-water-platform.git
+cd haihe-water-platform
+```
+
+### 2. 安装后端环境
+
+后端位于 `backend/` 目录，建议使用 Python 3.11。
+
+```powershell
+cd backend
+copy .env.example .env
+uv sync
+```
+
+如未安装 `uv`，也可以使用 `pip` 安装依赖：
+
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+根据实际环境修改 `backend/.env`，至少确认以下配置：
+
+```env
+SQLITE_PATH=./data/haihe.sqlite3
+SECRET_KEY=replace_with_a_strong_secret
+FLASK_HOST=0.0.0.0
+FLASK_PORT=5001
+```
+
+如需使用知识图谱和智能问答功能，还需要配置：
+
+```env
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your_neo4j_password
+NEO4J_DATABASE=neo4j
+
+DEEPSEEK_API_KEY=your_deepseek_api_key
+DEEPSEEK_MODEL=deepseek-v4-flash
+DEEPSEEK_API_URL=https://api.deepseek.com/chat/completions
+```
+
+### 3. 启动后端服务
+
+使用 `uv`：
+
+```powershell
+cd backend
+uv run python app.py
+```
+
+或使用虚拟环境：
+
+```powershell
+cd backend
+.\.venv\Scripts\activate
+python app.py
+```
+
+后端默认地址：
+
+```text
+http://127.0.0.1:5001
+```
+
+### 4. 安装前端环境
+
+前端位于 `frontend/` 目录，需要 Node.js 22+ 和 npm。
+
+```powershell
+cd frontend
+npm install
+```
+
+### 5. 启动前端页面
+
+```powershell
+cd frontend
+npm run dev
+```
+
+前端默认地址：
+
+```text
+http://127.0.0.1:8000
+```
+
+如需指定本地后端地址，可在浏览器访问：
+
+```text
+http://127.0.0.1:8000?apiBaseUrl=http://127.0.0.1:5001
+```
+
+### 6. 构建生产版本
+
+普通生产构建：
+
+```powershell
+cd frontend
+npm run build
+```
+
+GitHub Pages 构建：
+
+```powershell
+cd frontend
+npm run build:pages
+```
+
+构建产物位于：
+
+```text
+frontend/dist
+```
+
+### 7. 安装验证
+
+安装完成后，可依次检查：
+
+- 首页可正常打开：`http://127.0.0.1:8000`
+- 后端 API 可访问：`http://127.0.0.1:5001`
+- 数据大屏、沙盘、知识图谱、智能问答页面可正常切换。
+- 如知识图谱无法使用，检查 Neo4j 是否启动并确认 `.env` 中 Neo4j 配置正确。
+- 如智能问答无法返回答案，检查 `DEEPSEEK_API_KEY` 是否配置正确。
+
 ## 后端配置
 
 ```powershell
