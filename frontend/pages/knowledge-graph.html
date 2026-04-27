@@ -16,8 +16,8 @@
 tailwind.config={theme:{extend:{colors:{primary:'#0ea5e9',cyan2:'#38bdf8',mint:'#22c55e',dark:'#1a2435',panel:'#111b2b'},fontFamily:{sans:['Noto Sans SC','Microsoft YaHei','sans-serif'],display:['Rajdhani','Noto Sans SC','sans-serif']}}};
 </script>
 <style>
-:root{--bg-deep:#223047;--bg-panel:rgba(36,50,74,0.62);--border:rgba(148,163,184,0.16);--border-glow:rgba(14,165,233,0.28);--text-primary:#f8fafc;--text-secondary:#d7e0ec;--text-muted:#a9b7c8;--cyan:#0ea5e9;--green:#22c55e;}
-html,body{min-height:100%;margin:0;background:radial-gradient(circle at 15% 15%,rgba(14,165,233,0.14),transparent 30%),radial-gradient(circle at 82% 14%,rgba(111,140,255,0.1),transparent 28%),radial-gradient(circle at 50% 100%,rgba(83,211,255,0.07),transparent 28%),linear-gradient(135deg,#172235 0%,#223047 48%,#1f334a 100%);color:var(--text-secondary);font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;}
+:root{--bg-deep:#1a2435;--bg-panel:rgba(24,34,52,0.55);--border:rgba(148,163,184,0.1);--border-glow:rgba(14,165,233,0.28);--text-primary:#f8fafc;--text-secondary:#cbd5e1;--text-muted:#94a3b8;--cyan:#0ea5e9;--green:#22c55e;}
+html,body{min-height:100%;margin:0;background:radial-gradient(circle at 15% 15%,rgba(14,165,233,0.1),transparent 30%),radial-gradient(circle at 82% 14%,rgba(111,140,255,0.06),transparent 28%),radial-gradient(circle at 50% 100%,rgba(83,211,255,0.04),transparent 28%),linear-gradient(135deg,#0a111e 0%,#111b2b 46%,#121f2f 100%);color:var(--text-secondary);font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(14,165,233,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.035) 1px,transparent 1px);background-size:50px 50px;mask-image:linear-gradient(180deg,rgba(0,0,0,0.55),transparent 92%);}
 h1,h2,h3,h4,h5,h6{color:var(--text-primary);font-weight:600;}
 strong,.font-semibold{font-weight:600;}
@@ -38,7 +38,7 @@ strong,.font-semibold{font-weight:600;}
 .category-button{border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.025);border-radius:8px;transition:all 0.25s ease;cursor:pointer;}
 .category-button:hover{background:rgba(255,255,255,0.05);border-color:rgba(14,165,233,0.18);}
 .category-button.active{background:rgba(14,165,233,0.15);border-color:rgba(14,165,233,0.35);box-shadow:0 0 16px rgba(14,165,233,0.15);}
-.graph-stage{flex:1;min-height:360px;border:1px solid rgba(255,255,255,0.1);border-radius:16px;background:#172235;overflow:hidden;box-shadow:inset 0 0 40px rgba(14,165,233,0.06);}
+.graph-stage{flex:1;min-height:360px;border:1px solid rgba(255,255,255,0.06);border-radius:16px;background:#0c1220;overflow:hidden;box-shadow:inset 0 0 40px rgba(14,165,233,0.04);}
 #knowledgeGraph{width:100%;height:100%;min-height:0;}
 .btn-lite{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:4px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:#ccc;font-weight:500;font-size:13px;transition:all 0.25s ease;cursor:pointer;}
 .btn-lite:hover{background:rgba(14,165,233,0.12);border-color:rgba(14,165,233,0.3);color:#fff;box-shadow:0 0 12px rgba(14,165,233,0.15);}
@@ -62,11 +62,10 @@ strong,.font-semibold{font-weight:600;}
 </style>
 <script src="../config/site.config.js"></script>
 <script src="../config/runtime-config.js"></script>
-<script src="../assets/js/nav-search.js"></script>
 </head>
 <body>
 <header class="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
-<div class="w-full px-6">
+<div class="container mx-auto px-4">
 <div class="flex items-center justify-between h-16">
 <div class="flex items-center space-x-3 group">
 <div class="w-10 h-10 rounded-full bg-gradient-water flex items-center justify-center"><i class="fa fa-tint text-white text-xl"></i></div>
@@ -80,10 +79,7 @@ strong,.font-semibold{font-weight:600;}
 <a href="chat.html" class="nav-link"><i class="fa fa-robot mr-2"></i><span>智能问答</span></a>
 </nav>
 <div class="flex items-center space-x-4">
-<form class="hidden lg:flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 focus-within:border-cyan2/70 focus-within:bg-white/10 transition-colors" data-nav-search>
-<i class="fa fa-search text-gray-500 mr-2"></i>
-<input type="search" class="w-40 bg-transparent text-sm text-white placeholder:text-gray-500 focus:outline-none" placeholder="搜索功能或页面">
-</form>
+<button class="text-gray-500 hover:text-white transition-colors"><i class="fa fa-search text-lg"></i></button>
 <button class="text-gray-500 hover:text-white transition-colors relative"><i class="fa fa-bell text-lg"></i><span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span></button>
 <div class="relative">
 <button class="flex items-center space-x-2 focus:outline-none" id="userMenuBtn">
@@ -207,6 +203,6 @@ strong,.font-semibold{font-weight:600;}
 </div>
 
 <div class="loading" id="loadingMask"><div class="spinner"></div><div>正在同步知识图谱...</div></div>
-<script src="../assets/js/knowledge-graph-page.js?v=20260427-restore"></script>
+<script src="../assets/js/knowledge-graph-page.js?v=20260427-legacy855"></script>
 </body>
 </html>
