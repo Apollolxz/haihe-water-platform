@@ -38,8 +38,8 @@ strong,.font-semibold{font-weight:600;}
 .category-button{border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.025);border-radius:8px;transition:all 0.25s ease;cursor:pointer;}
 .category-button:hover{background:rgba(255,255,255,0.05);border-color:rgba(14,165,233,0.18);}
 .category-button.active{background:rgba(14,165,233,0.15);border-color:rgba(14,165,233,0.35);box-shadow:0 0 16px rgba(14,165,233,0.15);}
-.graph-stage{flex:1;min-height:360px;border:1px solid rgba(255,255,255,0.1);border-radius:16px;background:#172235;overflow:hidden;box-shadow:inset 0 0 40px rgba(14,165,233,0.06);}
-#knowledgeGraph{width:100%;height:100%;min-height:0;}
+.graph-stage{flex:1;min-height:520px;border:1px solid rgba(255,255,255,0.1);border-radius:16px;background:#172235;overflow:hidden;box-shadow:inset 0 0 40px rgba(14,165,233,0.06);}
+#knowledgeGraph{display:block;width:100%;height:clamp(520px,62vh,760px);min-height:520px;}
 .btn-lite{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:4px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:#ccc;font-weight:500;font-size:13px;transition:all 0.25s ease;cursor:pointer;}
 .btn-lite:hover{background:rgba(14,165,233,0.12);border-color:rgba(14,165,233,0.3);color:#fff;box-shadow:0 0 12px rgba(14,165,233,0.15);}
 .btn-lite.primary{background:linear-gradient(135deg,rgba(73,146,255,0.25),rgba(88,217,249,0.2));border-color:rgba(14,165,233,0.35);color:#fff;}
@@ -207,6 +207,6 @@ strong,.font-semibold{font-weight:600;}
 </div>
 
 <div class="loading" id="loadingMask"><div class="spinner"></div><div>正在同步知识图谱...</div></div>
-<script src="../assets/js/knowledge-graph-page.js?v=20260427b"></script>
+<script src="../assets/js/knowledge-graph-page.js?v=20260427c"></script>
 </body>
 </html>

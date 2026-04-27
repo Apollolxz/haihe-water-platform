@@ -384,6 +384,31 @@ function setGraphStatus(text) {
   $('graphStatus').textContent = text;
 }
 
+function syncGraphViewport() {
+  const graphContainer = $('knowledgeGraph');
+  const graphStage = graphContainer?.closest('.graph-stage');
+  if (!graphContainer || !graphStage) return;
+
+  const stageRect = graphStage.getBoundingClientRect();
+  const nextHeight = Math.max(520, Math.round(stageRect.height || window.innerHeight * 0.62));
+  graphContainer.style.height = `${nextHeight}px`;
+
+  if (network) {
+    network.setSize('100%', `${nextHeight}px`);
+    network.redraw();
+  }
+}
+
+function fitGraph(delay = 0) {
+  if (!network) return;
+  window.setTimeout(() => {
+    syncGraphViewport();
+    network.fit({
+      animation: { duration: 700, easingFunction: 'easeInOutQuad' }
+    });
+  }, delay);
+}
+
 async function fetchData() {
   showLoading(true);
   try {
@@ -414,7 +439,9 @@ function initApp() {
   initSearch();
   initLayoutButtons();
   setGraphMetaText();
-  setTimeout(() => network && network.fit({ animation: { duration: 800, easingFunction: 'easeInOutQuad' } }), 300);
+  initGraphResize();
+  syncGraphViewport();
+  requestAnimationFrame(() => fitGraph(80));
 }
 
 function initLegend() {
@@ -437,6 +464,7 @@ function initLegend() {
 }
 
 function initNetwork() {
+  syncGraphViewport();
   nodesDataSet = new vis.DataSet(allNodes.map(node => ({
     id: node.id,
     label: node.label,
@@ -507,6 +535,7 @@ function initNetwork() {
   network.on('stabilizationIterationsDone', () => {
     setGraphStatus(`节点 ${allNodes.length} 个 · 关系 ${allEdges.length} 条 · 数据库 ${graphDbName()} 已连接`);
     setGraphMetaText();
+    fitGraph(40);
   });
 }
 
@@ -921,8 +950,18 @@ function initLayoutButtons() {
   $('hierarchyLayoutBtn').addEventListener('click', () => switchLayout('hierarchy'));
   $('circleLayoutBtn').addEventListener('click', () => switchLayout('circle'));
   $('physicsBtn').addEventListener('click', togglePhysics);
-  $('fitBtn').addEventListener('click', () => network && network.fit({ animation: { duration: 600 } }));
+  $('fitBtn').addEventListener('click', () => fitGraph());
   $('fullscreenBtn').addEventListener('click', toggleFullscreen);
+}
+
+function initGraphResize() {
+  window.addEventListener('resize', () => fitGraph(80));
+
+  const graphStage = $('knowledgeGraph')?.closest('.graph-stage');
+  if (graphStage && 'ResizeObserver' in window) {
+    const observer = new ResizeObserver(() => fitGraph(40));
+    observer.observe(graphStage);
+  }
 }
 
 function switchLayout(type) {
