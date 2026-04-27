@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
-import { resolveApiUrl } from './config/runtime.js';
+import { resolveApiBaseUrl, resolveApiUrl } from './config/runtime.js';
 import legacyPages from './generated/LegacyPages.jsx';
 import './styles.css';
 
 const basePath = import.meta.env.BASE_URL || '/';
 const normalizedBasePath = basePath.replace(/\/$/, '');
 const pageBase = `${normalizedBasePath}/pages/`;
+const loadedLegacyScripts = new Set();
 
 function getCurrentPage() {
   const pathname = window.location.pathname;
@@ -40,6 +41,58 @@ function setTextIfExists(id, value) {
   const element = document.getElementById(id);
   if (element) {
     element.textContent = value;
+  }
+}
+
+function resolveLegacyScriptSrc(src) {
+  if (/^https?:\/\//i.test(src)) return src;
+
+  const cleanSrc = src.replace(/^\.\.\//, '').replace(/^\.\//, '');
+  return `${normalizedBasePath}/${cleanSrc}`.replace(/\/{2,}/g, '/');
+}
+
+function ensureRuntimeBridge() {
+  const apiBaseUrl = resolveApiBaseUrl();
+  window.HAIHE_RUNTIME = {
+    ...(window.HAIHE_RUNTIME || {}),
+    apiBaseUrl,
+    resolveApi: (path) => resolveApiUrl(path),
+  };
+}
+
+function loadScript(src) {
+  const resolvedSrc = resolveLegacyScriptSrc(src);
+  const key = resolvedSrc.split('?')[0];
+
+  if (loadedLegacyScripts.has(key)) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = resolvedSrc;
+    script.async = false;
+    if (src.includes('type="module"')) {
+      script.type = 'module';
+    }
+    script.dataset.legacyPageScript = 'true';
+    script.onload = () => {
+      loadedLegacyScripts.add(key);
+      resolve();
+    };
+    script.onerror = () => reject(new Error(`Failed to load ${resolvedSrc}`));
+    document.body.appendChild(script);
+  });
+}
+
+async function loadLegacyScripts(page) {
+  const scripts = page.scripts || [];
+  for (const src of scripts) {
+    await loadScript(src);
+  }
+
+  if (scripts.length > 0) {
+    document.dispatchEvent(new Event('DOMContentLoaded'));
   }
 }
 
@@ -159,6 +212,9 @@ function loadHomeData() {
 }
 
 function wireLegacyInteractions(pageName) {
+  const page = legacyPages[pageName] || legacyPages['index.html'];
+  ensureRuntimeBridge();
+
   document.querySelectorAll('[data-page-link]').forEach((link) => {
     const target = link.getAttribute('data-page-link');
     if (target) link.setAttribute('href', `${pageBase}${target}`);
@@ -202,6 +258,10 @@ function wireLegacyInteractions(pageName) {
   logoutLinks.forEach((link) => link.addEventListener('click', logout));
 
   const cleanupParticles = initParticles();
+  loadLegacyScripts(page).catch((error) => {
+    console.error('加载旧版页面脚本失败:', error);
+  });
+
   if (pageName === 'index.html') {
     loadHomeData();
     loadPlatformStats();

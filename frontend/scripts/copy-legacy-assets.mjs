@@ -6,7 +6,15 @@ const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = resolve(rootDir, 'dist');
 const pagesDir = resolve(rootDir, 'pages');
 
-const staticPaths = ['assets/data'];
+const staticPaths = [
+  'assets',
+  'components',
+  'config',
+  'layouts',
+  'services',
+  'state',
+  'utils',
+];
 
 await mkdir(distDir, { recursive: true });
 

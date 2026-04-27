@@ -87,6 +87,12 @@ function extractStyles(source) {
     .join('\n\n');
 }
 
+function extractScripts(source) {
+  return [...source.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi)]
+    .map((match) => match[1])
+    .filter((src) => !/tailwindcss\.com|echarts@|font-awesome/i.test(src));
+}
+
 async function extractLinkedLocalStyles(source) {
   const localStyles = [];
   const matches = source.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/gi);
@@ -117,13 +123,16 @@ for (const file of pageFiles) {
   const title = extract(/<title>([\s\S]*?)<\/title>/i, source, basename(file, '.html'));
   const linkedStyles = await extractLinkedLocalStyles(source);
   const styles = [linkedStyles, extractStyles(source)].filter(Boolean).join('\n\n');
+  const scripts = extractScripts(source);
   const body = extract(/<body[^>]*>([\s\S]*?)<\/body>/i, source);
   const jsx = normalizeBody(body);
   const componentName = toComponentName(file);
   const styleBlock = styles ? `      <style>{${JSON.stringify(styles)}}</style>\n` : '';
 
   components.push(`function ${componentName}() {\n  return (\n    <>\n${styleBlock}${jsx}\n    </>\n  );\n}`);
-  registry.push(`  ${JSON.stringify(file)}: { title: ${JSON.stringify(title)}, Component: ${componentName} }`);
+  registry.push(
+    `  ${JSON.stringify(file)}: { title: ${JSON.stringify(title)}, scripts: ${JSON.stringify(scripts)}, Component: ${componentName} }`,
+  );
 }
 
 await mkdir(outputDir, { recursive: true });
