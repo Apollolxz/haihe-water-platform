@@ -35,6 +35,13 @@ CORS(
 def init_databases():
     print("正在初始化数据库...")
     User.init_db()
+    User.ensure_seed_user(
+        username='\u674e\u6b23\u6cfd',
+        password='123456',
+        email='2931812025@qq.com',
+        tag='\u666e\u901a\u7528\u6237',
+        role='\u7528\u6237',
+    )
     WaterQuality.init_db()
     print("数据库初始化完成。")
 

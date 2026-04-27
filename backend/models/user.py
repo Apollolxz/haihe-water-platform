@@ -4,6 +4,7 @@
 
 import pymysql
 import os
+import bcrypt
 from dotenv import load_dotenv
 
 # 加载环境变量
@@ -62,6 +63,55 @@ class User:
                 )
                 """
                 cursor.execute(sql)
+            connection.commit()
+        finally:
+            connection.close()
+
+    @classmethod
+    def ensure_seed_user(cls, username, password, email, tag='用户', role='用户'):
+        """
+        Ensure a known login user exists in the active database.
+        """
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        connection = cls.get_db()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id FROM users WHERE username = %s OR email = %s",
+                    (username, email)
+                )
+                existing = cursor.fetchone()
+
+                if existing:
+                    cursor.execute(
+                        """
+                        UPDATE users
+                        SET username = %s, password = %s, email = %s, tag = %s, role = %s
+                        WHERE id = %s
+                        """,
+                        (
+                            username,
+                            hashed_password,
+                            email,
+                            tag,
+                            role,
+                            existing['id']
+                        )
+                    )
+                else:
+                    cursor.execute(
+                        """
+                        INSERT INTO users (username, password, email, tag, role)
+                        VALUES (%s, %s, %s, %s, %s)
+                        """,
+                        (
+                            username,
+                            hashed_password,
+                            email,
+                            tag,
+                            role
+                        )
+                    )
             connection.commit()
         finally:
             connection.close()
