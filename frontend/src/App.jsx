@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   Activity,
   ArrowRight,
@@ -13,12 +14,15 @@ import {
 } from 'lucide-react';
 import './styles.css';
 
+const basePath = import.meta.env.BASE_URL || '/';
+const withBase = (path) => `${basePath.replace(/\/$/, '')}${path}`;
+
 const navItems = [
-  { label: '首页', href: '/', icon: LayoutDashboard },
-  { label: '数据大屏', href: '/pages/dashboard.html', icon: BarChart3 },
-  { label: '流域时空推演沙盘', href: '/pages/sandbox.html', icon: Globe2, featured: true },
-  { label: '知识图谱', href: '/pages/knowledge-graph.html', icon: GitBranch },
-  { label: '智能问答', href: '/pages/chat.html', icon: Bot },
+  { label: '首页', href: withBase('/pages/index.html'), icon: LayoutDashboard },
+  { label: '数据大屏', href: withBase('/pages/dashboard.html'), icon: BarChart3 },
+  { label: '流域时空推演沙盘', href: withBase('/pages/sandbox.html'), icon: Globe2, featured: true },
+  { label: '知识图谱', href: withBase('/pages/knowledge-graph.html'), icon: GitBranch },
+  { label: '智能问答', href: withBase('/pages/chat.html'), icon: Bot },
 ];
 
 const capabilities = [
@@ -99,10 +103,16 @@ function BasinVisual() {
 }
 
 export default function App() {
+  useEffect(() => {
+    if (basePath !== '/') {
+      window.location.replace(withBase('/pages/index.html'));
+    }
+  }, []);
+
   return (
     <div className="app-shell">
       <header className="site-header">
-        <a className="brand" href="/" aria-label="海河六域首页">
+        <a className="brand" href={withBase('/pages/index.html')} aria-label="海河六域首页">
           <span className="brand-mark">
             <Waves aria-hidden="true" size={24} />
           </span>
@@ -131,11 +141,11 @@ export default function App() {
               版本先提供首页、工程化构建和旧页面入口，后续可逐页组件化迁移。
             </p>
             <div className="hero-actions">
-              <a className="primary-action" href="/pages/sandbox.html">
+              <a className="primary-action" href={withBase('/pages/sandbox.html')}>
                 打开推演沙盘
                 <ArrowRight aria-hidden="true" size={18} />
               </a>
-              <a className="secondary-action" href="/pages/dashboard.html">
+              <a className="secondary-action" href={withBase('/pages/dashboard.html')}>
                 查看数据大屏
               </a>
             </div>
