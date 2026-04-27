@@ -14,4 +14,16 @@ describe('React legacy home shell', () => {
     );
     expect(screen.getAllByRole('link', { name: /智能问答/ })[0]).toHaveAttribute('href', '/pages/chat.html');
   });
+
+  test('renders legacy subpages through React based on the current URL', () => {
+    window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/dashboard.html');
+
+    render(<App />);
+
+    expect(screen.getAllByText('数据大屏').length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /流域时空推演沙盘/ })[0]).toHaveAttribute(
+      'href',
+      '/pages/sandbox.html',
+    );
+  });
 });

@@ -1,9 +1,25 @@
 import { useEffect } from 'react';
-import legacyHomeMarkup from './legacyHomeMarkup.js';
+import legacyPages from './legacyPageMarkup.js';
 import './styles.css';
 
 const basePath = import.meta.env.BASE_URL || '/';
-const pageBase = `${basePath.replace(/\/$/, '')}/pages/`;
+const normalizedBasePath = basePath.replace(/\/$/, '');
+const pageBase = `${normalizedBasePath}/pages/`;
+
+function getCurrentPage() {
+  const pathname = window.location.pathname;
+  const withoutBase =
+    normalizedBasePath && pathname.startsWith(normalizedBasePath)
+      ? pathname.slice(normalizedBasePath.length)
+      : pathname;
+  const match = withoutBase.match(/\/pages\/([^/]+\.html)$/);
+
+  if (match?.[1] && legacyPages[match[1]]) {
+    return match[1];
+  }
+
+  return 'index.html';
+}
 
 function getStoredUserInfo() {
   const raw = localStorage.getItem('currentUser') || localStorage.getItem('user');
@@ -119,7 +135,7 @@ function loadPlatformStats() {
     });
 }
 
-function loadData() {
+function loadHomeData() {
   fetch(resolveApiUrl('/api/water-quality/latest'))
     .then((response) => response.json())
     .then((data) => {
@@ -151,64 +167,72 @@ function loadData() {
     });
 }
 
-export default function App() {
-  useEffect(() => {
-    document.title = '海河六域 - 流域水质时空演变与知识图谱智能治理系统';
+function wireLegacyInteractions(pageName) {
+  document.querySelectorAll('[data-page-link]').forEach((link) => {
+    const target = link.getAttribute('data-page-link');
+    if (target) link.setAttribute('href', `${pageBase}${target}`);
+  });
 
-    document.querySelectorAll('[data-page-link]').forEach((link) => {
-      const target = link.getAttribute('data-page-link');
-      if (target) link.setAttribute('href', `${pageBase}${target}`);
-    });
+  const currentUser = localStorage.getItem('token')
+    ? getStoredUserInfo()
+    : { username: '访客', role: '未登录' };
+  const displayName = String(currentUser.nickname || currentUser.name || currentUser.username || '访客')
+    .replace(/\.?用户$/u, '')
+    .trim();
+  setTextIfExists('userName', displayName || '访客');
 
-    const currentUser = localStorage.getItem('token')
-      ? getStoredUserInfo()
-      : { username: '访客', role: '未登录' };
-    const displayName = String(currentUser.nickname || currentUser.name || currentUser.username || '访客')
-      .replace(/\.?用户$/u, '')
-      .trim();
-    setTextIfExists('userName', displayName || '访客');
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const userMenuBtn = document.getElementById('userMenuBtn');
+  const userMenu = document.getElementById('userMenu');
+  const logoutLinks = document.querySelectorAll('[data-logout-link]');
 
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    const userMenu = document.getElementById('userMenu');
-    const logoutLinks = document.querySelectorAll('[data-logout-link]');
+  const toggleMobileMenu = () => mobileMenu?.classList.toggle('hidden');
+  const toggleUserMenu = () => userMenu?.classList.toggle('hidden');
+  const closeMenus = (event) => {
+    if (!event.target.closest('#userMenuBtn') && !event.target.closest('#userMenu')) {
+      userMenu?.classList.add('hidden');
+    }
+    if (!event.target.closest('#mobileMenuBtn') && !event.target.closest('#mobileMenu')) {
+      mobileMenu?.classList.add('hidden');
+    }
+  };
+  const logout = (event) => {
+    event.preventDefault();
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    window.location.href = `${pageBase}login.html`;
+  };
 
-    const toggleMobileMenu = () => mobileMenu?.classList.toggle('hidden');
-    const toggleUserMenu = () => userMenu?.classList.toggle('hidden');
-    const closeMenus = (event) => {
-      if (!event.target.closest('#userMenuBtn') && !event.target.closest('#userMenu')) {
-        userMenu?.classList.add('hidden');
-      }
-      if (!event.target.closest('#mobileMenuBtn') && !event.target.closest('#mobileMenu')) {
-        mobileMenu?.classList.add('hidden');
-      }
-    };
-    const logout = (event) => {
-      event.preventDefault();
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      window.location.href = `${pageBase}login.html`;
-    };
+  mobileMenuBtn?.addEventListener('click', toggleMobileMenu);
+  userMenuBtn?.addEventListener('click', toggleUserMenu);
+  document.addEventListener('click', closeMenus);
+  logoutLinks.forEach((link) => link.addEventListener('click', logout));
 
-    mobileMenuBtn?.addEventListener('click', toggleMobileMenu);
-    userMenuBtn?.addEventListener('click', toggleUserMenu);
-    document.addEventListener('click', closeMenus);
-    logoutLinks.forEach((link) => link.addEventListener('click', logout));
-
-    const cleanupParticles = initParticles();
-    loadData();
+  const cleanupParticles = initParticles();
+  if (pageName === 'index.html') {
+    loadHomeData();
     loadPlatformStats();
+  }
 
-    return () => {
-      mobileMenuBtn?.removeEventListener('click', toggleMobileMenu);
-      userMenuBtn?.removeEventListener('click', toggleUserMenu);
-      document.removeEventListener('click', closeMenus);
-      logoutLinks.forEach((link) => link.removeEventListener('click', logout));
-      cleanupParticles?.();
-    };
-  }, []);
+  return () => {
+    mobileMenuBtn?.removeEventListener('click', toggleMobileMenu);
+    userMenuBtn?.removeEventListener('click', toggleUserMenu);
+    document.removeEventListener('click', closeMenus);
+    logoutLinks.forEach((link) => link.removeEventListener('click', logout));
+    cleanupParticles?.();
+  };
+}
 
-  return <div dangerouslySetInnerHTML={{ __html: legacyHomeMarkup }} />;
+export default function App() {
+  const pageName = getCurrentPage();
+  const page = legacyPages[pageName] || legacyPages['index.html'];
+
+  useEffect(() => {
+    document.title = page.title;
+    return wireLegacyInteractions(pageName);
+  }, [page.title, pageName]);
+
+  return <div key={pageName} dangerouslySetInnerHTML={{ __html: page.markup }} />;
 }
