@@ -477,12 +477,21 @@ function initNetwork() {
             values.borderWidth = 4;
             values.borderColor = '#eee';
           }
-          if (hovering) values.size *= 1.12;
         }
       }
     },
-    edges: { chosen: { edge(values, id, selected, hovering) { if (selected || hovering) values.width *= 2.5; } } },
-    interaction: { hover: true, tooltipDelay: 200, hideEdgesOnDrag: false, navigationButtons: false, keyboard: false },
+    edges: { chosen: { edge(values, id, selected) { if (selected) values.width *= 2.5; } } },
+    interaction: {
+      hover: false,
+      hoverConnectedEdges: false,
+      tooltipDelay: 200,
+      hideEdgesOnDrag: false,
+      navigationButtons: false,
+      keyboard: false,
+      zoomView: true,
+      dragView: true,
+      dragNodes: true
+    },
     physics: {
       enabled: true,
       solver: 'forceAtlas2Based',
