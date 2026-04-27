@@ -5,6 +5,15 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   base: '/',
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/index.js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name][extname]',
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
     environmentOptions: {

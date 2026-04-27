@@ -1,4 +1,4 @@
-import { cp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, cp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -36,4 +36,16 @@ const distPagesDir = resolve(distDir, 'pages');
 await mkdir(distPagesDir, { recursive: true });
 await Promise.all(
   pageFiles.map((file) => writeFile(resolve(distPagesDir, file), appShell, 'utf8')),
+);
+
+const assetCompatCopies = [
+  ['assets/index.js', 'assets/index-BBlpru4q.js'],
+  ['assets/index.js', 'assets/index-Bz8TrIkx.js'],
+  ['assets/index.js', 'assets/index-CCDCRtyq.js'],
+  ['assets/index.css', 'assets/index-D754j2Se.css'],
+  ['assets/index.css', 'assets/index-B9TnSaMy.css'],
+];
+
+await Promise.all(
+  assetCompatCopies.map(([source, target]) => copyFile(resolve(distDir, source), resolve(distDir, target))),
 );
