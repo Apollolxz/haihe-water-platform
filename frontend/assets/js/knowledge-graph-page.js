@@ -481,8 +481,8 @@ function initNetwork() {
         }
       }
     },
-    edges: { chosen: { edge(values, id, selected, hovering) { if (selected || hovering) values.width *= 2.5; } } },
-    interaction: { hover: true, tooltipDelay: 200, hideEdgesOnDrag: false, navigationButtons: false, keyboard: false },
+    edges: { chosen: { edge(values, id, selected) { if (selected) values.width *= 2.5; } } },
+    interaction: { hover: false, tooltipDelay: 0, hideEdgesOnDrag: false, navigationButtons: false, keyboard: false },
     physics: {
       enabled: true,
       solver: 'forceAtlas2Based',
