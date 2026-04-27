@@ -1904,7 +1904,7 @@ function KnowledgeGraphPage() {
 <button className="btn-lite active" id="forceLayoutBtn"><i className="fa fa-random"></i>力导布局</button>
 <button className="btn-lite" id="hierarchyLayoutBtn"><i className="fa fa-sitemap"></i>层级布局</button>
 <button className="btn-lite" id="circleLayoutBtn"><i className="fa fa-circle-o"></i>环形布局</button>
-<button className="btn-lite" id="physicsBtn"><i className="fa fa-pause"></i>关闭物理模拟</button>
+<button className="btn-lite" id="physicsBtn"><i className="fa fa-play"></i>开启物理模拟</button>
 </div>
 <div className="flex flex-wrap gap-3 lg:justify-end">
 <a className="btn-lite" id="returnSandboxBtn" href="sandbox.html" data-page-link="sandbox.html"><i className="fa fa-reply"></i><span>返回沙盘</span></a>
@@ -3482,7 +3482,7 @@ const legacyPages = {
   "dashboard.html": { title: "海河六域・水质时空演变智能治理系统", scripts: ["../config/site.config.js","../config/runtime-config.js","../assets/js/nav-search.js","../assets/js/dashboard-screen.js?v=20260420d"], Component: DashboardPage },
   "forgot-password.html": { title: "海河六域 - 忘记密码", scripts: ["../config/site.config.js","../config/runtime-config.js","https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"], Component: ForgotPasswordPage },
   "index.html": { title: "海河六域 - 流域水质时空演变与知识图谱智能治理系统", scripts: ["../config/site.config.js","../config/runtime-config.js","../assets/js/nav-search.js"], Component: IndexPage },
-  "knowledge-graph.html": { title: "海河六域｜知识图谱", scripts: ["https://cdn.jsdelivr.net/npm/vis-network@9.1.9/dist/vis-network.min.js","../config/site.config.js","../config/runtime-config.js","../assets/js/nav-search.js","../assets/js/knowledge-graph-page.js?v=20260427c"], Component: KnowledgeGraphPage },
+  "knowledge-graph.html": { title: "海河六域｜知识图谱", scripts: ["https://cdn.jsdelivr.net/npm/vis-network@9.1.9/dist/vis-network.min.js","../config/site.config.js","../config/runtime-config.js","../assets/js/nav-search.js","../assets/js/knowledge-graph-page.js?v=20260427d"], Component: KnowledgeGraphPage },
   "login.html": { title: "海河六域 - 登录", scripts: ["../config/site.config.js","../config/runtime-config.js","https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"], Component: LoginPage },
   "profile.html": { title: "海河六域 - 个人中心", scripts: [], Component: ProfilePage },
   "province-comparison.html": { title: "海河六域 - 省际空间对比专项屏", scripts: ["../config/site.config.js","../config/runtime-config.js"], Component: ProvinceComparisonPage },

@@ -22,7 +22,7 @@ let edgesDataSet;
 let allNodes = [];
 let allEdges = [];
 let graphMeta = {};
-let physicsEnabled = true;
+let physicsEnabled = false;
 
 const $ = id => document.getElementById(id);
 
@@ -515,7 +515,7 @@ function initNetwork() {
       enabled: true,
       solver: 'forceAtlas2Based',
       forceAtlas2Based: { gravitationalConstant: -50, centralGravity: 0.003, springLength: 180, springConstant: 0.015, damping: 0.6, avoidOverlap: 0.25 },
-      stabilization: { enabled: true, iterations: 300, updateInterval: 25 }
+      stabilization: { enabled: true, iterations: 180, updateInterval: 25, fit: true }
     },
     layout: { improvedLayout: true }
   });
@@ -535,6 +535,8 @@ function initNetwork() {
   network.on('stabilizationIterationsDone', () => {
     setGraphStatus(`节点 ${allNodes.length} 个 · 关系 ${allEdges.length} 条 · 数据库 ${graphDbName()} 已连接`);
     setGraphMetaText();
+    setPhysicsEnabled(false);
+    network.storePositions();
     fitGraph(40);
   });
 }
@@ -966,7 +968,7 @@ function initGraphResize() {
 
 function switchLayout(type) {
   if (!network) return;
-  $('forceLayoutBtn').classList.toggle('active', type === 'force');
+    $('forceLayoutBtn').classList.toggle('active', type === 'force');
   $('hierarchyLayoutBtn').classList.toggle('active', type === 'hierarchy');
   $('circleLayoutBtn').classList.toggle('active', type === 'circle');
   if (type === 'hierarchy') {
@@ -975,7 +977,12 @@ function switchLayout(type) {
     network.setOptions({ layout: { hierarchical: false }, physics: { enabled: false } });
     applyCircleLayout();
   } else {
-    network.setOptions({ layout: { hierarchical: false }, physics: { enabled: physicsEnabled, solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -30, centralGravity: 0.005, springLength: 220, springConstant: 0.008, damping: 0.65, avoidOverlap: 0.15 }, stabilization: { enabled: true, iterations: 300 } } });
+    network.setOptions({ layout: { hierarchical: false }, physics: { enabled: true, solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -30, centralGravity: 0.005, springLength: 220, springConstant: 0.008, damping: 0.65, avoidOverlap: 0.15 }, stabilization: { enabled: true, iterations: 180, fit: true } } });
+    network.once('stabilizationIterationsDone', () => {
+      setPhysicsEnabled(false);
+      network.storePositions();
+      fitGraph(40);
+    });
   }
 }
 
