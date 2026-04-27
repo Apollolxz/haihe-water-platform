@@ -87,6 +87,27 @@ function extractStyles(source) {
     .join('\n\n');
 }
 
+async function extractLinkedLocalStyles(source) {
+  const localStyles = [];
+  const matches = source.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/gi);
+
+  for (const match of matches) {
+    const href = match[1];
+    if (/^https?:\/\//i.test(href)) continue;
+
+    const cleanHref = href.split('?')[0];
+    const stylesheetPath = resolve(pagesDir, cleanHref);
+
+    try {
+      localStyles.push(await readFile(stylesheetPath, 'utf8'));
+    } catch (error) {
+      console.warn(`Unable to inline stylesheet ${href}:`, error.message);
+    }
+  }
+
+  return localStyles.join('\n\n');
+}
+
 const pageFiles = (await readdir(pagesDir)).filter((file) => file.endsWith('.html')).sort();
 const components = [];
 const registry = [];
@@ -94,7 +115,8 @@ const registry = [];
 for (const file of pageFiles) {
   const source = await readFile(resolve(pagesDir, file), 'utf8');
   const title = extract(/<title>([\s\S]*?)<\/title>/i, source, basename(file, '.html'));
-  const styles = extractStyles(source);
+  const linkedStyles = await extractLinkedLocalStyles(source);
+  const styles = [linkedStyles, extractStyles(source)].filter(Boolean).join('\n\n');
   const body = extract(/<body[^>]*>([\s\S]*?)<\/body>/i, source);
   const jsx = normalizeBody(body);
   const componentName = toComponentName(file);
