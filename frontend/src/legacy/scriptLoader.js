@@ -1,6 +1,7 @@
 import { resolveLegacyScriptSrc } from './routing.js';
 
 const loadedLegacyScripts = new Set();
+const executedInlineScriptPages = new Set();
 
 function loadScript(src) {
   const resolvedSrc = resolveLegacyScriptSrc(src);
@@ -33,7 +34,18 @@ export async function loadLegacyScripts(page) {
     await loadScript(src);
   }
 
-  if (scripts.length > 0) {
+  const inlineScripts = page.inlineScripts || [];
+  if (inlineScripts.length > 0 && !executedInlineScriptPages.has(page.title)) {
+    inlineScripts.forEach((source, index) => {
+      const script = document.createElement('script');
+      script.text = source;
+      script.dataset.legacyInlineScript = `${page.title}:${index}`;
+      document.body.appendChild(script);
+    });
+    executedInlineScriptPages.add(page.title);
+  }
+
+  if (scripts.length > 0 || inlineScripts.length > 0) {
     document.dispatchEvent(new Event('DOMContentLoaded'));
   }
 }

@@ -11,6 +11,12 @@ const pageLinkPattern =
   /href="((?:index|dashboard|sandbox|knowledge-graph|chat|profile|login|register|forgot-password|boxplot-analysis|correlation-analysis|province-comparison|trend-analysis)\.html)"/g;
 
 const voidTags = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+const inlineRuntimePages = new Set([
+  'boxplot-analysis.html',
+  'correlation-analysis.html',
+  'province-comparison.html',
+  'trend-analysis.html',
+]);
 
 function extract(pattern, source, fallback = '') {
   return source.match(pattern)?.[1]?.trim() || fallback;
@@ -73,6 +79,7 @@ function normalizeBody(body) {
       body
         .replace(/<script\b[\s\S]*?<\/script>/gi, '')
         .replace(/<!--[\s\S]*?-->/g, '')
+        .replace(/\sonclick="([^"]*)"/gi, (_, expression) => ` data-legacy-click=${JSON.stringify(expression)}`)
         .replace(/\son[a-z]+="[^"]*"/gi, '')
         .replace(pageLinkPattern, 'href="$1" data-page-link="$1"')
         .trim(),
@@ -90,7 +97,7 @@ function extractStyles(source) {
 function extractScripts(source) {
   return [...source.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi)]
     .map((match) => match[1])
-    .filter((src) => !/tailwindcss\.com|echarts@|font-awesome|assets\/js\/nav-search\.js/i.test(src));
+    .filter((src) => !/tailwindcss\.com|font-awesome|assets\/js\/nav-search\.js/i.test(src));
 }
 
 function normalizeScripts(file, scripts) {
@@ -105,6 +112,14 @@ function normalizeScripts(file, scripts) {
   ]);
 
   return scripts.filter((src) => !removedChatRuntime.has(src.split('?')[0]));
+}
+
+function extractBodyInlineScripts(file, body) {
+  if (!inlineRuntimePages.has(file)) return [];
+
+  return [...body.matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)]
+    .map((match) => match[1].trim())
+    .filter(Boolean);
 }
 
 async function extractLinkedLocalStyles(source) {
@@ -139,13 +154,14 @@ for (const file of pageFiles) {
   const styles = [linkedStyles, extractStyles(source)].filter(Boolean).join('\n\n');
   const scripts = normalizeScripts(file, extractScripts(source));
   const body = extract(/<body[^>]*>([\s\S]*?)<\/body>/i, source);
+  const inlineScripts = extractBodyInlineScripts(file, body);
   const jsx = normalizeBody(body);
   const componentName = toComponentName(file);
   const styleBlock = styles ? `      <style>{${JSON.stringify(styles)}}</style>\n` : '';
 
   components.push(`function ${componentName}() {\n  return (\n    <>\n${styleBlock}${jsx}\n    </>\n  );\n}`);
   registry.push(
-    `  ${JSON.stringify(file)}: { title: ${JSON.stringify(title)}, scripts: ${JSON.stringify(scripts)}, Component: ${componentName} }`,
+    `  ${JSON.stringify(file)}: { title: ${JSON.stringify(title)}, scripts: ${JSON.stringify(scripts)}, inlineScripts: ${JSON.stringify(inlineScripts)}, Component: ${componentName} }`,
   );
 }
 

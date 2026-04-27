@@ -130,6 +130,27 @@ export function wireLegacyInteractions(pageName) {
   document.addEventListener('click', closeMenus);
   logoutLinks.forEach((link) => link.addEventListener('click', logout));
 
+  const runLegacyClick = (event) => {
+    if (event.defaultPrevented) return;
+    const trigger = event.target.closest('[data-legacy-click]');
+    if (!trigger) return;
+    event.preventDefault();
+    const expression = trigger.getAttribute('data-legacy-click');
+    if (!expression) return;
+    try {
+      try {
+        window.event = event;
+      } catch {
+        // Some legacy handlers read the browser's global event object.
+      }
+      Function(expression).call(window);
+    } catch (error) {
+      console.error('执行旧页面点击逻辑失败:', error);
+    }
+  };
+
+  document.addEventListener('click', runLegacyClick);
+
   const cleanupParticles = initParticles();
   const cleanupNavSearch = initNavSearch();
   let cleanupPageInteractions;
@@ -163,6 +184,7 @@ export function wireLegacyInteractions(pageName) {
     mobileMenuBtn?.removeEventListener('click', toggleMobileMenu);
     userMenuBtn?.removeEventListener('click', toggleUserMenu);
     document.removeEventListener('click', closeMenus);
+    document.removeEventListener('click', runLegacyClick);
     logoutLinks.forEach((link) => link.removeEventListener('click', logout));
     cleanupParticles?.();
     cleanupNavSearch?.();
