@@ -1,10 +1,20 @@
 'use strict';
 
-const GRAPH_API = '/api/graph/';
-const GRAPH_TRACE_API = '/api/graph/trace';
-const GRAPH_UPSTREAM_API = '/api/graph/upstream';
-const GRAPH_EXCEEDANCE_API = '/api/graph/exceedance';
-const DECISION_CONTEXT_API = '/api/decision/context';
+function resolveApiPath(path) {
+  if (window.HAIHE_RUNTIME?.resolveApi) {
+    return window.HAIHE_RUNTIME.resolveApi(path);
+  }
+  if (window.location.protocol === 'file:') {
+    return `http://127.0.0.1:5001${path}`;
+  }
+  return path;
+}
+
+const GRAPH_API = resolveApiPath('/api/graph/');
+const GRAPH_TRACE_API = resolveApiPath('/api/graph/trace');
+const GRAPH_UPSTREAM_API = resolveApiPath('/api/graph/upstream');
+const GRAPH_EXCEEDANCE_API = resolveApiPath('/api/graph/exceedance');
+const DECISION_CONTEXT_API = resolveApiPath('/api/decision/context');
 
 let network;
 let nodesDataSet;

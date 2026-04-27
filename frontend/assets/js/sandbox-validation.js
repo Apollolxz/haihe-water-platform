@@ -83,7 +83,10 @@ function initCharts() {
     state.charts.spatial = echarts.init($('spatialChart'));
     state.charts.radar = echarts.init($('radarChart'));
     state.charts.scatter = echarts.init($('scatterChart'));
-    state.charts.feature = echarts.init($('featureChart'));
+    const featureChart = $('featureChart');
+    if (featureChart) {
+        state.charts.feature = echarts.init(featureChart);
+    }
 }
 
 function bindEvents() {
@@ -723,19 +726,17 @@ function renderAccuracyPanel() {
         graphic: buildEmptyGraphic(scatterSeries.some((item) => item.data.length > 0), '暂无误差散点数据'),
     }, true);
 
-    const feature = panel.feature_importance || {};
-    $('featureTitle').textContent = '特征重要性';
-
+    const featurePanel = document.querySelector('.feature-panel');
     if (isAllSelected()) {
-        $('featureSubtitle').textContent = '全流域模式不使用北京或任一省市的代表特征';
-        state.charts.feature.clear();
-        state.charts.feature.setOption({
-            backgroundColor: 'transparent',
-            graphic: buildEmptyGraphic(false, '请选择单个省市查看特征重要性'),
-        }, true);
-        $('featureTableBody').innerHTML = '<tr><td colspan="2">全流域不展示单省特征重要性，请切换到具体省市。</td></tr>';
+        if (featurePanel) featurePanel.hidden = true;
+        state.charts.feature?.clear();
         return;
     }
+
+    if (featurePanel) featurePanel.hidden = false;
+
+    const feature = panel.feature_importance || {};
+    $('featureTitle').textContent = '特征重要性';
 
     $('featureSubtitle').textContent = isAllSelected()
         ? `${feature.province || pickRadarProvince()} · ${feature.indicator_label || state.payload.selection.indicator.label}（全流域下按参考省展示）`
@@ -758,7 +759,7 @@ function renderAccuracyPanel() {
         });
     }
 
-    state.charts.feature.setOption({
+    state.charts.feature?.setOption({
         backgroundColor: 'transparent',
         tooltip: {
             trigger: 'axis',
@@ -1317,7 +1318,7 @@ function applyScopeLayout() {
         mainVisuals.classList.toggle('aggregate-only', aggregateOnly);
     }
 
-    ['.spatial-panel', '.radar-panel', '.detail-panel'].forEach((selector) => {
+    ['.spatial-panel', '.radar-panel', '.feature-panel', '.detail-panel'].forEach((selector) => {
         const panel = document.querySelector(selector);
         if (panel) {
             panel.hidden = aggregateOnly;
