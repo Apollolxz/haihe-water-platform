@@ -1,5 +1,7 @@
+import { initAuthPageInteractions } from '../features/auth/authController.js';
 import { initChatPageInteractions } from '../features/chat/chatController.js';
 import { loadHomeData, loadPlatformStats } from '../features/home/homeData.js';
+import { initProfilePageInteractions } from '../features/profile/profileController.js';
 import { ensureRuntimeBridge } from './runtimeBridge.js';
 import { initParticles } from './particles.js';
 import { getLegacyPage, pageBase } from './routing.js';
@@ -12,6 +14,8 @@ const navSearchRoutes = [
   { keys: ['知识', '图谱', '溯源', '节点', 'graph'], url: 'knowledge-graph.html' },
   { keys: ['问答', '智能', '助手', 'chat'], url: 'chat.html' },
 ];
+
+const authPages = new Set(['login.html', 'register.html', 'forgot-password.html']);
 
 function getStoredUserInfo() {
   const raw = localStorage.getItem('currentUser') || localStorage.getItem('user');
@@ -135,6 +139,12 @@ export function wireLegacyInteractions(pageName) {
     if (cancelled) return;
     if (pageName === 'chat.html') {
       cleanupPageInteractions = initChatPageInteractions();
+    }
+    if (authPages.has(pageName)) {
+      cleanupPageInteractions = initAuthPageInteractions(pageName);
+    }
+    if (pageName === 'profile.html') {
+      cleanupPageInteractions = initProfilePageInteractions();
     }
     if (pageName === 'knowledge-graph.html') {
       runPendingGraphSearch();
