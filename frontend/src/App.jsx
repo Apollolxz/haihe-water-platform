@@ -1,164 +1,214 @@
 import { useEffect } from 'react';
-import {
-  Activity,
-  ArrowRight,
-  BarChart3,
-  Bot,
-  Database,
-  GitBranch,
-  Globe2,
-  LayoutDashboard,
-  ShieldCheck,
-  Sparkles,
-  Waves,
-} from 'lucide-react';
+import legacyHomeMarkup from './legacyHomeMarkup.js';
 import './styles.css';
 
 const basePath = import.meta.env.BASE_URL || '/';
-const withBase = (path) => `${basePath.replace(/\/$/, '')}${path}`;
+const pageBase = `${basePath.replace(/\/$/, '')}/pages/`;
 
-const navItems = [
-  { label: '首页', href: withBase('/pages/index.html'), icon: LayoutDashboard },
-  { label: '数据大屏', href: withBase('/pages/dashboard.html'), icon: BarChart3 },
-  { label: '流域时空推演沙盘', href: withBase('/pages/sandbox.html'), icon: Globe2, featured: true },
-  { label: '知识图谱', href: withBase('/pages/knowledge-graph.html'), icon: GitBranch },
-  { label: '智能问答', href: withBase('/pages/chat.html'), icon: Bot },
-];
+function getStoredUserInfo() {
+  const raw = localStorage.getItem('currentUser') || localStorage.getItem('user');
+  if (!raw) {
+    return { username: '访客', role: '未登录' };
+  }
 
-const capabilities = [
-  {
-    title: '水质态势感知',
-    text: '汇聚监测断面、关键指标和区域趋势，支持流域运行状态快速研判。',
-    icon: Activity,
-  },
-  {
-    title: '治理决策推演',
-    text: '面向沙盘预测、风险模拟和治理方案比选，保留原有模型接口接入空间。',
-    icon: ShieldCheck,
-  },
-  {
-    title: '知识图谱溯源',
-    text: '连接污染事件、监测站点和关联实体，支撑超标原因追踪。',
-    icon: Database,
-  },
-];
-
-function NavLink({ item }) {
-  const Icon = item.icon;
-
-  return (
-    <a className={item.featured ? 'nav-link nav-link-featured' : 'nav-link'} href={item.href}>
-      <Icon aria-hidden="true" size={18} />
-      <span>{item.label}</span>
-    </a>
-  );
+  try {
+    return JSON.parse(raw) || { username: '访客', role: '未登录' };
+  } catch (error) {
+    console.warn('解析用户信息失败:', error);
+    return { username: '访客', role: '未登录' };
+  }
 }
 
-function Metric({ value, label }) {
-  return (
-    <div className="metric">
-      <strong>{value}</strong>
-      <span>{label}</span>
-    </div>
-  );
+function resolveApiUrl(path) {
+  if (window.HAIHE_RUNTIME?.resolveApi) {
+    return window.HAIHE_RUNTIME.resolveApi(path);
+  }
+  if (window.location.protocol === 'file:') {
+    return `http://127.0.0.1:5001${path}`;
+  }
+  return path;
 }
 
-function Capability({ item }) {
-  const Icon = item.icon;
-
-  return (
-    <article className="capability">
-      <div className="capability-icon">
-        <Icon aria-hidden="true" size={22} />
-      </div>
-      <h3>{item.title}</h3>
-      <p>{item.text}</p>
-    </article>
-  );
+function setTextIfExists(id, value) {
+  const element = document.getElementById(id);
+  if (element) {
+    element.textContent = value;
+  }
 }
 
-function BasinVisual() {
-  return (
-    <section className="basin-visual" aria-label="流域态势概览">
-      <div className="visual-toolbar">
-        <span>Haihe Basin</span>
-        <span className="status-dot">运行中</span>
-      </div>
-      <div className="basin-map">
-        <div className="river river-main" />
-        <div className="river river-branch river-branch-a" />
-        <div className="river river-branch river-branch-b" />
-        <span className="station station-a" />
-        <span className="station station-b" />
-        <span className="station station-c" />
-        <span className="station station-d" />
-      </div>
-      <div className="visual-grid">
-        <Metric value="6" label="省市域" />
-        <Metric value="24h" label="态势刷新" />
-        <Metric value="Neo4j" label="图谱引擎" />
-      </div>
-    </section>
-  );
+function initParticles() {
+  if (import.meta.env.MODE === 'test') return undefined;
+
+  const canvas = document.getElementById('particleCanvas');
+  if (!canvas) return undefined;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return undefined;
+
+  let frameId = 0;
+  const particles = [];
+  const particleCount = 50;
+
+  const resize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+
+  resize();
+
+  for (let i = 0; i < particleCount; i += 1) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 2 + 1,
+      speedX: (Math.random() - 0.5) * 0.5,
+      speedY: (Math.random() - 0.5) * 0.5,
+      opacity: Math.random() * 0.5 + 0.2,
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((particle) => {
+      particle.x += particle.speedX;
+      particle.y += particle.speedY;
+
+      if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+      if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(14, 165, 233, ${particle.opacity})`;
+      ctx.fill();
+    });
+
+    frameId = requestAnimationFrame(animate);
+  }
+
+  animate();
+  window.addEventListener('resize', resize);
+
+  return () => {
+    cancelAnimationFrame(frameId);
+    window.removeEventListener('resize', resize);
+  };
+}
+
+function loadPlatformStats() {
+  fetch(resolveApiUrl('/api/graph/stats'))
+    .then((response) => response.json())
+    .then((result) => {
+      if (!result?.success || !result.data) return;
+      setTextIfExists('heroGraphNodeCount', result.data.nodeCount ?? '--');
+      setTextIfExists('overviewGraphNodeCount', result.data.nodeCount ?? '--');
+      setTextIfExists('overviewGraphLinkCount', result.data.linkCount ?? '--');
+    })
+    .catch((error) => {
+      console.error('加载图谱统计失败:', error);
+    });
+
+  fetch(resolveApiUrl('/api/dashboard/overview-stats'))
+    .then((response) => response.json())
+    .then((result) => {
+      if (!result?.success || !result.data) return;
+      setTextIfExists('overviewStationCount', result.data.monitoring_stations ?? '--');
+    })
+    .catch((error) => {
+      console.error('加载平台概览统计失败:', error);
+    });
+}
+
+function loadData() {
+  fetch(resolveApiUrl('/api/water-quality/latest'))
+    .then((response) => response.json())
+    .then((data) => {
+      if (!data.success || !Array.isArray(data.data) || data.data.length === 0) return;
+
+      const total = data.data.reduce(
+        (acc, item) => ({
+          cod: acc.cod + (item.cod || 0),
+          ammonia: acc.ammonia + (item.ammonia_nitrogen || 0),
+        }),
+        { cod: 0, ammonia: 0 },
+      );
+
+      const avgCOD = total.cod / data.data.length;
+      const avgAmmonia = total.ammonia / data.data.length;
+
+      const codElement = document.querySelector('.stat-card:nth-child(1) .text-4xl');
+      const codBar = document.querySelector('.stat-card:nth-child(1) .h-full');
+      if (codElement) codElement.textContent = avgCOD.toFixed(0);
+      if (codBar) codBar.style.width = `${Math.min((avgCOD / 40) * 100, 100)}%`;
+
+      const ammoniaElement = document.querySelector('.stat-card:nth-child(2) .text-4xl');
+      const ammoniaBar = document.querySelector('.stat-card:nth-child(2) .h-full');
+      if (ammoniaElement) ammoniaElement.textContent = avgAmmonia.toFixed(2);
+      if (ammoniaBar) ammoniaBar.style.width = `${Math.min((avgAmmonia / 5) * 100, 100)}%`;
+    })
+    .catch((error) => {
+      console.error('加载水质数据失败:', error);
+    });
 }
 
 export default function App() {
   useEffect(() => {
-    if (basePath !== '/') {
-      window.location.replace(withBase('/pages/index.html'));
-    }
+    document.title = '海河六域 - 流域水质时空演变与知识图谱智能治理系统';
+
+    document.querySelectorAll('[data-page-link]').forEach((link) => {
+      const target = link.getAttribute('data-page-link');
+      if (target) link.setAttribute('href', `${pageBase}${target}`);
+    });
+
+    const currentUser = localStorage.getItem('token')
+      ? getStoredUserInfo()
+      : { username: '访客', role: '未登录' };
+    const displayName = String(currentUser.nickname || currentUser.name || currentUser.username || '访客')
+      .replace(/\.?用户$/u, '')
+      .trim();
+    setTextIfExists('userName', displayName || '访客');
+
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const userMenu = document.getElementById('userMenu');
+    const logoutLinks = document.querySelectorAll('[data-logout-link]');
+
+    const toggleMobileMenu = () => mobileMenu?.classList.toggle('hidden');
+    const toggleUserMenu = () => userMenu?.classList.toggle('hidden');
+    const closeMenus = (event) => {
+      if (!event.target.closest('#userMenuBtn') && !event.target.closest('#userMenu')) {
+        userMenu?.classList.add('hidden');
+      }
+      if (!event.target.closest('#mobileMenuBtn') && !event.target.closest('#mobileMenu')) {
+        mobileMenu?.classList.add('hidden');
+      }
+    };
+    const logout = (event) => {
+      event.preventDefault();
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      window.location.href = `${pageBase}login.html`;
+    };
+
+    mobileMenuBtn?.addEventListener('click', toggleMobileMenu);
+    userMenuBtn?.addEventListener('click', toggleUserMenu);
+    document.addEventListener('click', closeMenus);
+    logoutLinks.forEach((link) => link.addEventListener('click', logout));
+
+    const cleanupParticles = initParticles();
+    loadData();
+    loadPlatformStats();
+
+    return () => {
+      mobileMenuBtn?.removeEventListener('click', toggleMobileMenu);
+      userMenuBtn?.removeEventListener('click', toggleUserMenu);
+      document.removeEventListener('click', closeMenus);
+      logoutLinks.forEach((link) => link.removeEventListener('click', logout));
+      cleanupParticles?.();
+    };
   }, []);
 
-  return (
-    <div className="app-shell">
-      <header className="site-header">
-        <a className="brand" href={withBase('/pages/index.html')} aria-label="海河六域首页">
-          <span className="brand-mark">
-            <Waves aria-hidden="true" size={24} />
-          </span>
-          <span>
-            <strong>海河六域</strong>
-            <small>流域水质时空演变与知识图谱智能治理系统</small>
-          </span>
-        </a>
-        <nav className="site-nav" aria-label="主导航">
-          {navItems.map((item) => (
-            <NavLink key={item.label} item={item} />
-          ))}
-        </nav>
-      </header>
-
-      <main>
-        <section className="hero">
-          <div className="hero-copy">
-            <div className="eyebrow">
-              <Sparkles aria-hidden="true" size={16} />
-              <span>React 前端框架已接入</span>
-            </div>
-            <h1>海河六域</h1>
-            <p>
-              面向海河流域水质监测、图谱溯源和治理推演的业务前端。当前 React
-              版本先提供首页、工程化构建和旧页面入口，后续可逐页组件化迁移。
-            </p>
-            <div className="hero-actions">
-              <a className="primary-action" href={withBase('/pages/sandbox.html')}>
-                打开推演沙盘
-                <ArrowRight aria-hidden="true" size={18} />
-              </a>
-              <a className="secondary-action" href={withBase('/pages/dashboard.html')}>
-                查看数据大屏
-              </a>
-            </div>
-          </div>
-          <BasinVisual />
-        </section>
-
-        <section className="capability-grid" aria-label="核心能力">
-          {capabilities.map((item) => (
-            <Capability key={item.title} item={item} />
-          ))}
-        </section>
-      </main>
-    </div>
-  );
+  return <div dangerouslySetInnerHTML={{ __html: legacyHomeMarkup }} />;
 }
