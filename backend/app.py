@@ -1,4 +1,3 @@
-# AI辅助生成：豆包-专家版, 2026-03-28
 """Flask entry point for the Haihe knowledge graph project."""
 
 import os

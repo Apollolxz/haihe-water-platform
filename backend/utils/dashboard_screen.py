@@ -1,4 +1,3 @@
-# AI辅助生成：豆包-专家版, 2026-04-11
 from collections import defaultdict
 from datetime import datetime, timedelta
 
