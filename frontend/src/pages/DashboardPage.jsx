@@ -38,7 +38,7 @@ function DashboardHeader() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10 dashboard-topbar">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10 dashboard-topbar scrollbar-safe-topbar">
       <div className="w-full px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-3 group">
@@ -172,9 +172,6 @@ function DashHeaderPanel() {
   return (
     <div className="dash-header">
       <div className="dash-header-left">
-        <div className="dash-title-group">
-          <h1 id="pageTitle">海河流域水质数据大屏</h1>
-        </div>
         <div className="scope-badge" id="currentScope">
           全流域宏观水质总览
         </div>
@@ -305,6 +302,7 @@ function RightPanels() {
 
 function HiddenDashboardMounts() {
   const ids = [
+    'pageTitle',
     'indicatorWindow',
     'indicatorNotes',
     'scopeScore',

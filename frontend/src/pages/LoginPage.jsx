@@ -40,30 +40,10 @@ export default function LoginPage({ page, pageName }) {
             登录后即可进入数据大屏、流域时空推演沙盘、知识图谱与智能问答，在同一平台内完成态势查看、推演决策与图谱溯源。
           </p>
           <div className="grid grid-cols-2 gap-4 mt-8">
-            <FeatureItem
-              icon="fa-database text-primary"
-              iconColor="bg-primary/20"
-              title="数据大屏"
-              description="查看全局态势分析"
-            />
-            <FeatureItem
-              icon="fa-sitemap text-secondary"
-              iconColor="bg-secondary/20"
-              title="推演沙盘"
-              description="联动 AI 决策结果"
-            />
-            <FeatureItem
-              icon="fa-bar-chart text-primary"
-              iconColor="bg-primary/20"
-              title="知识图谱"
-              description="追踪上游溯源链路"
-            />
-            <FeatureItem
-              icon="fa-users text-secondary"
-              iconColor="bg-secondary/20"
-              title="智能问答"
-              description="快速获得解释辅助"
-            />
+            <FeatureItem icon="fa-database text-primary" iconColor="bg-primary/20" title="数据大屏" description="查看全局态势分析" />
+            <FeatureItem icon="fa-sitemap text-secondary" iconColor="bg-secondary/20" title="推演沙盘" description="联动 AI 决策结果" />
+            <FeatureItem icon="fa-bar-chart text-primary" iconColor="bg-primary/20" title="知识图谱" description="追踪上游溯源链路" />
+            <FeatureItem icon="fa-users text-secondary" iconColor="bg-secondary/20" title="智能问答" description="快速获得解释辅助" />
           </div>
         </div>
 
@@ -117,37 +97,21 @@ export default function LoginPage({ page, pageName }) {
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    name="remember"
-                    className="h-4 w-4 text-primary focus:ring-primary border-dark-lighter rounded"
-                  />
+                  <input type="checkbox" id="remember" name="remember" className="h-4 w-4 text-primary focus:ring-primary border-dark-lighter rounded" />
                   <label htmlFor="remember" className="ml-2 block text-sm text-gray-400">
                     记住密码
                   </label>
                 </div>
-                <a
-                  href="forgot-password.html"
-                  data-page-link="forgot-password.html"
-                  className="text-sm text-primary hover:text-white transition-colors"
-                >
+                <a href="forgot-password.html" data-page-link="forgot-password.html" className="text-sm text-primary hover:text-white transition-colors">
                   忘记密码?
                 </a>
               </div>
-              <button
-                type="submit"
-                className="w-full bg-gradient-water text-white py-3 px-6 rounded-lg hover:opacity-90 transition-opacity font-medium"
-              >
+              <button type="submit" className="w-full bg-gradient-water text-white py-3 px-6 rounded-lg hover:opacity-90 transition-opacity font-medium">
                 登录并进入平台
               </button>
               <div className="text-center text-sm">
                 <span className="text-gray-400">还没有账号?</span>
-                <a
-                  href="register.html"
-                  data-page-link="register.html"
-                  className="text-primary font-medium hover:text-white ml-1 transition-colors"
-                >
+                <a href="register.html" data-page-link="register.html" className="text-primary font-medium hover:text-white ml-1 transition-colors">
                   立即注册
                 </a>
               </div>

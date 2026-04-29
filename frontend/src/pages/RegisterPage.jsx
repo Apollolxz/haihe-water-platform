@@ -42,13 +42,7 @@ function TextInput({ id, name = id, type = 'text', label, icon, placeholder }) {
 function RoleOption({ value, label, required = false }) {
   return (
     <label className="flex items-center space-x-2 cursor-pointer">
-      <input
-        type="radio"
-        name="tag"
-        value={value}
-        className="h-4 w-4 text-primary focus:ring-primary border-dark-lighter"
-        required={required}
-      />
+      <input type="radio" name="tag" value={value} className="h-4 w-4 text-primary focus:ring-primary border-dark-lighter" required={required} />
       <span className="text-sm text-gray-400">{label}</span>
     </label>
   );
@@ -62,7 +56,7 @@ export default function RegisterPage({ page, pageName }) {
       <style>{authPageStyles}</style>
       <AuthBackground />
 
-      <div className="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-center relative z-10">
+      <div className="min-h-screen w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-center justify-center px-4 py-10 relative z-10">
         <div className="w-full md:w-1/2 space-y-6 animate-fade-in">
           <div className="flex items-center space-x-3 group">
             <div className="w-12 h-12 rounded-full bg-gradient-water flex items-center justify-center animate-float group-hover:animate-glow">
@@ -82,39 +76,17 @@ export default function RegisterPage({ page, pageName }) {
             注册后即可统一访问数据大屏、流域时空推演沙盘、知识图谱和智能问答，形成从分析、推演到溯源解释的一体化使用体验。
           </p>
           <div className="grid grid-cols-2 gap-4 mt-8">
-            <FeatureItem
-              icon="fa-share-alt text-primary"
-              iconColor="bg-primary/20"
-              title="多维分析"
-              description="查看省市与指标趋势"
-            />
-            <FeatureItem
-              icon="fa-comments text-secondary"
-              iconColor="bg-secondary/20"
-              title="推演决策"
-              description="进入沙盘联动 AI"
-            />
-            <FeatureItem
-              icon="fa-line-chart text-primary"
-              iconColor="bg-primary/20"
-              title="图谱溯源"
-              description="查看上游链路关系"
-            />
-            <FeatureItem
-              icon="fa-lightbulb-o text-secondary"
-              iconColor="bg-secondary/20"
-              title="智能问答"
-              description="获得页面与指标解释"
-            />
+            <FeatureItem icon="fa-share-alt text-primary" iconColor="bg-primary/20" title="多维分析" description="查看省市与指标趋势" />
+            <FeatureItem icon="fa-comments text-secondary" iconColor="bg-secondary/20" title="推演决策" description="进入沙盘联动 AI" />
+            <FeatureItem icon="fa-line-chart text-primary" iconColor="bg-primary/20" title="图谱溯源" description="查看上游链路关系" />
+            <FeatureItem icon="fa-lightbulb-o text-secondary" iconColor="bg-secondary/20" title="智能问答" description="获得页面与指标解释" />
           </div>
         </div>
 
         <div className="w-full md:w-1/2 animate-slide-up">
           <div className="card-glass rounded-2xl p-8 border border-white/10 card-shadow">
             <h2 className="text-2xl font-bold text-center text-white mb-2">创建平台账号</h2>
-            <p className="text-center text-sm text-gray-400 mb-6">
-              完成注册后即可登录并访问当前项目全部核心页面
-            </p>
+            <p className="text-center text-sm text-gray-400 mb-6">完成注册后即可登录并访问当前项目全部核心页面</p>
             <form id="registerForm" className="space-y-6">
               <TextInput id="username" label="账号" icon="fa-user" placeholder="请设置账号" />
 
@@ -144,13 +116,7 @@ export default function RegisterPage({ page, pageName }) {
                 </div>
               </div>
 
-              <TextInput
-                id="confirmPassword"
-                type="password"
-                label="确认密码"
-                icon="fa-lock"
-                placeholder="请再次输入密码"
-              />
+              <TextInput id="confirmPassword" type="password" label="确认密码" icon="fa-lock" placeholder="请再次输入密码" />
               <TextInput id="email" type="email" label="邮箱" icon="fa-envelope" placeholder="请输入邮箱" />
 
               <div>
@@ -171,11 +137,7 @@ export default function RegisterPage({ page, pageName }) {
                       required
                     />
                   </div>
-                  <button
-                    type="button"
-                    id="sendCodeBtn"
-                    className="px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors whitespace-nowrap"
-                  >
+                  <button type="button" id="sendCodeBtn" className="px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors whitespace-nowrap">
                     发送验证码
                   </button>
                 </div>
@@ -194,13 +156,7 @@ export default function RegisterPage({ page, pageName }) {
               </div>
 
               <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="agreeTerms"
-                  name="agreeTerms"
-                  className="h-4 w-4 text-primary focus:ring-primary border-dark-lighter rounded"
-                  required
-                />
+                <input type="checkbox" id="agreeTerms" name="agreeTerms" className="h-4 w-4 text-primary focus:ring-primary border-dark-lighter rounded" required />
                 <label htmlFor="agreeTerms" className="ml-2 block text-sm text-gray-400">
                   我已阅读并同意
                   <a href="#" className="text-primary hover:underline">
@@ -213,19 +169,12 @@ export default function RegisterPage({ page, pageName }) {
                 </label>
               </div>
 
-              <button
-                type="submit"
-                className="w-full bg-gradient-water text-white py-3 px-6 rounded-lg hover:opacity-90 transition-opacity font-medium"
-              >
+              <button type="submit" className="w-full bg-gradient-water text-white py-3 px-6 rounded-lg hover:opacity-90 transition-opacity font-medium">
                 创建账号
               </button>
               <div className="text-center text-sm">
                 <span className="text-gray-400">已有账号?</span>
-                <a
-                  href="login.html"
-                  data-page-link="login.html"
-                  className="text-primary font-medium hover:text-white ml-1 transition-colors"
-                >
+                <a href="login.html" data-page-link="login.html" className="text-primary font-medium hover:text-white ml-1 transition-colors">
                   立即登录
                 </a>
               </div>

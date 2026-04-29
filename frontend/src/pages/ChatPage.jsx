@@ -35,6 +35,8 @@ const chatStyles = `.bg-gradient-eco {
             }
             .nav-link {
                 position: relative;
+                display: inline-flex;
+                align-items: center;
                 padding: 0.5rem 1rem;
                 color: #9ca3af;
                 transition: color 300ms ease;
@@ -43,24 +45,25 @@ const chatStyles = `.bg-gradient-eco {
                 content: '';
                 position: absolute;
                 bottom: 0;
-                left: 0;
+                left: 50%;
                 width: 0;
                 height: 2px;
                 background: #06b6d4;
+                transform: translateX(-50%);
                 transition: width 300ms ease;
             }
             .nav-link:hover {
                 color: #06b6d4;
             }
             .nav-link:hover::after {
-                width: 100%;
+                width: calc(100% - 2rem);
             }
             .nav-link.active {
                 color: #06b6d4;
                 font-weight: 500;
             }
             .nav-link.active::after {
-                width: 100%;
+                width: calc(100% - 2rem);
             }
             .nav-core {
                 position: relative;

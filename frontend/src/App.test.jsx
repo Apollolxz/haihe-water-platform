@@ -1,21 +1,33 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, test } from 'vitest';
+import { cleanup, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import App from './App.jsx';
+
+vi.mock('./pages/dashboardRuntime.js', () => ({ initDashboardRuntime: vi.fn() }));
+vi.mock('./pages/sandboxRuntime.js', () => ({ initSandboxRuntime: vi.fn() }));
+vi.mock('./pages/knowledgeGraphRuntime.js', () => ({ initKnowledgeGraphRuntime: vi.fn() }));
+vi.mock('./pages/boxplotAnalysisRuntime.js', () => ({ initBoxplotAnalysisRuntime: vi.fn() }));
+vi.mock('./pages/correlationAnalysisRuntime.js', () => ({ initCorrelationAnalysisRuntime: vi.fn() }));
+vi.mock('./pages/provinceComparisonRuntime.js', () => ({ initProvinceComparisonRuntime: vi.fn() }));
+vi.mock('./pages/trendAnalysisRuntime.js', () => ({ initTrendAnalysisRuntime: vi.fn() }));
+
+afterEach(() => {
+  cleanup();
+  window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/index.html');
+});
 
 describe('React legacy home shell', () => {
   test('renders the legacy business homepage through React', () => {
+    window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/index.html');
     render(<App />);
 
     expect(screen.getAllByRole('heading', { name: '海河六域' }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /数据大屏/ })[0]).toHaveAttribute('href', '/pages/dashboard.html');
-    expect(screen.getAllByRole('link', { name: /流域时空推演沙盘/ })[0]).toHaveAttribute(
-      'href',
-      '/pages/sandbox.html',
-    );
+    expect(screen.getAllByRole('link', { name: /流域时空推演沙盘/ })[0]).toHaveAttribute('href', '/pages/sandbox.html');
     expect(screen.getAllByRole('link', { name: /智能问答/ })[0]).toHaveAttribute('href', '/pages/chat.html');
   });
 
   test('renders the hand-authored homepage data hooks through React', () => {
+    window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/index.html');
     render(<App />);
 
     expect(document.getElementById('particleCanvas')).toBeInTheDocument();
@@ -27,19 +39,14 @@ describe('React legacy home shell', () => {
 
   test('renders legacy subpages through React based on the current URL', () => {
     window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/dashboard.html');
-
     render(<App />);
 
     expect(screen.getAllByText('数据大屏').length).toBeGreaterThan(0);
-    expect(screen.getAllByRole('link', { name: /流域时空推演沙盘/ })[0]).toHaveAttribute(
-      'href',
-      '/pages/sandbox.html',
-    );
+    expect(screen.getAllByRole('link', { name: /流域时空推演沙盘/ })[0]).toHaveAttribute('href', '/pages/sandbox.html');
   });
 
   test('renders the hand-authored dashboard mount points through React', () => {
     window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/dashboard.html');
-
     render(<App />);
 
     expect(screen.getAllByText('数据大屏').length).toBeGreaterThan(0);
@@ -60,7 +67,6 @@ describe('React legacy home shell', () => {
     ['trend-analysis.html', 'doChart', 'seasonChart', 'trendConclusion'],
   ])('renders the hand-authored %s mount points through React', (pageName, ...ids) => {
     window.history.replaceState(null, '', `http://127.0.0.1:8000/pages/${pageName}`);
-
     render(<App />);
 
     ids.forEach((id) => {
@@ -70,7 +76,6 @@ describe('React legacy home shell', () => {
 
   test('renders the hand-authored login page through React', () => {
     window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/login.html');
-
     render(<App />);
 
     expect(screen.getByRole('heading', { name: '登录海河六域' })).toBeInTheDocument();
@@ -81,7 +86,6 @@ describe('React legacy home shell', () => {
 
   test('renders the hand-authored forgot password page through React', () => {
     window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/forgot-password.html');
-
     render(<App />);
 
     expect(screen.getByRole('heading', { name: '重置登录密码' })).toBeInTheDocument();
@@ -92,7 +96,6 @@ describe('React legacy home shell', () => {
 
   test('renders the hand-authored register page through React', () => {
     window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/register.html');
-
     render(<App />);
 
     expect(screen.getByRole('heading', { name: '创建平台账号' })).toBeInTheDocument();
@@ -105,7 +108,6 @@ describe('React legacy home shell', () => {
 
   test('renders the hand-authored chat page through React', () => {
     window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/chat.html');
-
     render(<App />);
 
     expect(screen.getByRole('heading', { name: '流域智能问答助手' })).toBeInTheDocument();
@@ -117,7 +119,6 @@ describe('React legacy home shell', () => {
 
   test('renders the hand-authored profile page through React', () => {
     window.history.replaceState(null, '', 'http://127.0.0.1:8000/pages/profile.html');
-
     render(<App />);
 
     expect(screen.getByRole('heading', { name: '个人中心' })).toBeInTheDocument();

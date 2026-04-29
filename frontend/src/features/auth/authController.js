@@ -14,6 +14,10 @@ function ensureParticles() {
 }
 
 function initParticleBackground() {
+  if (import.meta.env.MODE === 'test') {
+    return undefined;
+  }
+
   if (!$('particles-js')) {
     return undefined;
   }

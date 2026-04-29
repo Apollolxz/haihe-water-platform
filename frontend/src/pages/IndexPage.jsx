@@ -1,92 +1,12 @@
 import { loadHomeData, loadPlatformStats } from '../features/home/homeData.js';
 import { useLegacyPageRuntime } from './useLegacyPageRuntime.js';
 
-const homeStyles = `@layer utilities {
-            .bg-gradient-water {
-                background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #22c55e 100%);
-            }
-            .bg-gradient-dark {
-                background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-            }
-            .text-gradient {
-                background-clip: text;
-                -webkit-background-clip: text;
-                color: transparent;
-                background-image: linear-gradient(135deg, #0ea5e9 0%, #22c55e 100%);
-            }
-            .card-glass {
-                background: rgba(255, 255, 255, 0.05);
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            .card-shadow {
-                box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.3);
-            }
-            .nav-link {
-                @apply relative px-4 py-2 text-gray-300 hover:text-white transition-all duration-300;
-            }
-            .nav-link::after {
-                content: '';
-                @apply absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-water transition-all duration-300;
-                transform: translateX(-50%);
-            }
-            .nav-link:hover::after,
-            .nav-link.active::after {
-                @apply w-full;
-            }
-            .nav-link.active {
-                @apply text-white font-medium;
-            }
-            .nav-core {
-                @apply relative px-5 py-2 rounded-full text-white font-semibold text-sm shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 flex items-center;
-                background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #22c55e 100%);
-                animation: glow-pulse 2s infinite;
-            }
-            @keyframes glow-pulse {
-                0%, 100% { box-shadow: 0 0 8px rgba(14,165,233,0.6); transform: scale(1); }
-                50% { box-shadow: 0 0 20px rgba(14,165,233,0.9); transform: scale(1.02); }
-            }
-            .btn-primary {
-                @apply px-6 py-3 bg-gradient-water text-white rounded-lg font-medium transition-all duration-300;
-                box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
-            }
-            .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(14, 165, 233, 0.6);
-            }
-            .btn-secondary {
-                @apply px-6 py-3 border-2 border-white/30 text-white rounded-lg font-medium transition-all duration-300 backdrop-blur-sm;
-            }
-            .btn-secondary:hover {
-                background: rgba(255, 255, 255, 0.1);
-                border-color: rgba(255, 255, 255, 0.5);
-            }
-            .feature-card {
-                @apply p-6 rounded-2xl transition-all duration-500;
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-            }
-            .feature-card:hover {
-                transform: translateY(-10px);
-                background: rgba(255, 255, 255, 0.08);
-                border-color: rgba(14, 165, 233, 0.3);
-                box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
-            }
-            .stat-card {
-                @apply p-6 rounded-xl;
-                background: linear-gradient(145deg, rgba(14, 165, 233, 0.1) 0%, rgba(34, 197, 94, 0.1) 100%);
-                border: 1px solid rgba(14, 165, 233, 0.2);
-            }
-            .water-wave {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 200%;
-                height: 100px;
-                background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230ea5e9' fill-opacity='0.1' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
-                animation: wave 8s linear infinite;
-            }
-        }`;
+const homeStyles = `
+body {
+  background-color: #0f172a;
+  overflow-x: hidden;
+}
+`;
 
 function PageLink({ href, className, children }) {
   return (
@@ -96,17 +16,17 @@ function PageLink({ href, className, children }) {
   );
 }
 
-function HomeHeader() {
-  const links = [
-    ['index.html', 'fa-home', '首页', 'nav-link active'],
-    ['dashboard.html', 'fa-dashboard', '数据大屏', 'nav-link'],
-    ['sandbox.html', 'fa-globe', '流域时空推演沙盘', 'nav-core mx-2'],
-    ['knowledge-graph.html', 'fa-project-diagram', '知识图谱', 'nav-link'],
-    ['chat.html', 'fa-robot', '智能问答', 'nav-link'],
-  ];
+const navLinks = [
+  ['index.html', 'fa-home', '首页', 'nav-link active'],
+  ['dashboard.html', 'fa-dashboard', '数据大屏', 'nav-link'],
+  ['sandbox.html', 'fa-globe', '流域时空推演沙盘', 'nav-core mx-2'],
+  ['knowledge-graph.html', 'fa-project-diagram', '知识图谱', 'nav-link'],
+  ['chat.html', 'fa-comments-o', '智能问答', 'nav-link'],
+];
 
+function HomeHeader() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10 scrollbar-safe-topbar">
       <div className="w-full px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-3 group">
@@ -120,7 +40,7 @@ function HomeHeader() {
           </div>
 
           <nav className="hidden md:flex space-x-1">
-            {links.map(([href, icon, label, className]) => (
+            {navLinks.map(([href, icon, label, className]) => (
               <PageLink href={href} className={className} key={href}>
                 <i className={`fa ${icon} mr-2`}></i>
                 <span>{label}</span>
@@ -188,7 +108,7 @@ function HomeHeader() {
 
       <div className="md:hidden bg-dark-light border-t border-white/10 hidden" id="mobileMenu">
         <div className="container mx-auto px-4 py-2 space-y-1">
-          {links.map(([href, icon, label, className]) => (
+          {navLinks.map(([href, icon, label, className]) => (
             <PageLink
               href={href}
               className={
@@ -262,9 +182,13 @@ function Hero() {
                 <div className="space-y-4">
                   <EntryCard href="dashboard.html" icon="fa-bar-chart" color="blue" title="数据大屏" desc="趋势分析与多维对比" tag="实时查看" meta="dashboard" />
                   <EntryCard href="sandbox.html" icon="fa-globe" color="cyan" title="时空推演沙盘" desc="风险模拟与 AI 决策" tag="核心入口" meta="sandbox" />
-                  <EntryCard href="knowledge-graph.html" icon="fa-share-alt" color="teal" title="知识图谱" desc="上游链路与超标溯源" tag="图谱联动" meta="graph" />
-                  <EntryCard href="chat.html" icon="fa-robot" color="green" title="智能问答" desc="页面使用与指标解释" tag="辅助解释" meta="chat" />
+                  <EntryCard href="knowledge-graph.html" icon="fa-share-alt" color="teal" title="知识图谱" desc="上游链路与超标溯源" tag="图谱联动" meta="neo4j" />
+                  <EntryCard href="chat.html" icon="fa-comments-o" color="green" title="智能问答" desc="DeepSeek 与本地知识协同" tag="即时问答" meta="chat" />
                 </div>
+                <PageLink href="sandbox.html" className="mt-6 flex items-center justify-center space-x-2 text-primary hover:text-white transition-colors">
+                  <span>从流域时空推演沙盘开始体验</span>
+                  <i className="fa fa-arrow-right"></i>
+                </PageLink>
               </div>
             </div>
           </div>
@@ -313,32 +237,106 @@ function EntryCard({ href, icon, color, title, desc, tag, meta }) {
   );
 }
 
-function Overview() {
+function SectionTitle({ title, children }) {
+  return (
+    <div className="text-center mb-16">
+      <h2 className="text-4xl font-bold text-white mb-4">{title}</h2>
+      {children ? <p className="text-gray-400 max-w-2xl mx-auto">{children}</p> : null}
+    </div>
+  );
+}
+
+function CoreFeatures() {
+  const features = [
+    ['dashboard.html', 'fa-line-chart', 'blue', '数据大屏', '查看海河流域水质指标的时序变化、相关性、热力分布和省市对比。'],
+    ['sandbox.html', 'fa-globe', 'cyan', '流域时空推演沙盘', '按省市、模型和时间进行风险推演，并联动 AI 决策辅助分析。'],
+    ['knowledge-graph.html', 'fa-share-alt', 'teal', '知识图谱', '查看污染物、监测站点和上游链路之间的关系，支持超标溯源。'],
+    ['chat.html', 'fa-comments-o', 'green', '智能问答', '围绕页面使用、指标解释和治理思路进行快速问答。'],
+  ];
+
   return (
     <section className="py-24 relative">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">平台运行概览</h2>
-          <p className="text-gray-400">首页保留实时统计挂载点，继续由后端数据驱动关键数值。</p>
-        </div>
+        <SectionTitle title="核心功能" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard icon="fa-tint" color="blue" value="--" label="COD 均值" width="40%" />
-          <StatCard icon="fa-flask" color="cyan" value="--" label="氨氮均值" width="30%" />
-          <StatCard icon="fa-share-alt" color="green" value="--" label="知识节点" width="72%" id="overviewGraphNodeCount" />
-          <StatCard icon="fa-check-circle" color="teal" value="--" label="关系链路" width="88%" id="overviewGraphLinkCount" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-          <StatCard icon="fa-database" color="cyan" value="--" label="监测站点" width="40%" id="overviewStationCount" />
-          <StatCard icon="fa-globe" color="green" value="6" label="覆盖省市" width="60%" />
-          <StatCard icon="fa-cubes" color="blue" value="4" label="核心模块" width="100%" />
-          <StatCard icon="fa-bolt" color="teal" value="AI" label="决策辅助" width="80%" />
+          {features.map(([href, icon, color, title, desc]) => {
+            const [bg, text] = colorClass[color];
+            return (
+              <PageLink href={href} className="feature-card group block" key={href}>
+                <div className={`w-14 h-14 rounded-xl ${bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                  <i className={`fa ${icon} ${text} text-2xl`}></i>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-3">{title}</h3>
+                <p className="text-gray-400 mb-4">{desc}</p>
+                <span className="text-primary text-sm font-medium">
+                  进入页面 <i className="fa fa-arrow-right ml-1"></i>
+                </span>
+              </PageLink>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
 
-function StatCard({ icon, color, value, label, width, id }) {
+function BusinessLoop() {
+  const steps = [
+    ['01', 'fa-database', '数据接入', '汇聚监测站点、水质指标和时间序列数据。'],
+    ['02', 'fa-area-chart', '态势分析', '通过大屏快速识别重点区域、指标和变化趋势。'],
+    ['03', 'fa-globe', '时空推演', '在沙盘中进行模型推演和风险场景模拟。'],
+    ['04', 'fa-share-alt', '图谱溯源', '利用知识图谱追踪上游链路和超标关联。'],
+    ['05', 'fa-comments-o', '问答解释', '用智能问答补充指标含义、页面使用和治理建议。'],
+  ];
+
+  return (
+    <section className="py-24 relative bg-dark-light/50">
+      <div className="container mx-auto px-4">
+        <SectionTitle title="平台业务闭环" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {steps.map(([number, icon, title, desc]) => (
+            <div className="relative group" key={number}>
+              <div className="feature-card h-full">
+                <div className="flex items-center justify-between mb-5">
+                  <span className="text-3xl font-bold text-white/10">{number}</span>
+                  <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+                    <i className={`fa ${icon} text-primary text-xl`}></i>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-3">{title}</h3>
+                <p className="text-sm text-gray-400">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Overview() {
+  const stats = [
+    ['fa-map', 'blue', '6', '省市协同分析', '区域联动', '60%'],
+    ['fa-database', 'cyan', '--', '监测站点', '监测接入', '40%', 'overviewStationCount'],
+    ['fa-share-alt', 'green', '--', '知识节点', '图谱在线', '72%', 'overviewGraphNodeCount'],
+    ['fa-link', 'teal', '--', '关系链路', '溯源分析', '88%', 'overviewGraphLinkCount'],
+  ];
+
+  return (
+    <section className="py-24 relative">
+      <div className="container mx-auto px-4">
+        <SectionTitle title="平台能力概览" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {stats.map(([icon, color, value, label, status, width, id]) => (
+            <StatCard icon={icon} color={color} value={value} label={label} status={status} width={width} id={id} key={label} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StatCard({ icon, color, value, label, status, width, id }) {
   const [bg, text] = colorClass[color];
   return (
     <div className="stat-card group hover:scale-105 transition-transform duration-300">
@@ -347,7 +345,8 @@ function StatCard({ icon, color, value, label, width, id }) {
           <i className={`fa ${icon} ${text} text-xl`}></i>
         </div>
         <span className="text-xs text-green-400 flex items-center">
-          <i className="fa fa-circle mr-1"></i>在线
+          <i className="fa fa-circle mr-1"></i>
+          {status}
         </span>
       </div>
       <p className="text-4xl font-bold text-white mb-1" id={id}>
@@ -371,9 +370,7 @@ function Scenarios() {
   return (
     <section className="py-24 relative bg-dark-light/50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">典型使用场景</h2>
-        </div>
+        <SectionTitle title="典型使用场景" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cards.map(([icon, gradient, title, desc, tag, href]) => (
             <div className="feature-card group" key={title}>
@@ -401,6 +398,40 @@ function Scenarios() {
   );
 }
 
+function KnowledgeGraphLinks() {
+  const cards = [
+    ['fa-search', '站点溯源', '从监测站点出发，查看上游站点、行政区和污染物之间的关联路径。'],
+    ['fa-warning', '超标查询', '围绕异常指标查看可能关联的上下游节点，辅助定位风险来源。'],
+    ['fa-random', '沙盘联动', '将图谱中识别出的重点区域带入时空推演沙盘，继续进行情景模拟。'],
+  ];
+
+  return (
+    <section className="py-24 relative">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between mb-12">
+          <div>
+            <h2 className="text-4xl font-bold text-white mb-2">知识图谱联动能力</h2>
+          </div>
+          <PageLink href="knowledge-graph.html" className="btn-secondary">
+            查看完整图谱 <i className="fa fa-arrow-right ml-2"></i>
+          </PageLink>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {cards.map(([icon, title, desc]) => (
+            <div className="feature-card" key={title}>
+              <div className="w-12 h-12 rounded-xl bg-teal-500/20 flex items-center justify-center mb-5">
+                <i className={`fa ${icon} text-teal-400 text-xl`}></i>
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">{title}</h3>
+              <p className="text-gray-400">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CTA() {
   return (
     <section className="py-24 relative">
@@ -411,7 +442,7 @@ function CTA() {
           <div className="relative p-12 md:p-16 text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">从首页直达核心模块</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-              先看全局态势，再做时空推演、图谱溯源和智能解释，让首页成为当前项目的统一入口。
+              先看全局态势，再做时空推演、图谱溯源和智能解释，让首页真正成为现在这个项目的起点。
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <PageLink href="sandbox.html" className="btn-primary text-lg px-8 py-4">
@@ -441,7 +472,7 @@ function HomeFooter() {
               <h3 className="text-lg font-semibold text-white">海河六域</h3>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              面向海河流域水质分析与治理决策，整合数据大屏、时空推演、知识图谱与智能问答，形成统一的项目首页入口。
+              面向海河流域水质分析与治理决策，整合数据大屏、时空推演、知识图谱与智能问答。
             </p>
           </div>
           <div>
@@ -498,8 +529,11 @@ export default function IndexPage({ page }) {
       <HomeHeader />
       <main className="pt-16 relative">
         <Hero />
+        <CoreFeatures />
+        <BusinessLoop />
         <Overview />
         <Scenarios />
+        <KnowledgeGraphLinks />
         <CTA />
       </main>
       <HomeFooter />
