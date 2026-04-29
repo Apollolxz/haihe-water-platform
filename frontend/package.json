@@ -5,18 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 8000",
-    "build": "node scripts/generate-react-page-components.mjs && vite build && node scripts/copy-legacy-assets.mjs",
-    "build:pages": "node scripts/generate-react-page-components.mjs && vite build --base=/haihe-water-platform/ && node scripts/copy-legacy-assets.mjs",
+    "build": "vite build && node scripts/prepare-static-build.mjs",
+    "build:pages": "vite build --base=/haihe-water-platform/ && node scripts/prepare-static-build.mjs",
     "preview": "vite preview --host 0.0.0.0 --port 8000",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.1",
+    "echarts": "^6.0.0",
     "lucide-react": "^0.561.0",
+    "particles.js": "^2.0.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router-dom": "^7.11.0",
+    "vis-network": "^10.0.2",
     "vite": "^7.2.7"
   },
   "devDependencies": {

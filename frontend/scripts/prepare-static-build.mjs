@@ -1,19 +1,25 @@
-import { copyFile, cp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = resolve(rootDir, 'dist');
-const pagesDir = resolve(rootDir, 'pages');
 
-const staticPaths = [
-  'assets',
-  'components',
-  'config',
-  'layouts',
-  'services',
-  'state',
-  'utils',
+const staticPaths = ['assets'];
+const pageFiles = [
+  'boxplot-analysis.html',
+  'chat.html',
+  'correlation-analysis.html',
+  'dashboard.html',
+  'forgot-password.html',
+  'index.html',
+  'knowledge-graph.html',
+  'login.html',
+  'profile.html',
+  'province-comparison.html',
+  'register.html',
+  'sandbox.html',
+  'trend-analysis.html',
 ];
 
 await mkdir(distDir, { recursive: true });
@@ -30,7 +36,6 @@ await Promise.all(
 );
 
 const appShell = await readFile(resolve(distDir, 'index.html'), 'utf8');
-const pageFiles = (await readdir(pagesDir)).filter((file) => file.endsWith('.html'));
 const distPagesDir = resolve(distDir, 'pages');
 
 await mkdir(distPagesDir, { recursive: true });

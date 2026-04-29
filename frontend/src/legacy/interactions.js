@@ -1,21 +1,14 @@
-import { initAuthPageInteractions } from '../features/auth/authController.js';
-import { initChatPageInteractions } from '../features/chat/chatController.js';
-import { loadHomeData, loadPlatformStats } from '../features/home/homeData.js';
-import { initProfilePageInteractions } from '../features/profile/profileController.js';
-import { ensureRuntimeBridge } from './runtimeBridge.js';
+﻿import { ensureRuntimeBridge } from './runtimeBridge.js';
 import { initParticles } from './particles.js';
-import { getLegacyPage, pageBase } from './routing.js';
-import { loadLegacyScripts } from './scriptLoader.js';
+import { pageBase } from './routing.js';
 
 const navSearchRoutes = [
-  { keys: ['首页', '主页', '海河', 'home'], url: 'index.html' },
-  { keys: ['数据', '大屏', '监测', '指标', 'dashboard'], url: 'dashboard.html' },
-  { keys: ['沙盘', '推演', '预测', '决策', 'sandbox'], url: 'sandbox.html' },
-  { keys: ['知识', '图谱', '溯源', '节点', 'graph'], url: 'knowledge-graph.html' },
-  { keys: ['问答', '智能', '助手', 'chat'], url: 'chat.html' },
+  { keys: ['首页', '主页', 'home'], url: 'index.html' },
+  { keys: ['数据大屏', '大屏', 'dashboard'], url: 'dashboard.html' },
+  { keys: ['沙盘', '推演', 'sandbox'], url: 'sandbox.html' },
+  { keys: ['知识图谱', '图谱', 'graph'], url: 'knowledge-graph.html' },
+  { keys: ['智能问答', '问答', 'chat'], url: 'chat.html' },
 ];
-
-const authPages = new Set(['login.html', 'register.html', 'forgot-password.html']);
 
 function getStoredUserInfo() {
   const raw = localStorage.getItem('currentUser') || localStorage.getItem('user');
@@ -26,7 +19,7 @@ function getStoredUserInfo() {
   try {
     return JSON.parse(raw) || { username: '访客', role: '未登录' };
   } catch (error) {
-    console.warn('解析用户信息失败:', error);
+    console.warn('无法读取本地用户信息:', error);
     return { username: '访客', role: '未登录' };
   }
 }
@@ -74,18 +67,7 @@ function initNavSearch() {
   };
 }
 
-function runPendingGraphSearch() {
-  const params = new URLSearchParams(window.location.search);
-  const query = params.get('search');
-  const graphInput = document.getElementById('searchInput');
-  const graphButton = document.getElementById('searchBtn');
-  if (!query || !graphInput || !graphButton) return;
-  graphInput.value = query;
-  window.setTimeout(() => graphButton.click(), 500);
-}
-
 export function wireLegacyInteractions(pageName) {
-  const page = getLegacyPage(pageName);
   ensureRuntimeBridge();
 
   document.querySelectorAll('[data-page-link]').forEach((link) => {
@@ -97,7 +79,7 @@ export function wireLegacyInteractions(pageName) {
     ? getStoredUserInfo()
     : { username: '访客', role: '未登录' };
   const displayName = String(currentUser.nickname || currentUser.name || currentUser.username || '访客')
-    .replace(/\.?用户$/u, '')
+    .replace(/\.?管理员/u, '')
     .trim();
   setTextIfExists('userName', displayName || '访客');
 
@@ -105,7 +87,7 @@ export function wireLegacyInteractions(pageName) {
   const mobileMenu = document.getElementById('mobileMenu');
   const userMenuBtn = document.getElementById('userMenuBtn');
   const userMenu = document.getElementById('userMenu');
-  const logoutLinks = document.querySelectorAll('[data-logout-link], [data-legacy-click="logout()"]');
+  const logoutLinks = document.querySelectorAll('[data-logout-link]');
 
   const toggleMobileMenu = () => mobileMenu?.classList.toggle('hidden');
   const toggleUserMenu = () => userMenu?.classList.toggle('hidden');
@@ -125,79 +107,19 @@ export function wireLegacyInteractions(pageName) {
     window.location.href = `${pageBase}login.html`;
   };
 
-  window.logout = logout;
-
   mobileMenuBtn?.addEventListener('click', toggleMobileMenu);
   userMenuBtn?.addEventListener('click', toggleUserMenu);
   document.addEventListener('click', closeMenus);
   logoutLinks.forEach((link) => link.addEventListener('click', logout));
 
-  const runLegacyClick = (event) => {
-    if (event.defaultPrevented) return;
-    const trigger = event.target.closest('[data-legacy-click]');
-    if (!trigger) return;
-    event.preventDefault();
-    const expression = trigger.getAttribute('data-legacy-click');
-    if (!expression) return;
-    if (expression.trim() === 'logout()') {
-      logout(event);
-      return;
-    }
-    try {
-      try {
-        window.event = event;
-      } catch {
-        // Some legacy handlers read the browser's global event object.
-      }
-      Function(expression).call(window);
-    } catch (error) {
-      console.error('执行旧页面点击逻辑失败:', error);
-    }
-  };
-
-  document.addEventListener('click', runLegacyClick);
-
   const cleanupParticles = initParticles();
   const cleanupNavSearch = initNavSearch();
-  let cleanupPageInteractions;
-  let cancelled = false;
-  const bundledRuntimePage = ['dashboard.html', 'sandbox.html', 'knowledge-graph.html'].includes(pageName);
-  const runtimePage = bundledRuntimePage
-    ? { ...page, scripts: [...(page.scripts || []), `../assets/js/${pageName === 'dashboard.html' ? 'dashboard-screen.js' : pageName === 'sandbox.html' ? 'sandbox-validation.js' : 'knowledge-graph-page.js'}`] }
-    : page;
-
-  loadLegacyScripts(runtimePage).then(() => {
-    if (cancelled) return;
-    if (pageName === 'chat.html') {
-      cleanupPageInteractions = initChatPageInteractions();
-    }
-    if (authPages.has(pageName)) {
-      cleanupPageInteractions = initAuthPageInteractions(pageName);
-    }
-    if (pageName === 'profile.html') {
-      cleanupPageInteractions = initProfilePageInteractions();
-    }
-    if (pageName === 'knowledge-graph.html') {
-      runPendingGraphSearch();
-    }
-  }).catch((error) => {
-    console.error('加载旧版页面脚本失败:', error);
-  });
-
-  if (pageName === 'index.html') {
-    loadHomeData();
-    loadPlatformStats();
-  }
-
   return () => {
-    cancelled = true;
     mobileMenuBtn?.removeEventListener('click', toggleMobileMenu);
     userMenuBtn?.removeEventListener('click', toggleUserMenu);
     document.removeEventListener('click', closeMenus);
-    document.removeEventListener('click', runLegacyClick);
     logoutLinks.forEach((link) => link.removeEventListener('click', logout));
     cleanupParticles?.();
     cleanupNavSearch?.();
-    cleanupPageInteractions?.();
   };
 }
